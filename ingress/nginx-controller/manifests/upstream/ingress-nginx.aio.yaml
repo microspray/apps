@@ -357,7 +357,7 @@ metadata:
   name: ingress-nginx-controller
   namespace: ingress-nginx
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ipFamilyPolicy: SingleStack
   ipFamilies: 
     - IPv4
