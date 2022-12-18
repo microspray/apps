@@ -1,0 +1,142 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nats
+spec:
+  replicas: 3
+  serviceName: "nats"
+  volumeClaimTemplates:
+  - metadata:
+      name: nats-js
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      volumeMode: "Filesystem"
+      resources:
+        requests:
+          storage: 1Gi
+  template:
+    spec:
+      # Common volumes for the containers
+      volumes:
+      - name: config-volume
+        configMap:
+          name: nats-config
+      - name: pid
+        emptyDir: {}
+
+      # Required to be able to HUP signal and apply config reload
+      # to the server without restarting the pod.
+      shareProcessNamespace: true
+
+      #################
+      #               #
+      #  NATS Server  #
+      #               #
+      #################
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: nats
+        image: nats
+        ports:
+        - containerPort: 4222
+          name: client
+          hostPort: 4222
+        - containerPort: 7422
+          name: leafnodes
+          hostPort: 7422
+        - containerPort: 6222
+          name: cluster
+        - containerPort: 8222
+          name: monitor
+        args:
+        - --config=/etc/nats-config/nats.conf
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "20m"
+
+        # Required to be able to define an environment variable
+        # that refers to other environment variables.  This env var
+        # is later used as part of the configuration file.
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CLUSTER_ADVERTISE
+          value: $(POD_NAME).nats.$(POD_NAMESPACE).svc
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/nats-config
+          - name: pid
+            mountPath: /var/run/nats
+          - name: nats-js
+            mountPath: /data/jetstream 
+
+        # Liveness/Readiness probes against the monitoring
+        #
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+
+        # Gracefully stop NATS Server on pod deletion or image upgrade.
+        #
+        lifecycle:
+          preStop:
+            exec:
+              # Using the alpine based NATS image, we add an extra sleep that is
+              # the same amount as the terminationGracePeriodSeconds to allow
+              # the NATS Server to gracefully terminate the client connections.
+              #
+              command: ["/bin/sh", "-c", "/nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep 60"]
+      - name: reloader
+        image: natsio/nats-server-config-reloader
+        imagePullPolicy: IfNotPresent
+        command:
+         - "nats-server-config-reloader"
+         - "-pid"
+         - "/var/run/nats/nats.pid"
+         - "-config"
+         - "/etc/nats-config/nats.conf"
+        resources:
+          requests:
+            memory: "8Mi"
+            cpu: "5m"
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/nats-config
+          - name: pid
+            mountPath: /var/run/nats
+      - name: prometheus-nats-exporter
+        image: natsio/prometheus-nats-exporter
+        imagePullPolicy: IfNotPresent
+        args:
+        - --port=7777
+        - -varz
+        - -connz
+        - -gatewayz
+        - -routez
+        - -serverz
+        - -jsz=all
+        - "http://localhost:8222"
+        resources:
+          requests:
+            memory: "8Mi"
+            cpu: "5m"
+        ports:
+        - containerPort: 7777
+          name: metrics

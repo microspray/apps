@@ -1,0 +1,39 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: pagerduty
+  labels:
+    alertmanagerConfig: main
+  namespace: monitoring
+spec:
+  route:
+    groupBy: ['job']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 2h
+    receiver: Default
+    routes:
+      - receiver: Watchdog
+        matchers:
+          - name: alertname
+            value: Watchdog
+      - receiver: Critical
+        matchers:
+          - name: severity
+            value: critical
+  receivers:
+    - name: Critical
+      pagerdutyConfigs:
+        - routingKey:
+            name: pdsecret
+            key: pdRoutingKey
+    - name: Default
+      pagerdutyConfigs:
+        - routingKey:
+            name: pdsecret
+            key: pdRoutingKey
+    - name: Watchdog
+      pagerdutyConfigs:
+        - routingKey:
+            name: pdsecret
+            key: pdRoutingKey

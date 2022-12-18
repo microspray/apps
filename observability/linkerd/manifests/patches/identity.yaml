@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-identity
+  namespace: linkerd
+spec:
+  template:
+    spec:
+      initContainers:
+      - args:
+        - --incoming-proxy-port
+        - "4143"
+        - --outgoing-proxy-port
+        - "4140"
+        - --proxy-uid
+        - "2102"
+        - --inbound-ports-to-ignore
+        - "4190,4191,4567,4568,22,25,443,587,3306,4444,5432,6379,9300,11211,6443,27017,9200"
+        - --outbound-ports-to-ignore
+        - "443,6443"
+        name: linkerd-init

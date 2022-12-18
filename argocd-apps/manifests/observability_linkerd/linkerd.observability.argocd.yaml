@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkerd
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: micros-infra
+  source:
+    path: envs/cluster-1/observability/linkerd
+    plugin:
+      name: kustomize-gcrypt
+    repoURL: 'https://github.com/microspray/deployments-infra.git'
+    targetRevision: HEAD
+  syncPolicy:
+    automated: {}

@@ -1,0 +1,107 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    application: spilo-logical-backup
+    cluster-name: microsdev-alegrand
+    manager: kube-controller-manager
+    operation: Update
+
+  name: pg-logical-backup-microsdev-alegrand-manual
+  namespace: pg-test
+
+spec:
+  backoffLimit: 6
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        application: spilo-logical-backup
+        cluster-name: microsdev-alegrand
+      namespace: pg-test
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  application: spilo-logical-backup
+                  cluster-name: microsdev-alegrand
+              topologyKey: kubernetes.io/hostname
+            weight: 1
+      containers:
+      - env:
+        - name: SCOPE
+          value: microsdev-alegrand
+        - name: CLUSTER_NAME_LABEL
+          value: cluster-name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: LOGICAL_BACKUP_PROVIDER
+          value: s3
+        - name: LOGICAL_BACKUP_S3_BUCKET
+          value: pg-backups
+        - name: LOGICAL_BACKUP_S3_REGION
+        - name: LOGICAL_BACKUP_S3_ENDPOINT
+          value: http://minio.dev.svc.cluster.local
+        - name: LOGICAL_BACKUP_S3_SSE
+          value: ''
+        - name: LOGICAL_BACKUP_S3_BUCKET_SCOPE_SUFFIX
+          value: /8a2d693c-50d9-47af-874f-803cc2eecede
+        - name: LOGICAL_BACKUP_GOOGLE_APPLICATION_CREDENTIALS
+        - name: PG_VERSION
+          value: "13"
+        - name: PGPORT
+          value: "5432"
+        - name: PGUSER
+          value: postgres
+        - name: PGDATABASE
+          value: postgres
+        - name: PGSSLMODE
+          value: require
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: postgres.microsdev-alegrand.credentials.postgresql.acid.zalan.do
+        - name: AWS_ACCESS_KEY_ID
+          value: UBW0BBNHMGH67Y1F03ST
+        - name: AWS_SECRET_ACCESS_KEY
+          value: +cPL+FvcbrKLgfuu88WR4Y6WmMfbzWV21iMMUdOn
+        image: registry.opensource.zalan.do/acid/logical-backup:v1.6.1
+        imagePullPolicy: IfNotPresent
+        name: logical-backup
+        ports:
+        - containerPort: 8008
+          protocol: TCP
+        - containerPort: 5432
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 2500m
+            memory: 4500Mi
+          requests:
+            cpu: 500m
+            memory: 1000Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: postgres-pod
+      serviceAccountName: postgres-pod
+      terminationGracePeriodSeconds: 300

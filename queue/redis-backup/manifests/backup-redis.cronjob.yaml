@@ -1,0 +1,77 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: redis-backup
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          initContainers:
+            - image: minio/mc:latest
+              imagePullPolicy: Always
+              command:
+                - cp
+                - /etc/mc/config.json
+                - /root/.mc/config.json
+              name: mc-alias
+              resources:
+                limits:
+                  cpu: "500m"
+                  memory: 400Mi
+              volumeMounts:
+                - name: mc-config
+                  mountPath: "/etc/mc"
+                  readOnly: false
+                - name: mcconf
+                  mountPath: "/root/.mc"
+            - image: img.microspray.io/micros-tools/dbstorage
+              imagePullPolicy: Always
+              name: dump
+              command:
+                - sh
+                - -c
+              args:
+                - export REDIS_HOST=redis-ha-haproxy.$REDIS_NAME.svc.cluster.local ;
+                  echo $REDIS_HOST ; /usr/local/bin/redis-dump-rdb.sh
+              volumeMounts:
+                - mountPath: /backups
+                  name: backup
+              envFrom:
+                - configMapRef:
+                    name: redis-backup
+          containers:
+            - image: minio/mc:latest
+              imagePullPolicy: Always
+              command:
+                - sh
+                - -c
+              args:
+                - mc cp --recursive /backups/ s3/${S3_BUCKET}/${CLUSTER_NAME}/redis/${DB_NAME}
+              name: mc
+              envFrom:
+                - configMapRef:
+                    name: redis-backup
+              volumeMounts:
+                - name: mc-config
+                  mountPath: "/etc/mc"
+                  readOnly: false
+                - name: mcconf
+                  mountPath: "/root/.mc"
+                - name: backup
+                  mountPath: "/backups"
+
+          volumes:
+            - name: mc-config
+              secret:
+                secretName: mc-config
+            - name: mcconf
+              emptyDir: {}
+            - name: backup
+              emptyDir: {}
+
+  schedule: '*/30 * * * *'

@@ -1,0 +1,86 @@
+clusters:
+  # Specify 1 or more clusters
+  - name: microspray.io
+
+    # Default namespace (optional)
+    namespace: default
+
+    # Descriptions used in the WebUI
+    short_description: "Example Cluster"
+    description: "Example Cluster Long Description..."
+
+    # Redirect Url pointing to dex-k8s-authenticator callback for this cluster
+    # This should be configured in Dex as part of the staticClients
+    # redirectURIs option
+    redirect_uri: https://k8s-auth.microspray.io/callback
+
+    # Client Secret - should match value in Dex
+    client_secret: ZXhhbXBsZS1hcHAtc3VjcmV0demo
+
+    # Client ID - should match value in Dex
+    client_id: k8s-app
+
+    # Dex Issuer - Must be resolvable
+    issuer:  https://sso.microspray.io
+
+    # Url to k8s API endpoint - used in WebUI instructions for generating
+    # kubeconfig
+    k8s_master_uri: https://myapi.master.com
+
+    # don't use username for context
+    static_context_name: false
+
+    # CA for your k8s cluster - used in WebUI instructions for generating
+    # kubeconfig
+    # Both k8s_ca_uri and k8s_ca_pem are optional - you typically specifiy
+    # one or the other if required
+    #
+    # Provides a link to the CA from a hosted site
+    # k8s_ca_uri: http://url-to-your-ca.crt
+    #
+    # Provides abililty to specify CA inline
+    k8s_ca_pem: |
+       -----BEGIN CERTIFICATE-----
+       ...
+       -----END CERTIFICATE-----
+
+# Specify multiple extra root CA files to be loaded
+# trusted_root_ca:
+#   -|
+#     -----BEGIN CERTIFICATE-----
+#     ...
+#     -----END CERTIFICATE-----
+
+# Specify path to tls_cert and tls_key - if enabled, set liten to use https
+# tls_cert: /path/to/dex-client.crt
+# tls_key: /path/to/dex-client.key
+
+# CA for your IDP - used in WebUI instructions for generating
+# kubeconfig
+# Both idp_ca_uri and idp_ca_pem are optional - you typically specifiy
+# one or the other if required
+#
+# Provides a link to the CA from a hosted site
+# idp_ca_uri: http://url-to-your-ca.crt
+#
+# Provides abililty to specify CA inline
+# idp_ca_pem: |
+#   -----BEGIN CERTIFICATE-----
+#   ...
+#   -----END CERTIFICATE-----
+
+
+# Which address to listen on (set to https if tls configured)
+listen: http://127.0.0.1:5555
+
+# A path-prefix from which to serve requests and assets
+web_path_prefix: /
+
+# Optional kubectl version which provides a download link to the the binary
+# kubectl_version: v1.16.2
+
+# Optional Url to display a logo image
+# logo_uri: http://<path-to-your-logo.png>
+
+# Enable more debug
+debug: false

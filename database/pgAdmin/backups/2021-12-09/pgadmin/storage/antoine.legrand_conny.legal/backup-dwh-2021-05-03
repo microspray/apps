@@ -1,0 +1,11 @@
+--
+-- PostgreSQL database cluster dump
+--
+
+-- Started on 2021-03-25 21:27:37 UTC
+
+SET default_transaction_read_only = off;
+
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+

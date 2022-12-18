@@ -1,0 +1,101 @@
+---
+# Source: pgadmin/templates/pvc.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pgadmin
+spec:
+  storageClassName: "cephfs-retain"
+  accessModes:
+    - "ReadWriteMany"
+  resources:
+    requests:
+      storage: "20Gi"
+
+---
+# Source: pgadmin/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: pgadmin
+
+---
+# Source: pgadmin/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+  labels:
+    app: pgadmin
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      initContainers:
+        - name: pgadmin-data-permission-fix
+          image: busybox
+          command: ["/bin/chown", "-R", "5050:5050", "/var/lib/pgadmin"]
+          volumeMounts:
+          - name: pgadmin-data
+            mountPath: /var/lib/pgadmin
+      containers:
+        - name: pgadmin
+          image: "dpage/pgadmin4:latest"
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: PGADMIN_DEFAULT_EMAIL
+            value: pg-prod@micros.legal
+          - name: PGADMIN_DEFAULT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: pgadmin-password
+                key: pgadmin-password
+          - name: PGADMIN_PORT
+            value: "80"
+          ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+          - name: https
+            containerPort: 443
+            protocol: TCP
+          volumeMounts:
+          - name: pgadmin-data
+            mountPath: /var/lib/pgadmin
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1280Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            timeoutSeconds: 10
+      volumes:
+        - name: pgadmin-data
+          persistentVolumeClaim:
+            claimName: pgadmin

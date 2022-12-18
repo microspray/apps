@@ -1,0 +1,8 @@
+.DS_Store
+.idea
+*.log
+tmp/
+
+envs/
+registry/harbor/values.secret.yaml
+registry/harbor/manifests/upstream/

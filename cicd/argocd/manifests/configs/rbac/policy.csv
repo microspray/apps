@@ -1,0 +1,3 @@
+p, role:dev, *, *, micros-staging/*, allow
+g, admins@microspray.io, role:admin
+g, dev@microspray.io, role:dev

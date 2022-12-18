@@ -1,0 +1,169 @@
+ci:
+- .github/**/*
+- .gitlab-ci/*
+- .gitlab-ci.yml
+cluster-1:
+- envs/cluster-1/**/*
+- base/**/*
+
+services/wiki:
+ - "**/services/wiki/**/*"
+
+services:
+ - "**/services/**/*"
+
+cicd/lhci:
+ - "**/cicd/lhci/**/*"
+
+cicd/gitlab-ci:
+ - "**/cicd/gitlab-ci/**/*"
+
+cicd/argocd:
+ - "**/cicd/argocd/**/*"
+
+cicd:
+ - "**/cicd/**/*"
+
+storage/rook-operator:
+ - "**/storage/rook-operator/**/*"
+
+storage/mc-mirror:
+ - "**/storage/mc-mirror/**/*"
+
+storage/local-path-storage:
+ - "**/storage/local-path-storage/**/*"
+
+storage/minio:
+ - "**/storage/minio/**/*"
+
+storage/rook:
+ - "**/storage/rook/**/*"
+
+storage/ceph-cluster:
+ - "**/storage/ceph-cluster/**/*"
+
+storage:
+ - "**/storage/**/*"
+
+database/redis-ha:
+ - "**/database/redis-ha/**/*"
+
+database/elastic.co:
+ - "**/database/elastic.co/**/*"
+
+database/postgres-operator:
+ - "**/database/postgres-operator/**/*"
+
+database/mongodb:
+ - "**/database/mongodb/**/*"
+
+database/mongodb-operator:
+ - "**/database/mongodb-operator/**/*"
+
+database/pgAdmin:
+ - "**/database/pgAdmin/**/*"
+
+database/etcd-backup:
+ - "**/database/etcd-backup/**/*"
+
+database/postgres-envs:
+ - "**/database/postgres-envs/**/*"
+
+database:
+ - "**/database/**/*"
+
+bench/admin-utils:
+ - "**/bench/admin-utils/**/*"
+
+bench/locustio:
+ - "**/bench/locustio/**/*"
+
+bench:
+ - "**/bench/**/*"
+
+observability/grafana:
+ - "**/observability/grafana/**/*"
+
+observability/kube-prometheus:
+ - "**/observability/kube-prometheus/**/*"
+
+observability/loki:
+ - "**/observability/loki/**/*"
+
+observability/linkerd:
+ - "**/observability/linkerd/**/*"
+
+observability:
+ - "**/observability/**/*"
+
+workflow/airflow:
+ - "**/workflow/airflow/**/*"
+
+workflow/argo:
+ - "**/workflow/argo/**/*"
+
+workflow/rudderstack:
+ - "**/workflow/rudderstack/**/*"
+
+workflow:
+ - "**/workflow/**/*"
+
+registry/harbor:
+ - "**/registry/harbor/**/*"
+
+registry:
+ - "**/registry/**/*"
+
+ingress/nginx-controller:
+ - "**/ingress/nginx-controller/**/*"
+
+ingress:
+ - "**/ingress/**/*"
+
+machine-learning/mlflow:
+ - "**/machine-learning/mlflow/**/*"
+
+machine-learning:
+ - "**/machine-learning/**/*"
+
+auth_security/dex:
+ - "**/auth_security/dex/**/*"
+
+auth_security/keycloack:
+ - "**/auth_security/keycloack/**/*"
+
+auth_security/k8s-auth:
+ - "**/auth_security/k8s-auth/**/*"
+
+auth_security/oauth2:
+ - "**/auth_security/oauth2/**/*"
+
+auth_security/cert-manager:
+ - "**/auth_security/cert-manager/**/*"
+
+auth_security/olddex:
+ - "**/auth_security/olddex/**/*"
+
+auth_security:
+ - "**/auth_security/**/*"
+
+queue/natsio:
+ - "**/queue/natsio/**/*"
+
+queue:
+ - "**/queue/**/*"
+
+network/cilium:
+ - "**/network/cilium/**/*"
+
+network/health:
+ - "**/network/health/**/*"
+
+network/coredns:
+ - "**/network/coredns/**/*"
+
+network/calico:
+ - "**/network/calico/**/*"
+
+network:
+ - "**/network/**/*"

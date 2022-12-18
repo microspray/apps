@@ -1,0 +1,50 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argocd
+resources:
+- argocd-project.yaml
+- ../manifests/cicd_argocd
+- ../manifests/auth_security_cert-manager
+- ../manifests/auth_security_hnc
+- ../manifests/auth_security_rbac
+- ../manifests/auth_security_keycloak
+- ../manifests/database_elastic.co
+- ../manifests/database_pgAdmin
+- ../manifests/database_postgres-operator
+- ../manifests/ingress_nginx-controller
+- ../manifests/network_cilium
+- ../manifests/network_coredns
+- ../manifests/network_health
+- ../manifests/observability_grafana
+- ../manifests/observability_kube-prometheus
+- ../manifests/observability_linkerd
+- ../manifests/queue_natsio
+- ../manifests/services_wiki
+- ../manifests/storage_ceph-cluster
+- ../manifests/storage_localpv
+- ../manifests/storage_rook-operator
+- ../manifests/observability_pyrra
+
+
+replacements:
+- source:
+    fieldPath: metadata.labels.cluster-name
+    kind: AppProject
+    name: micros-infra
+  targets:
+  - fieldPaths:
+    - spec.source.path
+    options:
+      delimiter: /
+      index: 1
+    select:
+      kind: Application
+- source:
+    fieldPath: metadata.annotations.repoURL
+    kind: AppProject
+    name: micros-infra
+  targets:
+  - fieldPaths:
+    - spec.source.repoURL
+    select:
+      kind: Application

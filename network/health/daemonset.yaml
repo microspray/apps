@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app.kubernets.io/name: health
+  name: health
+spec:
+  selector:
+    matchLabels:
+      app.kubernets.io/name: health
+  template:
+    metadata:
+      labels:
+        app.kubernets.io/name: health
+    spec:
+      containers:
+      - args:
+        - -c
+        - apk add --no-cache netcat-openbsd && RESPONSE=$(mktemp -d)/e2e && mkfifo "$RESPONSE" && _term() { echo "gracefully stopping server"; kill -15 "$SERVER"; } && trap _term SIGTERM SIGINT && while true; do cat "$RESPONSE" | nc -Nlp "$PORT" | (read -r && printf "HTTP/1.1 $(if ping "$IP" -c 1 > /dev/null; then echo -n "200 OK"; else echo -n "500 Internal Server Error"; fi)\r\n\r\n" > "$RESPONSE"); done & SERVER=$! && printf "listening on port %s\n" "$PORT" && wait "$SERVER"
+        command:
+        - /bin/sh
+        env:
+        - name: PORT
+          value: "8080"
+        - name: IP
+          value: 1.1.1.1
+        image: alpine
+        name: external
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ready
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 50m
+            memory: 50Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add:
+            - NET_RAW
+            drop:
+            - all
+      - args:
+        - -c
+        - apk add --no-cache curl netcat-openbsd && RESPONSE=$(mktemp -d)/e2e && mkfifo "$RESPONSE" && _term() { echo "gracefully stopping server"; kill -15 "$SERVER"; } && trap _term SIGTERM SIGINT && while true; do cat "$RESPONSE" | nc -Nlp "$PORT" | (read -r && printf "HTTP/1.1 $(if curl -k "$URL" > /dev/null; then echo -n "200 OK"; else echo -n "500 Internal Server Error"; fi)\r\n\r\n" > "$RESPONSE"); done & SERVER=$! && printf "listening on port %s\n" "$PORT" && wait "$SERVER"
+        command:
+        - /bin/sh
+        env:
+        - name: PORT
+          value: "8081"
+        - name: URL
+          value: https://kubernetes
+        image: alpine
+        name: internal
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ready
+            port: 8081
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 50m
+            memory: 50Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - all
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      - effect: NoExecute
+        operator: Exists

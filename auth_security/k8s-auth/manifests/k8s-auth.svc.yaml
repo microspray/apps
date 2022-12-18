@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: k8s-auth
+spec:
+  ports:
+  - name: http
+    port: 5556
+    targetPort: 5556
+  selector:
+    app: k8s-auth
+  type: ClusterIP

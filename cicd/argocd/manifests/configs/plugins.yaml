@@ -1,0 +1,13 @@
+- name: kustomize-gcrypt
+  init:
+    command:
+      - sh
+      - -c
+    args:
+      - |
+        git crypt unlock /etc/git-crypt/gitcrypt.key || true
+  generate:
+    command:
+      - kustomize
+    args:
+      - build

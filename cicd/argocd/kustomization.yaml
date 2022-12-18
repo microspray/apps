@@ -1,0 +1,77 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+resources:
+- manifests/argocd.ingress.yaml
+- manifests/defaults
+- manifests/servicemonitors.yaml
+- manifests/sa.yaml
+patches:
+- path: manifests/patches/argocd-server.deploy.yaml
+  target:
+    group: apps
+    kind: Deployment
+    name: argocd-server
+    version: v1
+- path: manifests/patches/argocd-repo-server.deploy.yaml
+  target:
+    group: apps
+    kind: Deployment
+    name: argocd-repo-server
+    version: v1
+
+
+
+configMapGenerator:
+- behavior: merge
+  files:
+  - configManagementPlugins=manifests/configs/plugins.yaml
+  - manifests/configs/oidc.config
+  - resource.customizations.health.argoproj.io_Application=manifests/configs/health/application.lua
+  - resource.customizations.health.networking.k8s.io_Ingress=manifests/configs/health/ingress.lua
+  - resource.customizations.health.cert-manager.io_Certificate=manifests/configs/health/certificate.lua
+  - repositories=manifests/configs/repositories.yaml
+  - repository.credentials=manifests/configs/repo-credentials.yaml
+  literals:
+  - resource.customizations.useOpenLibs.networking.k8s.io_Ingress=true
+  - resource.customizations.useOpenLibs.argoproj.io_Application=true
+  - resource.customizations.useOpenLibs.cert-manager.io_Certificate=true
+  - url=https://argocd.microspray.io
+  - application.instanceLabelKey=argocd.argoproj.io/instance
+  - statusbadge.enabled='true'
+  name: argocd-cm
+- behavior: merge
+  files:
+  - manifests/configs/rbac/policy.csv
+  literals:
+  - policy.default=role:readonly
+  name: argocd-rbac-cm
+
+secretGenerator:
+- files:
+  - manifests/secrets/gitcrypt.key
+  name: git-crypt-dev-key
+  options:
+    disableNameSuffixHash: true
+  type: Opaque
+
+- envs:
+  - manifests/secrets/repo-creds.conf
+  name: repo-creds
+  options:
+    disableNameSuffixHash: true
+    labels:
+      argocd.argoproj.io/secret-type: repo-creds
+  type: Opaque
+
+## Example:
+# - literals:
+#   - url=https://github.com/microspray-io/deployments
+#   name: microspray-deployments
+#   options:
+#     disableNameSuffixHash: true
+#     labels:
+#       argocd.argoproj.io/secret-type: repository
+#   type: Opaque

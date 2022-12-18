@@ -1,0 +1,17 @@
+    log-verbosity: 0
+    metrics-port: 9094
+    container-registry: docker.elastic.co
+    max-concurrent-reconciles: 3
+    ca-cert-validity: 8760h
+    ca-cert-rotate-before: 24h
+    cert-validity: 8760h
+    cert-rotate-before: 24h
+    set-default-security-context: true
+    kube-client-timeout: 60s
+    elasticsearch-client-timeout: 180s
+    disable-telemetry: false
+    validate-storage-class: true
+    enable-webhook: true
+    webhook-name: elastic-webhook.k8s.elastic.co
+    operator-namespace: elastic-system
+    namespaces: 

@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: postgres-operator
+
+resources:
+- manifests/defaults/operator
+# - manifests/defaults/operator/user-facing-clusterroles.yaml
+# - manifests/defaults/operator/postgresteam.crd.yaml
+- manifests/defaults/operator/operatorconfiguration.crd.yaml
+- manifests/defaults/operator/postgresql-operator-default-configuration.yaml
+- manifests/clusterrole-binding.yaml
+# - manifests/operator-service-account-rbac.yaml
+# - pod-conf
+images:
+  - newTag: v1.8.2-26-gacb3ffd7
+    name: registry.opensource.zalan.do/acid/postgres-operator
+patches:
+- path: manifests/patches/postgres-operator.yaml
+  target:
+    group: apps
+    kind: Deployment
+    name: postgres-operator
+    version: v1
+- path: manifests/patches/postgresql-operator-default-configuration.yaml

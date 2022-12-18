@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: natsio
+
+commonLabels:
+  app.kubernetes.io/name: jetstream
+  app.kubernetes.io/version: 2.6.1
+resources:
+- manifests/config.yaml
+- manifests/kube-prometheus-roles.yaml
+- manifests/statefulset.yaml
+- manifests/svc-monitor.yaml
+- manifests/svc.yaml
+
+images:
+- name: nats
+  newTag: 2.6.1-alpine3.14
+- name: natsio/nats-server-config-reloader
+  newTag: 0.6.2
+- name: natsio/prometheus-nats-exporter
+  newTag: 0.8.0

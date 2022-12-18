@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+
+commonLabels:
+  app.kubernetes.io/name: prometheus-aggregation-gateway
+  app.kubernetes.io/part-of: prometheus-aggregation-gateway
+  app.kubernetes.io/component: gateway
+
+resources:
+- manifests/deployment.yaml
+- manifests/ingress.yaml
+- manifests/service.yaml
+- manifests/service-monitor.yaml
+
+images:
+- name: weaveworks/prom-aggregation-gateway
+  newTag: master-c4415bbe

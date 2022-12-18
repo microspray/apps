@@ -1,0 +1,30 @@
+- op: replace
+  path: /apiVersion
+  value: "networking.k8s.io/v1"
+
+- op: replace
+  path: /metadata/annotations
+  value:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-signin: https://oauth2-proxy.microspray.io/oauth2/start?rd=https%3A%2F%2F$host$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-url: https://oauth2-proxy.microspray.io/oauth2/auth
+
+- op: replace
+  path: /spec
+  value:
+      ingressClassName: nginx
+      rules:
+        - host: pg-dev.microspray.io
+          http:
+            paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: "postgres-operator-ui"
+                    port:
+                      number: 80
+      tls:
+        - hosts:
+            - pg-dev.microspray.io
+          secretName: pg-dev-certs

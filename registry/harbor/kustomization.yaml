@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: harbor
+
+
+resources:
+# - manifests/upstream  # Generate upstream on overlays
+- manifests/servicemonitor.yaml
+- manifests/harbor.ingress.yaml
+- manifests/harbor-redis.sts.yaml
+- manifests/harbor-redis.svc.yaml
+
+images:
+  - name: goharbor/chartmuseum-photon
+    newTag: v2.6.2
+  - name: goharbor/harbor-core
+    newTag: v2.6.2
+  - name: goharbor/harbor-jobservice
+    newTag: v2.6.2
+  - name: goharbor/nginx-photon
+    newTag: v2.6.2
+  - name: goharbor/harbor-portal
+    newTag: v2.6.2
+  - name: goharbor/registry-photon
+    newTag: v2.6.2
+  - name: goharbor/harbor-registryctl
+    newTag: v2.6.2
+  - name: goharbor/trivy-adapter-photon
+    newTag: v2.6.2

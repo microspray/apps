@@ -1,0 +1,37 @@
+# Source: redis-ha/templates/redis-ha-servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-ha
+  namespace: "prod-redis"
+spec:
+  endpoints:
+  - targetPort: 9121
+  jobLabel: redis-ha
+  namespaceSelector:
+    matchNames:
+    - "prod-redis"
+  selector:
+    matchLabels:
+      app: redis-ha
+      release: myrelease
+      exporter: enabled
+---
+# Source: redis-ha/templates/redis-haproxy-servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-ha-haproxy
+  namespace: "prod-redis"
+spec:
+  endpoints:
+  - targetPort: 9101
+  jobLabel: redis-ha-haproxy
+  namespaceSelector:
+    matchNames:
+    - "prod-redis"
+  selector:
+    matchLabels:
+      app: redis-ha
+      release: myrelease
+      component: redis-ha-haproxy

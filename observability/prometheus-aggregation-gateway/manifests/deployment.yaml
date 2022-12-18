@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-aggregation-gateway
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-aggregation-gateway
+  template:
+    spec:
+      containers:
+      - name: prometheus-aggregation-gateway
+        image: weaveworks/prom-aggregation-gateway
+        ports:
+        - containerPort: 80
+          name: http
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 500Mi

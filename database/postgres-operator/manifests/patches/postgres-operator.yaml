@@ -1,0 +1,5 @@
+- op: replace
+  path: /spec/template/spec/containers/0/env
+  value:
+    - name: POSTGRES_OPERATOR_CONFIGURATION_OBJECT
+      value: postgresql-operator-default-configuration

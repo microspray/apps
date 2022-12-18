@@ -1,0 +1,59 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: microsdev-grafana
+  labels:
+   cluster: microsdev-grafana
+  annotations:
+    acid.zalan.do/controller: "infra"
+    linkerd.io/inject: disabled
+spec:
+  teamId: "microsdev"
+  numberOfInstances: 1
+  users:  # Application/Robot users
+    grafana:
+    - superuser
+    - createdb
+  enableMasterLoadBalancer: false
+  enableReplicaLoadBalancer: false
+  enableConnectionPooler: false
+  enableReplicaConnectionPooler: false
+
+  allowedSourceRanges:  # load balancers' source ranges for both master and replica services
+  - 127.0.0.1/32
+  - 10.233.0.0/16
+  - 192.168.1.0/24
+  databases:
+    grafana: grafana
+  preparedDatabases:
+    grafana:
+      schemas:
+        public: {}
+
+  postgresql:
+    version: "13"
+    parameters:  # Expert section
+      shared_buffers: "128MB"
+      max_connections: "20"
+      log_statement: "all"
+  volume:
+    size: 50Gi
+    storageClass: ceph
+  additionalVolumes:
+    - name: empty
+      mountPath: /opt/empty
+      targetContainers:
+        - all
+      volumeSource:
+        emptyDir: {}
+
+  enableShmVolume: true
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1000Mi
+    limits:
+      cpu: 1000m
+      memory: 2000Mi
+  enableLogicalBackup: true
+ # logicalBackupSchedule: "1 1 * * *"

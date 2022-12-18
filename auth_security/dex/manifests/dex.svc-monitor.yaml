@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: dex
+  namespace: dex
+spec:
+  endpoints:
+  - interval: 15s
+    port: metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: identity-provider
+      app.kubernetes.io/name: dex
+      app.kubernetes.io/part-of: dex

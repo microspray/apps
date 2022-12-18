@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: dex
+
+commonLabels:
+  app.kubernetes.io/component: identity-provider
+  app.kubernetes.io/name: dex
+  app.kubernetes.io/part-of: dex
+
+secretGenerator:
+- files:
+  - manifests/secrets/microsauth.json
+  name: micros-google-sa
+  type: Opaque
+configMapGenerator:
+- files:
+  - manifests/configs/config.yaml
+  name: dex-config
+resources:
+- manifests/dex.deploy.yaml
+- manifests/dex.ingress.yaml
+- manifests/dex.roles.yaml
+- manifests/dex.sa.yaml
+- manifests/dex.svc.yaml
+- manifests/dex.svc-monitor.yaml
+- manifests/slos.yaml

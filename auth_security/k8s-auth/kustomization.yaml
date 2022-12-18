@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: dex
+configMapGenerator:
+- files:
+  - manifests/config/config.yaml
+  name: k8s-auth-config
+resources:
+- manifests/k8s-auth.ingress.yaml
+- manifests/k8s-auth.svc.yaml
+- manifests/k8s-auth.yaml

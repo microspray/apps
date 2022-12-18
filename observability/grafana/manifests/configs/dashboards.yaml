@@ -1,0 +1,15 @@
+    {
+        "apiVersion": 1,
+        "providers": [
+            {
+                "allowUiUpdates": true,
+                "folder": "kubernetes",
+                "name": "0",
+                "options": {
+                    "path": "/grafana-dashboard-definitions/0"
+                },
+                "orgId": 1,
+                "type": "file"
+            }
+        ]
+    }

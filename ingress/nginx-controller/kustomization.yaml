@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+commonAnnotations:
+  co.elastic.logs/module: nginx
+  co.elastic.logs/fileset.stdout: ingress_controller
+  co.elastic.logs/fileset.stderr: error
+
+resources:
+- manifests/upstream
+namespace: ingress-nginx
+patches:
+  - patch: |-
+      - op: add
+        path: /data/proxy-body-size
+        value: 5000m
+    target:
+      kind: ConfigMap
+      name: ingress-nginx-controller
