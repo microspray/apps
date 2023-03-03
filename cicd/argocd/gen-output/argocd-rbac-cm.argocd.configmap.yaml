@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  policy.csv: |
+    p, role:dev, *, *, micros-staging/*, allow
+    g, admins@microspray.io, role:admin
+    g, dev@microspray.io, role:dev
+  policy.default: role:readonly
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name: argocd-rbac-cm
+    app.kubernetes.io/part-of: argocd
+  name: argocd-rbac-cm
+  namespace: argocd
+

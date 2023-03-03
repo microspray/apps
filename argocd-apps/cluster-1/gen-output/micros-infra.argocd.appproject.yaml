@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  annotations:
+    repoURL: https://github.com/microspray/deployments-infra.git
+  labels:
+    cluster-name: cluster-1
+  name: micros-infra
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: '*'
+    server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  orphanedResources:
+    warn: false
+  roles:
+  - description: Admin
+    groups:
+    - admin@microspray.io
+    name: Admin
+    policies:
+    - p, proj:micros-infra:Admin, applications, *, micros-infra/*, allow
+  - description: Dev-Admin
+    groups:
+    - devops@microspray.io
+    name: Dev-Admin
+    policies:
+    - p, proj:prod:Dev-Admin, applications, *, micros-infra/*, allow
+  sourceRepos:
+  - https://github.com/microspray/deployments-infra.git
+

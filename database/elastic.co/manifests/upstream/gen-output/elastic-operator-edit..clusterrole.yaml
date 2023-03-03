@@ -1,0 +1,101 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/version: 2.6.0
+    control-plane: elastic-operator
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+  name: elastic-operator-edit
+rules:
+- apiGroups:
+  - elasticsearch.k8s.elastic.co
+  resources:
+  - elasticsearches
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+- apiGroups:
+  - autoscaling.k8s.elastic.co
+  resources:
+  - elasticsearchautoscalers
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+- apiGroups:
+  - apm.k8s.elastic.co
+  resources:
+  - apmservers
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+- apiGroups:
+  - kibana.k8s.elastic.co
+  resources:
+  - kibanas
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+- apiGroups:
+  - enterprisesearch.k8s.elastic.co
+  resources:
+  - enterprisesearches
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+- apiGroups:
+  - beat.k8s.elastic.co
+  resources:
+  - beats
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+- apiGroups:
+  - agent.k8s.elastic.co
+  resources:
+  - agents
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+- apiGroups:
+  - maps.k8s.elastic.co
+  resources:
+  - elasticmapsservers
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+- apiGroups:
+  - stackconfigpolicy.k8s.elastic.co
+  resources:
+  - stackconfigpolicies
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+

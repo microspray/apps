@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ingress-nginx-admission-create.ingress-nginx.job.yaml
+- ingress-nginx-admission-patch.ingress-nginx.job.yaml
+- ingress-nginx-admission..clusterrole.yaml
+- ingress-nginx-admission..clusterrolebinding.yaml
+- ingress-nginx-admission..validatingwebhookconfiguration.yaml
+- ingress-nginx-admission.ingress-nginx.role.yaml
+- ingress-nginx-admission.ingress-nginx.rolebinding.yaml
+- ingress-nginx-admission.ingress-nginx.serviceaccount.yaml
+- ingress-nginx-backend.ingress-nginx.serviceaccount.yaml
+- ingress-nginx-controller-admission.ingress-nginx.service.yaml
+- ingress-nginx-controller-metrics.ingress-nginx.service.yaml
+- ingress-nginx-controller.ingress-nginx.configmap.yaml
+- ingress-nginx-controller.ingress-nginx.daemonset.yaml
+- ingress-nginx-controller.ingress-nginx.prometheusrule.yaml
+- ingress-nginx-controller.ingress-nginx.service.yaml
+- ingress-nginx-controller.ingress-nginx.servicemonitor.yaml
+- ingress-nginx-defaultbackend.ingress-nginx.deployment.yaml
+- ingress-nginx-defaultbackend.ingress-nginx.service.yaml
+- ingress-nginx..clusterrole.yaml
+- ingress-nginx..clusterrolebinding.yaml
+- ingress-nginx.ingress-nginx.role.yaml
+- ingress-nginx.ingress-nginx.rolebinding.yaml
+- ingress-nginx.ingress-nginx.serviceaccount.yaml
+- nginx..ingressclass.yaml

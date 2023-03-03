@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- hierarchyconfigurations.hnc.x-k8s.io..customresourcedefinition.yaml
+- hnc-admin-role..clusterrole.yaml
+- hnc-controller-manager-metrics-service.hnc-system.service.yaml
+- hnc-controller-manager.hnc-system.deployment.yaml
+- hnc-leader-election-role.hnc-system.role.yaml
+- hnc-leader-election-rolebinding.hnc-system.rolebinding.yaml
+- hnc-manager-role..clusterrole.yaml
+- hnc-manager-rolebinding..clusterrolebinding.yaml
+- hnc-mutating-webhook-configuration..mutatingwebhookconfiguration.yaml
+- hnc-proxy-role..clusterrole.yaml
+- hnc-proxy-rolebinding..clusterrolebinding.yaml
+- hnc-system..namespace.yaml
+- hnc-validating-webhook-configuration..validatingwebhookconfiguration.yaml
+- hnc-webhook-server-cert.hnc-system.secret.yaml
+- hnc-webhook-service.hnc-system.service.yaml
+- hncconfigurations.hnc.x-k8s.io..customresourcedefinition.yaml
+- subnamespaceanchors.hnc.x-k8s.io..customresourcedefinition.yaml

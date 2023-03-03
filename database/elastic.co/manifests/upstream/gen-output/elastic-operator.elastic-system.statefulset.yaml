@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/version: 2.6.0
+    control-plane: elastic-operator
+  name: elastic-operator
+  namespace: elastic-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: elastic-operator
+  serviceName: elastic-operator
+  template:
+    metadata:
+      annotations:
+        checksum/config: 0450e8c4b583d982f43141029ee70e1035c0f6de518a87aa86427e98982338a7
+        co.elastic.logs/raw: '[{"type":"container","json.keys_under_root":true,"paths":["/var/log/containers/*${data.kubernetes.container.id}.log"],"processors":[{"convert":{"mode":"rename","ignore_missing":true,"fields":[{"from":"error","to":"_error"}]}},{"convert":{"mode":"rename","ignore_missing":true,"fields":[{"from":"_error","to":"error.message"}]}},{"convert":{"mode":"rename","ignore_missing":true,"fields":[{"from":"source","to":"_source"}]}},{"convert":{"mode":"rename","ignore_missing":true,"fields":[{"from":"_source","to":"event.source"}]}}]}]'
+      labels:
+        control-plane: elastic-operator
+    spec:
+      containers:
+      - args:
+        - manager
+        - --config=/conf/eck.yaml
+        env:
+        - name: OPERATOR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: WEBHOOK_SECRET
+          value: elastic-webhook-server-cert
+        image: docker.elastic.co/eck/eck-operator:2.6.0
+        imagePullPolicy: IfNotPresent
+        name: manager
+        ports:
+        - containerPort: 9443
+          name: https-webhook
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 150Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+        volumeMounts:
+        - mountPath: /conf
+          name: conf
+          readOnly: true
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: elastic-operator
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - configMap:
+          name: elastic-operator
+        name: conf
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: elastic-webhook-server-cert
+

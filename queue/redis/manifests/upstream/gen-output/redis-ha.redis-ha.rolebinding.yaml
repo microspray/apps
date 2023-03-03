@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: redis-ha
+    chart: redis-ha-4.22.3
+    heritage: Helm
+    release: myrelease
+  name: redis-ha
+  namespace: redis-ha
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: redis-ha
+subjects:
+- kind: ServiceAccount
+  name: redis-ha
+

@@ -1,0 +1,36 @@
+apiVersion: v1
+data:
+  nats.conf: |
+    pid_file: "/var/run/nats/nats.pid"
+    http: 8222
+    listen: 4222
+    server_name: $POD_NAME
+
+    jetstream {
+      store_dir=/data/jetstream
+    }
+
+    cluster {
+      name: C1
+      port: 6222
+      routes [
+        nats://nats-0.nats:6222
+        nats://nats-1.nats:6222
+        nats://nats-2.nats:6222
+      ]
+
+      cluster_advertise: $CLUSTER_ADVERTISE
+      connect_retries: 30
+    }
+
+    leafnodes {
+      port: 7422
+    }
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name: jetstream
+    app.kubernetes.io/version: 2.6.1
+  name: nats-config
+  namespace: natsio
+

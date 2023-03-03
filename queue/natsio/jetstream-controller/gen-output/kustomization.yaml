@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- consumers.jetstream.nats.io..customresourcedefinition.yaml
+- jetstream-controller-cluster-role-binding..clusterrolebinding.yaml
+- jetstream-controller-cluster-role..clusterrole.yaml
+- jetstream-controller..deployment.yaml
+- jetstream-controller..serviceaccount.yaml
+- streams.jetstream.nats.io..customresourcedefinition.yaml
+- streamtemplates.jetstream.nats.io..customresourcedefinition.yaml

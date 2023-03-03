@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: cluster
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.5.1
+    helm.sh/chart: ingress-nginx-4.4.0
+  name: ingress-nginx-controller
+spec:
+  endpoints:
+  - interval: 30s
+    port: metrics
+  namespaceSelector:
+    matchNames:
+    - ingress-nginx
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: cluster
+      app.kubernetes.io/name: ingress-nginx
+

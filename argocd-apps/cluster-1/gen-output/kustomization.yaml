@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- argocd.argocd.application.yaml
+- ceph-cluster.argocd.application.yaml
+- cert-manager.argocd.application.yaml
+- cilium.argocd.application.yaml
+- coredns.argocd.application.yaml
+- elastic.co.argocd.application.yaml
+- grafana.argocd.application.yaml
+- health.argocd.application.yaml
+- hnc.argocd.application.yaml
+- keycloak.argocd.application.yaml
+- kube-prometheus.argocd.application.yaml
+- linkerd.argocd.application.yaml
+- localpv.argocd.application.yaml
+- micros-infra.argocd.appproject.yaml
+- natsio.argocd.application.yaml
+- nginx-controller.argocd.application.yaml
+- pgadmin.argocd.application.yaml
+- postgres-operator.argocd.application.yaml
+- pyrra.argocd.application.yaml
+- rbac.argocd.application.yaml
+- rook-operator.argocd.application.yaml
+- wiki.argocd.application.yaml

@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/name: prometheus-aggregation-gateway
+    app.kubernetes.io/part-of: prometheus-aggregation-gateway
+  name: prometheus-aggregation-gateway
+  namespace: monitoring
+spec:
+  endpoints:
+  - interval: 15s
+    port: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-aggregation-gateway
+

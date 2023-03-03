@@ -1,0 +1,217 @@
+apiVersion: v1
+data:
+  values: |
+    cliVersion: linkerd/cli stable-2.11.2
+    clusterDomain: cluster.local
+    clusterNetworks: 10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16
+    cniEnabled: false
+    controlPlaneTracing: false
+    controlPlaneTracingNamespace: linkerd-jaeger
+    controllerImage: cr.l5d.io/linkerd/controller
+    controllerImageVersion: stable-2.11.2
+    controllerLogFormat: plain
+    controllerLogLevel: info
+    controllerReplicas: 3
+    controllerUID: 2103
+    debugContainer:
+      image:
+        name: cr.l5d.io/linkerd/debug
+        pullPolicy: ""
+        version: stable-2.11.2
+    destinationProxyResources: null
+    destinationResources:
+      cpu:
+        limit: ""
+        request: 100m
+      memory:
+        limit: 250Mi
+        request: 50Mi
+    disableHeartBeat: false
+    enableEndpointSlices: false
+    enableH2Upgrade: true
+    enablePodAntiAffinity: true
+    grafanaUrl: ""
+    heartbeatResources:
+      cpu:
+        limit: ""
+        request: 100m
+      memory:
+        limit: 250Mi
+        request: 50Mi
+    heartbeatSchedule: ""
+    highAvailability: true
+    identity:
+      issuer:
+        clockSkewAllowance: 20s
+        externalCA: false
+        issuanceLifetime: 24h0m0s
+        scheme: linkerd.io/tls
+        tls:
+          crtPEM: |
+            -----BEGIN CERTIFICATE-----
+            MIIBiTCCAS6gAwIBAgIBATAKBggqhkjOPQQDAjAcMRowGAYDVQQDExFpZGVudGl0
+            eS5saW5rZXJkLjAeFw0yMjA1MDkxODQ1MDhaFw0yMzA1MDkxODQ1MjhaMBwxGjAY
+            BgNVBAMTEWlkZW50aXR5LmxpbmtlcmQuMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcD
+            QgAEnUUJFvhis7KBzieRGZm2YVP5+8Aqqfc2krTqjww2wZW3oylzcEhqXwDKfSyA
+            eFR88EY/cfSKg7juWzNZvpccDKNhMF8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdJQQW
+            MBQGCCsGAQUFBwMBBggrBgEFBQcDAjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQW
+            BBSJfDdb6au300ifPZuZoty0n1SGHzAKBggqhkjOPQQDAgNJADBGAiEA8YdzGVgO
+            2G5QKkyR1mVgScupT7MPjuMBd8IGHjaEpgoCIQDNYFu3V3YIIeItFkDChIQ3HHZ5
+            5EsDuIEdcRPczwWSPg==
+            -----END CERTIFICATE-----
+    identityProxyResources: null
+    identityResources:
+      cpu:
+        limit: ""
+        request: 100m
+      memory:
+        limit: 250Mi
+        request: 10Mi
+    identityTrustAnchorsPEM: |
+      -----BEGIN CERTIFICATE-----
+      MIIBiTCCAS6gAwIBAgIBATAKBggqhkjOPQQDAjAcMRowGAYDVQQDExFpZGVudGl0
+      eS5saW5rZXJkLjAeFw0yMjA1MDkxODQ1MDhaFw0yMzA1MDkxODQ1MjhaMBwxGjAY
+      BgNVBAMTEWlkZW50aXR5LmxpbmtlcmQuMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcD
+      QgAEnUUJFvhis7KBzieRGZm2YVP5+8Aqqfc2krTqjww2wZW3oylzcEhqXwDKfSyA
+      eFR88EY/cfSKg7juWzNZvpccDKNhMF8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdJQQW
+      MBQGCCsGAQUFBwMBBggrBgEFBQcDAjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQW
+      BBSJfDdb6au300ifPZuZoty0n1SGHzAKBggqhkjOPQQDAgNJADBGAiEA8YdzGVgO
+      2G5QKkyR1mVgScupT7MPjuMBd8IGHjaEpgoCIQDNYFu3V3YIIeItFkDChIQ3HHZ5
+      5EsDuIEdcRPczwWSPg==
+      -----END CERTIFICATE-----
+    identityTrustDomain: cluster.local
+    imagePullPolicy: IfNotPresent
+    imagePullSecrets: null
+    installNamespace: true
+    linkerdVersion: stable-2.11.2
+    namespace: linkerd
+    nodeSelector:
+      kubernetes.io/os: linux
+    podAnnotations: {}
+    podLabels: {}
+    policyController:
+      defaultAllowPolicy: all-unauthenticated
+      image:
+        name: cr.l5d.io/linkerd/policy-controller
+        pullPolicy: ""
+        version: ""
+      logLevel: linkerd=info,warn
+      resources:
+        cpu:
+          limit: ""
+          request: ""
+        memory:
+          limit: ""
+          request: ""
+    policyValidator:
+      caBundle: ""
+      crtPEM: ""
+      externalSecret: false
+      keyPEM: ""
+      namespaceSelector:
+        matchExpressions:
+        - key: config.linkerd.io/admission-webhooks
+          operator: NotIn
+          values:
+          - disabled
+    profileValidator:
+      caBundle: ""
+      crtPEM: ""
+      externalSecret: false
+      namespaceSelector:
+        matchExpressions:
+        - key: config.linkerd.io/admission-webhooks
+          operator: NotIn
+          values:
+          - disabled
+    prometheusUrl: ""
+    proxy:
+      await: true
+      capabilities: null
+      defaultInboundPolicy: ""
+      disableIdentity: false
+      enableExternalProfiles: false
+      image:
+        name: cr.l5d.io/linkerd/proxy
+        pullPolicy: ""
+        version: stable-2.11.2
+      inboundConnectTimeout: 100ms
+      isGateway: false
+      isIngress: false
+      logFormat: plain
+      logLevel: warn,linkerd=info
+      opaquePorts: 25,587,3306,4444,5432,6379,9300,11211
+      outboundConnectTimeout: 1000ms
+      podInboundPorts: ""
+      ports:
+        admin: 4191
+        control: 4190
+        inbound: 4143
+        outbound: 4140
+      requireIdentityOnInboundPorts: ""
+      resources:
+        cpu:
+          limit: ""
+          request: 100m
+        memory:
+          limit: 250Mi
+          request: 20Mi
+      saMountPath: null
+      uid: 2102
+      waitBeforeExitSeconds: 0
+    proxyContainerName: linkerd-proxy
+    proxyInit:
+      capabilities: null
+      closeWaitTimeoutSecs: 0
+      ignoreInboundPorts: 4567,4568,22,25,443,587,3306,4444,5432,6379,9300,11211,6443,27017,9200
+      ignoreOutboundPorts: 4567,4568,22,25,443,587,3306,4444,5432,6379,9300,11211,6443,27017,9200
+      image:
+        name: cr.l5d.io/linkerd/proxy-init
+        pullPolicy: ""
+        version: v1.5.3
+      logFormat: ""
+      logLevel: ""
+      resources:
+        cpu:
+          limit: 100m
+          request: 10m
+        memory:
+          limit: 50Mi
+          request: 10Mi
+      runAsRoot: true
+      saMountPath: null
+      skipSubnets: ""
+      xtMountPath:
+        mountPath: /run
+        name: linkerd-proxy-init-xtables-lock
+        readOnly: false
+    proxyInjector:
+      caBundle: ""
+      crtPEM: ""
+      externalSecret: false
+      namespaceSelector:
+        matchExpressions:
+        - key: config.linkerd.io/admission-webhooks
+          operator: NotIn
+          values:
+          - disabled
+    proxyInjectorProxyResources: null
+    proxyInjectorResources:
+      cpu:
+        limit: ""
+        request: 100m
+      memory:
+        limit: 250Mi
+        request: 50Mi
+    tolerations: null
+    webhookFailurePolicy: Fail
+kind: ConfigMap
+metadata:
+  annotations:
+    linkerd.io/created-by: linkerd/cli stable-2.11.2
+  labels:
+    linkerd.io/control-plane-component: controller
+    linkerd.io/control-plane-ns: linkerd
+  name: linkerd-config
+  namespace: linkerd
+

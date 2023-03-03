@@ -1,0 +1,19 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: redis-ha
+    chart: redis-ha-4.22.3
+    component: redis-ha-haproxy
+    heritage: Helm
+    release: myrelease
+  name: redis-ha-haproxy
+  namespace: redis-ha
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  verbs:
+  - get
+

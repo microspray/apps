@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- nats-config.natsio.configmap.yaml
+- nats.natsio.service.yaml
+- nats.natsio.servicemonitor.yaml
+- nats.natsio.statefulset.yaml
+- prometheus-k8s.natsio.role.yaml
+- prometheus-k8s.natsio.rolebinding.yaml

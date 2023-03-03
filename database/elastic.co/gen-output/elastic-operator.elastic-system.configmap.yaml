@@ -1,0 +1,17 @@
+apiVersion: v1
+data:
+  eck.yaml: "    log-verbosity: 0\n    metrics-port: 9094\n    container-registry:
+    docker.elastic.co\n    max-concurrent-reconciles: 3\n    ca-cert-validity: 8760h\n
+    \   ca-cert-rotate-before: 24h\n    cert-validity: 8760h\n    cert-rotate-before:
+    24h\n    set-default-security-context: true\n    kube-client-timeout: 60s\n    elasticsearch-client-timeout:
+    180s\n    disable-telemetry: false\n    validate-storage-class: true\n    enable-webhook:
+    true\n    webhook-name: elastic-webhook.k8s.elastic.co\n    operator-namespace:
+    elastic-system\n    namespaces: \n"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/version: 2.6.0
+    control-plane: elastic-operator
+  name: elastic-operator
+  namespace: elastic-system
+

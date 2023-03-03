@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: default-backend
+    app.kubernetes.io/instance: cluster
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.5.1
+    helm.sh/chart: ingress-nginx-4.4.0
+  name: ingress-nginx-defaultbackend
+  namespace: ingress-nginx
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: default-backend
+      app.kubernetes.io/instance: cluster
+      app.kubernetes.io/name: ingress-nginx
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: default-backend
+        app.kubernetes.io/instance: cluster
+        app.kubernetes.io/name: ingress-nginx
+    spec:
+      containers:
+      - image: registry.k8s.io/defaultbackend-amd64:1.5
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: ingress-nginx-default-backend
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 6
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 5
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65534
+      nodeSelector:
+        kubernetes.io/os: linux
+      serviceAccountName: ingress-nginx-backend
+      terminationGracePeriodSeconds: 60
+

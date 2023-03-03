@@ -1,0 +1,16 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  annotations:
+    linkerd.io/created-by: linkerd/cli stable-2.11.2
+  labels:
+    linkerd.io/control-plane-component: destination
+    linkerd.io/control-plane-ns: linkerd
+  name: linkerd-dst
+  namespace: linkerd
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      linkerd.io/control-plane-component: destination
+

@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: queue
+    app.kubernetes.io/name: jetstream-controller
+    app.kubernetes.io/part-of: nats
+    app.kubernetes.io/version: 0.5.0
+  name: jetstream-controller-cluster-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: jetstream-controller-cluster-role
+subjects:
+- kind: ServiceAccount
+  name: jetstream-controller
+  namespace: natsio
+

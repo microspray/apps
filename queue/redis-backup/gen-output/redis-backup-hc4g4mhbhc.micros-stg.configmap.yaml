@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  CLUSTER_NAME: scaleway-b
+  S3_BUCKET: micros-backups
+kind: ConfigMap
+metadata:
+  name: redis-backup-hc4g4mhbhc
+  namespace: micros-stg
+

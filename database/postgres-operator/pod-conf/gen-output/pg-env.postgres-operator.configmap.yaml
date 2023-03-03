@@ -1,0 +1,25 @@
+apiVersion: v1
+data:
+  AWS_REGION: eu-west-1
+  AWS_S3_FORCE_PATH_STYLE: "true"
+  BACKUP_NUM_TO_RETAIN: "30"
+  CLONE_AWS_REGION: eu-west-1
+  CLONE_AWS_S3_FORCE_PATH_STYLE: "true"
+  CLONE_USE_WALG_RESTORE: "true"
+  CLONE_WALG_BACKUP: "false"
+  CLONE_WALG_DISABLE_S3_SSE: "true"
+  LOG_AWS_REGION: eu-west-1
+  LOG_AWS_S3_FORCE_PATH_STYLE: "true"
+  STANDBY_AWS_REGION: eu-west-1
+  STANDBY_AWS_S3_FORCE_PATH_STYLE: "true"
+  STANDBY_USE_WALG_RESTORE: "true"
+  STANDBY_WALG_BACKUP: "false"
+  STANDBY_WALG_DISABLE_S3_SSE: "true"
+  USE_WALG_BACKUP: "true"
+  USE_WALG_RESTORE: "true"
+  WALG_DISABLE_S3_SSE: "true"
+kind: ConfigMap
+metadata:
+  name: pg-env
+  namespace: postgres-operator
+

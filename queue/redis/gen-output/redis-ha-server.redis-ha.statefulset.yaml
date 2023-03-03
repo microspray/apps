@@ -1,0 +1,267 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: redis-ha
+    chart: redis-ha-4.22.3
+    heritage: Helm
+    redis-ha: replica
+    release: myrelease
+  name: redis-ha-server
+  namespace: redis-ha
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 5
+  selector:
+    matchLabels:
+      app: redis-ha
+      release: myrelease
+  serviceName: redis-ha
+  template:
+    metadata:
+      annotations:
+        checksum/init-config: 6c07341429bf36a1f3183eb5565a7021f88e718452e59d29ef9d73b44c6901e2
+      labels:
+        app: redis-ha
+        redis-ha: replica
+        release: myrelease
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: redis-ha
+                redis-ha: replica
+                release: myrelease
+            topologyKey: kubernetes.io/hostname
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - /data/conf/redis.conf
+        command:
+        - redis-server
+        image: redis:7.0.5-alpine3.16
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/sh
+              - /readonly-config/trigger-failover-if-master.sh
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/redis_liveness.sh
+          failureThreshold: 5
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 15
+        name: redis
+        ports:
+        - containerPort: 6379
+          name: redis
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/redis_readiness.sh
+          failureThreshold: 5
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 15
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /readonly-config
+          name: config
+          readOnly: true
+        - mountPath: /data
+          name: data
+        - mountPath: /health
+          name: health
+      - args:
+        - /data/conf/sentinel.conf
+        command:
+        - redis-sentinel
+        image: redis:7.0.5-alpine3.16
+        imagePullPolicy: IfNotPresent
+        lifecycle: {}
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/sentinel_liveness.sh
+          failureThreshold: 5
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 15
+        name: sentinel
+        ports:
+        - containerPort: 26379
+          name: sentinel
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/sentinel_liveness.sh
+          failureThreshold: 5
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          successThreshold: 3
+          timeoutSeconds: 15
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /health
+          name: health
+      - args:
+        - /readonly-config/fix-split-brain.sh
+        command:
+        - sh
+        env:
+        - name: SENTINEL_ID_0
+          value: 249b4d6343e144232bebbb11f77952ddf4857aad
+        - name: SENTINEL_ID_1
+          value: f1af96211b5ff426ea651c113acf19d054e44dba
+        - name: SENTINEL_ID_2
+          value: 516d090118edd6bfcdf76626845453f0c4b95c52
+        - name: SENTINEL_ID_3
+          value: 7a372e7ac2db3788c5edaeec13487905707d3ff4
+        - name: SENTINEL_ID_4
+          value: a295a9de5b7f46293d6813347cdbbb8f1bf500d5
+        image: redis:7.0.5-alpine3.16
+        imagePullPolicy: IfNotPresent
+        name: split-brain-fix
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /readonly-config
+          name: config
+          readOnly: true
+        - mountPath: /data
+          name: data
+      - args: null
+        env:
+        - name: REDIS_ADDR
+          value: redis://localhost:6379
+        image: oliver006/redis_exporter:v1.43.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 9121
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 3
+        name: redis-exporter
+        ports:
+        - containerPort: 9121
+          name: exporter-port
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: 9121
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 3
+        resources: {}
+        volumeMounts: null
+      initContainers:
+      - args:
+        - /readonly-config/init.sh
+        command:
+        - sh
+        env:
+        - name: SENTINEL_ID_0
+          value: 249b4d6343e144232bebbb11f77952ddf4857aad
+        - name: SENTINEL_ID_1
+          value: f1af96211b5ff426ea651c113acf19d054e44dba
+        - name: SENTINEL_ID_2
+          value: 516d090118edd6bfcdf76626845453f0c4b95c52
+        - name: SENTINEL_ID_3
+          value: 7a372e7ac2db3788c5edaeec13487905707d3ff4
+        - name: SENTINEL_ID_4
+          value: a295a9de5b7f46293d6813347cdbbb8f1bf500d5
+        image: redis:7.0.5-alpine3.16
+        imagePullPolicy: IfNotPresent
+        name: config-init
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /readonly-config
+          name: config
+          readOnly: true
+        - mountPath: /data
+          name: data
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      serviceAccountName: redis-ha
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - configMap:
+          name: redis-ha-configmap
+        name: config
+      - configMap:
+          defaultMode: 493
+          name: redis-ha-health-configmap
+        name: health
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      annotations: null
+      labels: {}
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Gi
+      storageClassName: ceph-retain
+

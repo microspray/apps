@@ -1,0 +1,23 @@
+apiVersion: pyrra.dev/v1alpha1
+kind: ServiceLevelObjective
+metadata:
+  labels:
+    pyrra.dev/team: oauth2
+  name: oauth2-http-latency
+  namespace: dex
+spec:
+  alerting:
+    name: OAuth2HTTPLatencyBudgetBurn
+  description: |
+    OAuth2 should handle 90% of all requests in under 1 second.
+  indicator:
+    latency:
+      grouping:
+      - method
+      success:
+        metric: oauth2_proxy_response_duration_seconds_bucket{service="oauth2-proxy",le="1"}
+      total:
+        metric: oauth2_proxy_response_duration_seconds_count{service="oauth2-proxy"}
+  target: "90"
+  window: 2w
+

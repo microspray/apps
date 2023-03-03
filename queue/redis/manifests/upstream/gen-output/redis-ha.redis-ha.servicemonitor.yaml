@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: redis-ha
+    chart: redis-ha-4.22.3
+    heritage: Helm
+    release: myrelease
+  name: redis-ha
+  namespace: redis-ha
+spec:
+  endpoints:
+  - targetPort: 9121
+  jobLabel: redis-ha
+  namespaceSelector:
+    matchNames:
+    - redis-ha
+  selector:
+    matchLabels:
+      app: redis-ha
+      exporter: enabled
+      release: myrelease
+

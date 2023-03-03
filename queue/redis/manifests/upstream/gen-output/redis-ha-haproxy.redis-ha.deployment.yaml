@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis-ha
+    chart: redis-ha-4.22.3
+    heritage: Helm
+    release: myrelease
+  name: redis-ha-haproxy
+  namespace: redis-ha
+spec:
+  replicas: 3
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: redis-ha-haproxy
+      release: myrelease
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: ea536d5e321abb35dc896ac6a7044e64b8b3f96d49b182870208c0f5db63da62
+      labels:
+        app: redis-ha-haproxy
+        release: myrelease
+        revision: "1"
+      name: redis-ha-haproxy
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: redis-ha-haproxy
+                release: myrelease
+                revision: "1"
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - image: haproxy:2.6.4
+        imagePullPolicy: IfNotPresent
+        lifecycle: {}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8888
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        name: haproxy
+        ports:
+        - containerPort: 6379
+          name: redis
+        - containerPort: 9101
+          name: metrics-port
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8888
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /usr/local/etc/haproxy
+          name: data
+        - mountPath: /run/haproxy
+          name: shared-socket
+      initContainers:
+      - args:
+        - /readonly/haproxy_init.sh
+        command:
+        - sh
+        image: haproxy:2.6.4
+        imagePullPolicy: IfNotPresent
+        name: config-init
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /readonly
+          name: config-volume
+          readOnly: true
+        - mountPath: /data
+          name: data
+      nodeSelector: {}
+      securityContext:
+        fsGroup: 99
+        runAsNonRoot: true
+        runAsUser: 99
+      serviceAccountName: redis-ha-haproxy
+      tolerations: null
+      volumes:
+      - configMap:
+          name: redis-ha-configmap
+        name: config-volume
+      - emptyDir: {}
+        name: shared-socket
+      - emptyDir: {}
+        name: data
+

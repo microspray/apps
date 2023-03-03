@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/name: pyrra-kubernetes
+    app.kubernetes.io/part-of: pyrra
+  name: pyrra-kubernetes
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: monitoring
+      app.kubernetes.io/name: pyrra-kubernetes
+      app.kubernetes.io/part-of: pyrra
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: monitoring
+        app.kubernetes.io/name: pyrra-kubernetes
+        app.kubernetes.io/part-of: pyrra
+    spec:
+      containers:
+      - args:
+        - kubernetes
+        image: ghcr.io/pyrra-dev/pyrra:pr-449
+        name: pyrra-kubernetes
+        ports:
+        - containerPort: 8080
+          name: metrics
+        resources:
+          limits:
+            cpu: 200m
+            memory: 250M
+          requests:
+            cpu: 100m
+            memory: 50M
+      serviceAccountName: pyrra-kubernetes
+

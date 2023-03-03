@@ -1,0 +1,6 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- mc-config-97mm486m8h.micros-stg.secret.yaml
+- redis-backup-hc4g4mhbhc.micros-stg.configmap.yaml
+- redis-backup.micros-stg.cronjob.yaml

@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP2
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  name: argocd-server-http-ingress
+  namespace: argocd
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: argocd.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: argocd-server
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - argocd.microspray.io
+    secretName: argocd-certs-secret
+

@@ -1,0 +1,39 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  labels:
+    linkerd.io/control-plane-component: destination
+    linkerd.io/control-plane-ns: linkerd
+  name: linkerd-policy-validator-webhook-config
+webhooks:
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURXRENDQWtDZ0F3SUJBZ0lRQlpWb3h0SmxBYmtTcHA1OVFCVE5WekFOQmdrcWhraUc5dzBCQVFzRkFEQXYKTVMwd0t3WURWUVFERXlSc2FXNXJaWEprTFhCdmJHbGplUzEyWVd4cFpHRjBiM0l1YkdsdWEyVnlaQzV6ZG1NdwpIaGNOTWpJd05UQTVNakUwTVRVMVdoY05Nak13TlRBNU1qRTBNVFUxV2pBdk1TMHdLd1lEVlFRREV5UnNhVzVyClpYSmtMWEJ2YkdsamVTMTJZV3hwWkdGMGIzSXViR2x1YTJWeVpDNXpkbU13Z2dFaU1BMEdDU3FHU0liM0RRRUIKQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUURKK0d5RFF3T01sakgzbTVuWllUZ2JlTnlia3B0UW0rN2w0UGhhYnE5VQpZSjFndG4vcGFZUUFKem4wbW91azFEOHJwUU9XbnZ0U3Q0VExvbUUzNFkwWkEvOFk4cVVoeGQ4L3NZYXlRRXpFCnNDT0N2VTExQ3BqMmZtS3JEVFRyYkVGTVlqZnh3c1ZXOE5CNjZVZWRZeUZ0WUQ0SUV1b2R5aTc3QXAremo4d2kKV2ozUHB6UWRXS1NjSGhrcDk0ejN2UFk3MmRXM1dNNXVBSUxRbzFtaEFUVk80Q0Y3VG84OVVjM3lRRFg1QVRoVwo2ektGc0cybGUxNVkzaWdIb2ovSUdNRE5WZ1FYK3BUdDNCRHRtS1BrZ0hlS1orNVZ5RGFkYkpJczJhdUY3dmkyCkJ3SnBEa2p4Q29VOU1JWnh0MlVWYXhIMkUwdmg5cVE0RHNheE5yelpmQVF6QWdNQkFBR2pjREJ1TUE0R0ExVWQKRHdFQi93UUVBd0lGb0RBZEJnTlZIU1VFRmpBVUJnZ3JCZ0VGQlFjREFRWUlLd1lCQlFVSEF3SXdEQVlEVlIwVApBUUgvQkFJd0FEQXZCZ05WSFJFRUtEQW1naVJzYVc1clpYSmtMWEJ2YkdsamVTMTJZV3hwWkdGMGIzSXViR2x1CmEyVnlaQzV6ZG1Nd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFLcjI0YUhCZXFsTVM2NWsxMUUwK2dEQjU0YTIKUkJ3bnhqQlVzZm1KckhFeE9KeWhsdG1jN1FDTmo3eGhUMDFwUlJ6ZEUwMGR0L01rNG1EdmViOWMwUjJEcG9QYwoxZ3JqTEpFYjdKenF1MUZsTGg3OGdoaW5sZkZ5UDV4ZzQvR1NEaG5sdE5OM3JoTG85c1dIMGhIVmJrdFg4bnZ6ClFGT2pLbEo2NzEyTzFCVHpuTGRTSzhpT3haS0VjNktidTFuU2EySjF4UFJ2YzlqU1JIQ0dmeUt1dCs4bGNzamUKb1N0QjhVMU12eFo0U08yLzZTRU45dkNORnRoeHBWb0RQekpsYlNacGFlaTgrVWRpRGlDUjI3cFNLQWVhUUpYQgpWdkZzYUMvRXlwTllwa0tTWXpXdWp1eUFraTM4UWdpVUlnMmlvMktlSit0UzZMa1Irb1ZQNmtvQTFJVT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==
+    service:
+      name: linkerd-policy-validator
+      namespace: linkerd
+      path: /
+  failurePolicy: Fail
+  name: linkerd-policy-validator.linkerd.io
+  namespaceSelector:
+    matchExpressions:
+    - key: config.linkerd.io/admission-webhooks
+      operator: NotIn
+      values:
+      - disabled
+  rules:
+  - apiGroups:
+    - policy.linkerd.io
+    apiVersions:
+    - v1alpha1
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - serverauthorizations
+    - servers
+  sideEffects: None
+

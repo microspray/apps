@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8s-auth
+  name: k8s-auth
+  namespace: dex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-auth
+  template:
+    metadata:
+      labels:
+        app: k8s-auth
+    spec:
+      containers:
+      - args:
+        - --config
+        - /etc/k8s-auth/config.yaml
+        image: mintel/dex-k8s-authenticator:1.4.0
+        name: k8s-auth
+        ports:
+        - containerPort: 5556
+          name: http
+        volumeMounts:
+        - mountPath: /etc/k8s-auth
+          name: config
+      volumes:
+      - configMap:
+          items:
+          - key: config.yaml
+            path: config.yaml
+          name: k8s-auth-config-7hhb4bkhf9
+        name: config
+
