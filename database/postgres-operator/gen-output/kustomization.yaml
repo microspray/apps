@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- operatorconfigurations.acid.zalan.do..customresourcedefinition.yaml
+- postgres-operator..clusterrole.yaml
+- postgres-operator..clusterrolebinding.yaml
+- postgres-operator.postgres-operator.configmap.yaml
+- postgres-operator.postgres-operator.deployment.yaml
+- postgres-operator.postgres-operator.service.yaml
+- postgres-operator.postgres-operator.serviceaccount.yaml
+- postgres-pod..clusterrole.yaml
+- postgresql-operator-default-configuration.postgres-operator.operatorconfiguration.yaml
