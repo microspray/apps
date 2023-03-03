@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-signin: https://oauth2-proxy.microspray.io/oauth2/start?rd=https%3A%2F%2F$host$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-url: https://oauth2-proxy.microspray.io/oauth2/auth
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  labels:
+    app: harbor
+    app.kubernetes.io/name: harbor
+    chart: harbor
+    heritage: harbor
+    release: harbor
+  name: harbor-portal
+  namespace: harbor
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: img.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: harbor-portal
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - img.microspray.io
+    secretName: harbor-ingress-certs
+

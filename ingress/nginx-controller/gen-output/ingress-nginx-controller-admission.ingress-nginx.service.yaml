@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    co.elastic.logs/fileset.stderr: error
+    co.elastic.logs/fileset.stdout: ingress_controller
+    co.elastic.logs/module: nginx
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: cluster
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.5.1
+    helm.sh/chart: ingress-nginx-4.4.0
+  name: ingress-nginx-controller-admission
+  namespace: ingress-nginx
+spec:
+  ports:
+  - appProtocol: https
+    name: https-webhook
+    port: 443
+    targetPort: webhook
+  selector:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: cluster
+    app.kubernetes.io/name: ingress-nginx
+  type: ClusterIP
+

@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    helm.sh/hook: test-success
+  labels:
+    app: redis-ha
+    chart: redis-ha-4.22.3
+    heritage: Helm
+    release: myrelease
+  name: redis-ha-configmap-test
+  namespace: redis-ha
+spec:
+  containers:
+  - args:
+    - --shell=sh
+    - /readonly-config/init.sh
+    image: koalaman/shellcheck:v0.5.0
+    name: check-init
+    resources: {}
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      runAsNonRoot: true
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
+    volumeMounts:
+    - mountPath: /readonly-config
+      name: config
+      readOnly: true
+  nodeSelector: {}
+  restartPolicy: Never
+  tolerations: null
+  volumes:
+  - configMap:
+      name: redis-ha-configmap
+    name: config
+

@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    k8s-app: hubble-ui
+  name: hubble-ui
+  namespace: kube-network
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: hubble.$CLUSTER_DOMAIN
+    http:
+      paths:
+      - backend:
+          service:
+            name: hubble-ui
+            port:
+              name: http
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - hubble.$CLUSTER_DOMAIN
+    secretName: hubble-ui-certs
+

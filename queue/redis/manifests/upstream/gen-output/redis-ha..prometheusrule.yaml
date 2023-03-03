@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels: {}
+  name: redis-ha
+spec:
+  groups:
+  - interval: 10s
+    name: redis-ha
+    rules:
+    - alert: RedisPodDown
+      annotations:
+        description: Redis pod {{ $labels.pod }} is down
+        summary: Redis pod {{ $labels.pod }} is down
+      expr: |
+        redis_up{job="redis-ha"} == 0
+      for: 5m
+      labels:
+        severity: critical
+

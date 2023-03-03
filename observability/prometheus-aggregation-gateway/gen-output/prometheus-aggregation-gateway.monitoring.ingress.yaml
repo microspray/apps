@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/name: prometheus-aggregation-gateway
+    app.kubernetes.io/part-of: prometheus-aggregation-gateway
+  name: prometheus-aggregation-gateway
+  namespace: monitoring
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: prometheus-aggregation-gateway.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: prometheus-aggregation-gateway
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - prometheus-aggregation-gateway.microspray.io
+    secretName: prometheus-aggregation-gateway-certs
+

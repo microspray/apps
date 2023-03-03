@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- local-path-config.localpv.configmap.yaml
+- local-path-provisioner-bind..clusterrolebinding.yaml
+- local-path-provisioner-role..clusterrole.yaml
+- local-path-provisioner-service-account.localpv.serviceaccount.yaml
+- local-path-provisioner.localpv.deployment.yaml
+- local-retain..storageclass.yaml
+- local..storageclass.yaml

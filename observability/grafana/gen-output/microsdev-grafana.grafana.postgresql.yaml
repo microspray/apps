@@ -1,0 +1,59 @@
+apiVersion: acid.zalan.do/v1
+kind: postgresql
+metadata:
+  annotations:
+    acid.zalan.do/controller: infra
+    linkerd.io/inject: disabled
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/part-of: grafana
+    cluster: microsdev-grafana
+  name: microsdev-grafana
+  namespace: grafana
+spec:
+  additionalVolumes:
+  - mountPath: /opt/empty
+    name: empty
+    targetContainers:
+    - all
+    volumeSource:
+      emptyDir: {}
+  allowedSourceRanges:
+  - 127.0.0.1/32
+  - 10.233.0.0/16
+  - 192.168.1.0/24
+  databases:
+    grafana: grafana
+  enableConnectionPooler: false
+  enableLogicalBackup: true
+  enableMasterLoadBalancer: false
+  enableReplicaConnectionPooler: false
+  enableReplicaLoadBalancer: false
+  enableShmVolume: true
+  numberOfInstances: 1
+  postgresql:
+    parameters:
+      log_statement: all
+      max_connections: "20"
+      shared_buffers: 128MB
+    version: "13"
+  preparedDatabases:
+    grafana:
+      schemas:
+        public: {}
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2000Mi
+    requests:
+      cpu: 500m
+      memory: 1000Mi
+  teamId: microsdev
+  users:
+    grafana:
+    - superuser
+    - createdb
+  volume:
+    size: 50Gi
+    storageClass: ceph
+

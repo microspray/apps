@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/component: queue
+    app.kubernetes.io/name: jetstream
+    app.kubernetes.io/part-of: nats
+    app.kubernetes.io/version: 2.6.1
+  name: nats
+  namespace: natsio
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: queue
+      app.kubernetes.io/name: jetstream
+      app.kubernetes.io/part-of: nats
+      app.kubernetes.io/version: 2.6.1
+  serviceName: nats
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: queue
+        app.kubernetes.io/name: jetstream
+        app.kubernetes.io/part-of: nats
+        app.kubernetes.io/version: 2.6.1
+    spec:
+      containers:
+      - args:
+        - --config=/etc/nats-config/nats.conf
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CLUSTER_ADVERTISE
+          value: $(POD_NAME).nats.$(POD_NAMESPACE).svc
+        image: nats:2.6.1-alpine3.14
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - /nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep 60
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        name: nats
+        ports:
+        - containerPort: 4222
+          hostPort: 4222
+          name: client
+        - containerPort: 7422
+          hostPort: 7422
+          name: leafnodes
+        - containerPort: 6222
+          name: cluster
+        - containerPort: 8222
+          name: monitor
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        resources:
+          requests:
+            cpu: 20m
+            memory: 64Mi
+        volumeMounts:
+        - mountPath: /etc/nats-config
+          name: config-volume
+        - mountPath: /var/run/nats
+          name: pid
+        - mountPath: /data/jetstream
+          name: nats-js
+      - command:
+        - nats-server-config-reloader
+        - -pid
+        - /var/run/nats/nats.pid
+        - -config
+        - /etc/nats-config/nats.conf
+        image: natsio/nats-server-config-reloader:0.6.2
+        imagePullPolicy: IfNotPresent
+        name: reloader
+        resources:
+          requests:
+            cpu: 5m
+            memory: 8Mi
+        volumeMounts:
+        - mountPath: /etc/nats-config
+          name: config-volume
+        - mountPath: /var/run/nats
+          name: pid
+      - args:
+        - --port=7777
+        - -varz
+        - -connz
+        - -gatewayz
+        - -routez
+        - -serverz
+        - -jsz=all
+        - http://localhost:8222
+        image: natsio/prometheus-nats-exporter:0.8.0
+        imagePullPolicy: IfNotPresent
+        name: prometheus-nats-exporter
+        ports:
+        - containerPort: 7777
+          name: metrics
+        resources:
+          requests:
+            cpu: 5m
+            memory: 8Mi
+      shareProcessNamespace: true
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - configMap:
+          name: nats-config
+        name: config-volume
+      - emptyDir: {}
+        name: pid
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        app.kubernetes.io/component: queue
+        app.kubernetes.io/name: jetstream
+        app.kubernetes.io/part-of: nats
+        app.kubernetes.io/version: 2.6.1
+      name: nats-js
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+      volumeMode: Filesystem
+

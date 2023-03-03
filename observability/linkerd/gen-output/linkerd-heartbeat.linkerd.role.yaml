@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    linkerd.io/control-plane-ns: linkerd
+  name: linkerd-heartbeat
+  namespace: linkerd
+rules:
+- apiGroups:
+  - ""
+  resourceNames:
+  - linkerd-config
+  resources:
+  - configmaps
+  verbs:
+  - get
+

@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- oauth2-http-errors.dex.servicelevelobjective.yaml
+- oauth2-http-latency.dex.servicelevelobjective.yaml
+- oauth2-proxy.dex.deployment.yaml
+- oauth2-proxy.dex.ingress.yaml
+- oauth2-proxy.dex.service.yaml
+- oauth2-proxy.dex.servicemonitor.yaml

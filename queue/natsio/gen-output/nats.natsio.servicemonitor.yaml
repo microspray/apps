@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/component: queue
+    app.kubernetes.io/name: jetstream
+    app.kubernetes.io/part-of: nats
+    app.kubernetes.io/version: 2.6.1
+  name: nats
+  namespace: natsio
+spec:
+  endpoints:
+  - interval: 15s
+    path: /metrics
+    port: metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: queue
+      app.kubernetes.io/name: jetstream
+      app.kubernetes.io/part-of: nats
+

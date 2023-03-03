@@ -1,0 +1,36 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: queue
+    app.kubernetes.io/name: jetstream-controller
+    app.kubernetes.io/part-of: nats
+    app.kubernetes.io/version: 0.5.0
+  name: jetstream-controller-cluster-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - update
+  - patch
+- apiGroups:
+  - jetstream.nats.io
+  resources:
+  - streams
+  - streams/status
+  - consumers
+  - consumers/status
+  - streamtemplates
+  - streamtemplates/status
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - patch
+  - update
+  - delete
+

@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: oauth2-proxy
+  namespace: dex
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: oauth2-proxy.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: oauth2-proxy
+            port:
+              number: 4180
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - oauth2-proxy.microspray.io
+    secretName: oauth2-certs
+

@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-signin: https://oauth2-proxy.microspray.io/oauth2/start?rd=https%3A%2F%2F$host$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-url: https://oauth2-proxy.microspray.io/oauth2/auth
+  labels:
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: pyrra
+  name: pyrra
+  namespace: monitoring
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: pyrra.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: pyrra-api
+            port:
+              number: 9099
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - pyrra.microspray.io
+    secretName: pyrra-certs
+

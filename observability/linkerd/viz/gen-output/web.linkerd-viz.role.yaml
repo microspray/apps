@@ -1,0 +1,39 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    component: web
+    linkerd.io/extension: viz
+    namespace: linkerd
+  name: web
+  namespace: linkerd-viz
+rules:
+- apiGroups:
+  - ""
+  resourceNames:
+  - linkerd-config
+  resources:
+  - configmaps
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  - configmaps
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  - pods
+  verbs:
+  - list
+- apiGroups:
+  - apps
+  resources:
+  - replicasets
+  verbs:
+  - list
+

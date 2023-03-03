@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis-ha
+    chart: redis-ha-4.22.3
+    component: redis-ha-haproxy
+    heritage: Helm
+    release: myrelease
+  name: redis-ha-haproxy
+  namespace: redis-ha
+spec:
+  ports:
+  - name: tcp-haproxy
+    port: 6379
+    protocol: TCP
+    targetPort: redis
+  - name: http-exporter-port
+    port: 9101
+    protocol: TCP
+    targetPort: metrics-port
+  selector:
+    app: redis-ha-haproxy
+    release: myrelease
+  type: ClusterIP
+

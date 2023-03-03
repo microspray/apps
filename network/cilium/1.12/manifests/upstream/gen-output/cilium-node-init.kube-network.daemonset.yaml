@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: cilium-node-init
+  name: cilium-node-init
+  namespace: kube-network
+spec:
+  selector:
+    matchLabels:
+      app: cilium-node-init
+  template:
+    metadata:
+      annotations: null
+      labels:
+        app: cilium-node-init
+    spec:
+      containers:
+      - env:
+        - name: STARTUP_SCRIPT
+          value: |
+            #!/bin/bash
+
+            set -o errexit
+            set -o pipefail
+            set -o nounset
+
+            echo "Link information:"
+            ip link
+
+            echo "Routing table:"
+            ip route
+
+            echo "Addressing:"
+            ip -4 a
+            ip -6 a
+            mkdir -p "/tmp/cilium-bootstrap.d"
+            date > "/tmp/cilium-bootstrap.d/cilium-bootstrap-time"
+            echo "Node initialization complete"
+        image: quay.io/cilium/startup-script:d69851597ea019af980891a4628fb36b7880ec26
+        imagePullPolicy: IfNotPresent
+        lifecycle: null
+        name: node-init
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        securityContext:
+          capabilities:
+            add:
+            - SYS_MODULE
+            - NET_ADMIN
+            - SYS_ADMIN
+            - SYS_CHROOT
+            - SYS_PTRACE
+          privileged: true
+          seLinuxOptions:
+            level: s0
+            type: spc_t
+        terminationMessagePolicy: FallbackToLogsOnError
+      hostNetwork: true
+      hostPID: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      priorityClassName: system-node-critical
+      tolerations:
+      - operator: Exists
+  updateStrategy:
+    type: RollingUpdate
+

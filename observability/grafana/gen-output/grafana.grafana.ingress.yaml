@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-signin: https://oauth2-proxy.microspray.io/oauth2/start?rd=https%3A%2F%2F$host$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-url: https://oauth2-proxy.microspray.io/oauth2/auth
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/part-of: grafana
+  name: grafana
+  namespace: grafana
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: grafana.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: grafana
+            port:
+              number: 3000
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - grafana.microspray.io
+    secretName: monitoring-certs
+

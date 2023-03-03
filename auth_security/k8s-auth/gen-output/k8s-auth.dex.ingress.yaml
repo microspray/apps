@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: k8s-auth
+  namespace: dex
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: k8s-auth.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: k8s-auth
+            port:
+              number: 5556
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - k8s-auth.microspray.io
+    secretName: k8s-auth-certs
+

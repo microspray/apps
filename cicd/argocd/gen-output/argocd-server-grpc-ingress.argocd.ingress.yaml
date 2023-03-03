@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: GRPC
+  name: argocd-server-grpc-ingress
+  namespace: argocd
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: grpc.argocd.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: argocd-server
+            port:
+              number: 443
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - grpc.argocd.microspray.io
+    secretName: argocd-secret
+

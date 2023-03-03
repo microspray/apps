@@ -1,0 +1,21 @@
+apiVersion: pyrra.dev/v1alpha1
+kind: ServiceLevelObjective
+metadata:
+  labels:
+    pyrra.dev/team: oauth2
+  name: oauth2-http-errors
+  namespace: dex
+spec:
+  alerting:
+    name: OAuth2HTTPErrorBudgetBurn
+  description: |
+    OAuth2 should successfully handle http requests in 99.95% of all cases.
+  indicator:
+    ratio:
+      errors:
+        metric: oauth2_proxy_requests_total{service="oauth2-proxy",code=~"5.."}
+      total:
+        metric: oauth2_proxy_requests_total{service="oauth2-proxy"}
+  target: "99.95"
+  window: 2w
+

@@ -1,0 +1,76 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: redis-backup
+  namespace: micros-stg
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - args:
+            - mc cp --recursive /backups/ s3/${S3_BUCKET}/${CLUSTER_NAME}/redis/${DB_NAME}
+            command:
+            - sh
+            - -c
+            envFrom:
+            - configMapRef:
+                name: redis-backup-hc4g4mhbhc
+            image: minio/mc:latest
+            imagePullPolicy: Always
+            name: mc
+            volumeMounts:
+            - mountPath: /etc/mc
+              name: mc-config
+              readOnly: false
+            - mountPath: /root/.mc
+              name: mcconf
+            - mountPath: /backups
+              name: backup
+          initContainers:
+          - command:
+            - cp
+            - /etc/mc/config.json
+            - /root/.mc/config.json
+            image: minio/mc:latest
+            imagePullPolicy: Always
+            name: mc-alias
+            resources:
+              limits:
+                cpu: 500m
+                memory: 400Mi
+            volumeMounts:
+            - mountPath: /etc/mc
+              name: mc-config
+              readOnly: false
+            - mountPath: /root/.mc
+              name: mcconf
+          - args:
+            - export REDIS_HOST=redis-ha-haproxy.$REDIS_NAME.svc.cluster.local ; echo
+              $REDIS_HOST ; /usr/local/bin/redis-dump-rdb.sh
+            command:
+            - sh
+            - -c
+            envFrom:
+            - configMapRef:
+                name: redis-backup-hc4g4mhbhc
+            image: img.microspray.io/micros-tools/dbstorage
+            imagePullPolicy: Always
+            name: dump
+            volumeMounts:
+            - mountPath: /backups
+              name: backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: mc-config
+            secret:
+              secretName: mc-config-97mm486m8h
+          - emptyDir: {}
+            name: mcconf
+          - emptyDir: {}
+            name: backup
+  schedule: '*/30 * * * *'
+

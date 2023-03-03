@@ -1,0 +1,17 @@
+apiVersion: v1
+data:
+  eck.yaml: "log-verbosity: 0\nmetrics-port: 0\ncontainer-registry: docker.elastic.co\ncontainer-suffix:
+    \nmax-concurrent-reconciles: 3\nca-cert-validity: 8760h\nca-cert-rotate-before:
+    24h\ncert-validity: 8760h\ncert-rotate-before: 24h\nexposed-node-labels: [topology.kubernetes.io/.*,failure-domain.beta.kubernetes.io/.*]\nset-default-security-context:
+    auto-detect\nkube-client-timeout: 60s\nelasticsearch-client-timeout: 180s\ndisable-telemetry:
+    false\ndistribution-channel: all-in-one\nvalidate-storage-class: true\nenable-webhook:
+    true\nwebhook-name: elastic-webhook.k8s.elastic.co\nenable-leader-election: true\nelasticsearch-observation-interval:
+    10s"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/version: 2.6.0
+    control-plane: elastic-operator
+  name: elastic-operator
+  namespace: elastic-system
+

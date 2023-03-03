@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: harbor
+  name: harbor
+  namespace: harbor
+spec:
+  endpoints:
+  - honorLabels: true
+    port: http-metrics
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchLabels:
+      app: harbor
+

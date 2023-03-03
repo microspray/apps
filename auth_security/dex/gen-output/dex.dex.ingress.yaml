@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    app.kubernetes.io/component: identity-provider
+    app.kubernetes.io/name: dex
+    app.kubernetes.io/part-of: dex
+  name: dex
+  namespace: dex
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: sso.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: dex
+            port:
+              number: 5556
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - sso.microspray.io
+    secretName: dex-certs
+

@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- harbor-ingress.harbor.ingress.yaml
+- harbor-portal.harbor.ingress.yaml
+- harbor-redis.harbor.service.yaml
+- harbor-redis.harbor.statefulset.yaml
+- harbor.harbor.servicemonitor.yaml

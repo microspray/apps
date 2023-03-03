@@ -1,0 +1,27 @@
+apiVersion: pyrra.dev/v1alpha1
+kind: ServiceLevelObjective
+metadata:
+  labels:
+    app.kubernetes.io/component: identity-provider
+    app.kubernetes.io/name: dex
+    app.kubernetes.io/part-of: dex
+    pyrra.dev/team: dex
+  name: dex-http-errors
+  namespace: dex
+spec:
+  alerting:
+    name: DexHTTPErrorBudgetBurn
+  description: |
+    Dex should successfullly handle http requests in 99.95% of all cases.
+  indicator:
+    ratio:
+      errors:
+        metric: http_requests_total{service="dex",code=~"5.."}
+      grouping:
+      - handler
+      - method
+      total:
+        metric: http_requests_total{service="dex"}
+  target: "99.95"
+  window: 2w
+

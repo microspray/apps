@@ -1,0 +1,38 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  labels:
+    linkerd.io/control-plane-component: destination
+    linkerd.io/control-plane-ns: linkerd
+  name: linkerd-sp-validator-webhook-config
+webhooks:
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURUVENDQWpXZ0F3SUJBZ0lSQUpoOWZiOFpaOCtOWUxOQm1HbXl1UUV3RFFZSktvWklodmNOQVFFTEJRQXcKS3pFcE1DY0dBMVVFQXhNZ2JHbHVhMlZ5WkMxemNDMTJZV3hwWkdGMGIzSXViR2x1YTJWeVpDNXpkbU13SGhjTgpNakl3TlRBNU1qRTBNVFUwV2hjTk1qTXdOVEE1TWpFME1UVTBXakFyTVNrd0p3WURWUVFERXlCc2FXNXJaWEprCkxYTndMWFpoYkdsa1lYUnZjaTVzYVc1clpYSmtMbk4yWXpDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVAKQURDQ0FRb0NnZ0VCQUxrT2sxZENZQmRqRzRQVTZPNDFFQUs0VmhEeUJKeWdSMW8rclkvY1V3ajRPdUd6SGkwVQpHNlRpZlRibEVaZGlBL3JoOUtYR3c0THdoRzMvT0Zsc1FQeXRwNEJhYk5oSXozM2JZeTVacDd4L3p4M3N0V2dKCnRreEhmOUhPQUR6T3NWWE80NE54dmN3LzdjckJnMmFmaml4b3BHY3NTdmUweEpmYUpEc1NxeXphOEVzcTZIZEcKWTV5bFBHN0g3R2hvK2JPWWlnT2l0T1pkbkgxdUZ5ckp5QjhkM0ExL2RUamkrbDQ4dlY1TU5jZXZCSVZxNWhaUwp3SVpZTFJ3T3p6NVdnSVJkc2ZCUVRGazlNNVRWdnMwd3ozN0FTejJyWkcrWmhLOC8vKzhYK0RsMmlaY2owT1N2Cnp4SHhtaWxybzRUTTVQVmwwYWpFM29LQXBiQWcrMGFyZUdNQ0F3RUFBYU5zTUdvd0RnWURWUjBQQVFIL0JBUUQKQWdXZ01CMEdBMVVkSlFRV01CUUdDQ3NHQVFVRkJ3TUJCZ2dyQmdFRkJRY0RBakFNQmdOVkhSTUJBZjhFQWpBQQpNQ3NHQTFVZEVRUWtNQ0tDSUd4cGJtdGxjbVF0YzNBdGRtRnNhV1JoZEc5eUxteHBibXRsY21RdWMzWmpNQTBHCkNTcUdTSWIzRFFFQkN3VUFBNElCQVFBa1dJNFBjUlFJbjFVakFLTVhnWkdRd3JXU01VUGQ1QS9BbjJTT0MwYnEKM05IcDV3T1Bxd0pBQXU1QWM4NUlSWTNsSjZUV010ZjRsL2VCRkIrWisxa3hWbklQKzVoUUxJd3pyMTBydlNibAphTlNFOHZPTk1hRTl5eUZkSEhnVkc1YmtZQjBZN3ZOWlN0eWRXeGZEcUNmU2hldG4ybDJwcjB0d1hnbmVWeEV1CldOWVJNR2NDSmRVK3NsVjRPMGpEWmppSWIvK1VjNnREN1JnMzB3OHc2S1hNL0kxU0xCeTAxeFRuUytXRU41K00KVGR0dkZLSWVhT0ZFNmVqTU1tWjEyamVUTmcyNXEwQkxtSWJvSWc4aUE0Skp2ZGRGZWYyMnNjZ2ZzdGR1VjVlUQp6eWQyeitVY084SFJ0OEd3YWN4NGNkVm9EUW9VVFNPZHNXYk15cWZ0cmowbgotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0t
+    service:
+      name: linkerd-sp-validator
+      namespace: linkerd
+      path: /
+  failurePolicy: Fail
+  name: linkerd-sp-validator.linkerd.io
+  namespaceSelector:
+    matchExpressions:
+    - key: config.linkerd.io/admission-webhooks
+      operator: NotIn
+      values:
+      - disabled
+  rules:
+  - apiGroups:
+    - linkerd.io
+    apiVersions:
+    - v1alpha1
+    - v1alpha2
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - serviceprofiles
+  sideEffects: None
+

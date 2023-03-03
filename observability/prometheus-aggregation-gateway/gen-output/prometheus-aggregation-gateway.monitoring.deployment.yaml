@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/name: prometheus-aggregation-gateway
+    app.kubernetes.io/part-of: prometheus-aggregation-gateway
+  name: prometheus-aggregation-gateway
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: gateway
+      app.kubernetes.io/name: prometheus-aggregation-gateway
+      app.kubernetes.io/part-of: prometheus-aggregation-gateway
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: gateway
+        app.kubernetes.io/name: prometheus-aggregation-gateway
+        app.kubernetes.io/part-of: prometheus-aggregation-gateway
+    spec:
+      containers:
+      - image: weaveworks/prom-aggregation-gateway:master-c4415bbe
+        name: prometheus-aggregation-gateway
+        ports:
+        - containerPort: 80
+          name: http
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 500Mi
+
