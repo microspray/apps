@@ -8,7 +8,6 @@ resources:
 # - manifests/defaults/operator/postgresteam.crd.yaml
 - manifests/defaults/operator/operatorconfiguration.crd.yaml
 - manifests/defaults/operator/postgresql-operator-default-configuration.yaml
-- manifests/clusterrole-binding.yaml
 # - manifests/operator-service-account-rbac.yaml
 # - pod-conf
 images:
