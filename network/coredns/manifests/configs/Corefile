@@ -1,0 +1,22 @@
+.:53 {
+    errors
+    health {
+        lameduck 5s
+    }
+    # rewrite name "external-dns.my.domain.com" "internal-service.$namespace.svc.cluster.local"
+    ready
+    kubernetes cluster.local in-addr.arpa ip6.arpa {
+      pods insecure
+      fallthrough in-addr.arpa ip6.arpa
+    }
+    prometheus :9153
+    forward . 8.8.8.8 8.8.4.4 {
+      prefer_udp
+      max_concurrent 1000
+    }
+    cache 30
+    loop
+    reload
+    loadbalance
+    log
+}
