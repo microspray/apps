@@ -21,7 +21,7 @@ spec:
       - env:
         - name: POSTGRES_OPERATOR_CONFIGURATION_OBJECT
           value: postgresql-operator-default-configuration
-        image: registry.opensource.zalan.do/acid/postgres-operator:v1.8.2-26-gacb3ffd7
+        image: registry.opensource.zalan.do/acid/postgres-operator:v1.10.0
         imagePullPolicy: IfNotPresent
         name: postgres-operator
         resources:
@@ -37,4 +37,3 @@ spec:
           runAsNonRoot: true
           runAsUser: 1000
       serviceAccountName: postgres-operator
-

@@ -177,4 +177,3 @@ rules:
   verbs:
   - get
   - create
-
