@@ -5,7 +5,7 @@ namespace: postgres-operator
 resources:
 - manifests/defaults/operator
 # - manifests/defaults/operator/user-facing-clusterroles.yaml
-# - manifests/defaults/operator/postgresteam.crd.yaml
+- manifests/defaults/operator/postgresteam.crd.yaml
 - manifests/defaults/operator/operatorconfiguration.crd.yaml
 - manifests/defaults/operator/postgresql-operator-default-configuration.yaml
 # - manifests/operator-service-account-rbac.yaml
