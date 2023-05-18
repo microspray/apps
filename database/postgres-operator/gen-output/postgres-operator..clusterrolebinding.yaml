@@ -10,4 +10,3 @@ subjects:
 - kind: ServiceAccount
   name: postgres-operator
   namespace: postgres-operator
-
