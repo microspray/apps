@@ -10,9 +10,6 @@ resources:
 - manifests/defaults/operator/postgresql-operator-default-configuration.yaml
 # - manifests/operator-service-account-rbac.yaml
 # - pod-conf
-images:
-  - newTag: v1.8.2-26-gacb3ffd7
-    name: registry.opensource.zalan.do/acid/postgres-operator
 patches:
 - path: manifests/patches/postgres-operator.yaml
   target:
