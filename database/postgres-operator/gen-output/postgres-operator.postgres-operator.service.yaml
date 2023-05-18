@@ -11,4 +11,3 @@ spec:
   selector:
     name: postgres-operator
   type: ClusterIP
-
