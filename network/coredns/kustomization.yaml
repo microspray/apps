@@ -2,8 +2,15 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: kube-system
 resources:
-  - clusterrole.yaml
-  - deployment.yaml
+  - manifests/cr.yaml
+  - manifests/crb.yaml
+  - manifests/deployment.yaml
+  - manifests/svc.yaml
+  - manifests/sa.yaml
+configMapGenerator:
+  - files:
+      - manifests/configs/Corefile
+    name: coredns
 patches:
 - target:
     kind: Deployment
