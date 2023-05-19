@@ -60,4 +60,3 @@ spec:
   - hosts:
     - img.microspray.io
     secretName: harbor-ingress-certs
-

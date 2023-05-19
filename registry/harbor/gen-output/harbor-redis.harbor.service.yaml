@@ -18,4 +18,3 @@ spec:
     component: redis
     release: harbor
   type: ClusterIP
-
