@@ -58,4 +58,3 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: kube-controller-manager
-

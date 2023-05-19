@@ -74,4 +74,3 @@ spec:
             path: provisioning/dashboards/dashboards.yaml
           name: grafana-config
         name: grafana-config
-

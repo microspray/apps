@@ -74,4 +74,3 @@ spec:
         kubernetes.io/os: linux
       serviceAccountName: ingress-nginx-backend
       terminationGracePeriodSeconds: 60
-

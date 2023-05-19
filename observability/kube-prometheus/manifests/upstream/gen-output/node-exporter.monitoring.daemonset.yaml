@@ -115,4 +115,3 @@ spec:
     rollingUpdate:
       maxUnavailable: 10%
     type: RollingUpdate
-

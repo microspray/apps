@@ -62,4 +62,3 @@ spec:
       - configMap:
           name: hubble-ui-envoy
         name: hubble-ui-envoy-yaml
-

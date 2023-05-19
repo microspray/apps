@@ -96,4 +96,3 @@ spec:
       priorityClassName: system-node-critical
       tolerations:
       - operator: Exists
-

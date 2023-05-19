@@ -16,4 +16,3 @@ spec:
   selector:
     linkerd.io/control-plane-component: identity
   type: ClusterIP
-

@@ -14,4 +14,3 @@ subjects:
   kind: ServiceAccount
   name: linkerd-proxy-injector
   namespace: linkerd
-

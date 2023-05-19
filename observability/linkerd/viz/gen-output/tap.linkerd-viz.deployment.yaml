@@ -71,4 +71,3 @@ spec:
       - name: tls
         secret:
           secretName: tap-k8s-tls
-

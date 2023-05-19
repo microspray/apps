@@ -31,4 +31,3 @@ spec:
   nodeSelector: {}
   restartPolicy: Never
   tolerations: null
-

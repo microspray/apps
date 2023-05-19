@@ -18,4 +18,3 @@ spec:
     component: grafana
     linkerd.io/extension: viz
   type: ClusterIP
-

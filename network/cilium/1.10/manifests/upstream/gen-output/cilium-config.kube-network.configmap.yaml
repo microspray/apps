@@ -72,4 +72,3 @@ kind: ConfigMap
 metadata:
   name: cilium-config
   namespace: kube-network
-

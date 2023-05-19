@@ -17,4 +17,3 @@ spec:
     component: metrics-api
     linkerd.io/extension: viz
   type: ClusterIP
-

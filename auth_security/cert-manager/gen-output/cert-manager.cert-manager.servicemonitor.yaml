@@ -25,4 +25,3 @@ spec:
       app.kubernetes.io/component: controller
       app.kubernetes.io/instance: myrelease
       app.kubernetes.io/name: cert-manager
-

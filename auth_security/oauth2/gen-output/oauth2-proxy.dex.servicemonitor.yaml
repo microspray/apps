@@ -12,4 +12,3 @@ spec:
   selector:
     matchLabels:
       k8s-app: oauth2-proxy
-

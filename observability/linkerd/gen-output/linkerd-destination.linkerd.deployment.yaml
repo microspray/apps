@@ -335,4 +335,3 @@ spec:
       - emptyDir:
           medium: Memory
         name: linkerd-identity-end-entity
-

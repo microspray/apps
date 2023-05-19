@@ -20,4 +20,3 @@ spec:
       app: redis-ha
       exporter: enabled
       release: myrelease
-

@@ -75,4 +75,3 @@ spec:
         secret:
           defaultMode: 420
           secretName: elastic-webhook-server-cert
-

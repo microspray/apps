@@ -12,18 +12,18 @@ resources:
 
 images:
   - name: goharbor/chartmuseum-photon
-    newTag: v2.6.2
+    newTag: v2.8.1
   - name: goharbor/harbor-core
-    newTag: v2.6.2
+    newTag: v2.8.1
   - name: goharbor/harbor-jobservice
-    newTag: v2.6.2
+    newTag: v2.8.1
   - name: goharbor/nginx-photon
-    newTag: v2.6.2
+    newTag: v2.8.1
   - name: goharbor/harbor-portal
-    newTag: v2.6.2
+    newTag: v2.8.1
   - name: goharbor/registry-photon
-    newTag: v2.6.2
+    newTag: v2.8.1
   - name: goharbor/harbor-registryctl
-    newTag: v2.6.2
+    newTag: v2.8.1
   - name: goharbor/trivy-adapter-photon
-    newTag: v2.6.2
+    newTag: v2.8.1

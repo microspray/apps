@@ -16,4 +16,3 @@ spec:
     targetPort: 8090
   selector:
     linkerd.io/control-plane-component: destination
-

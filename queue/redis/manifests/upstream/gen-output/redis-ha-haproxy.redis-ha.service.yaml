@@ -23,4 +23,3 @@ spec:
     app: redis-ha-haproxy
     release: myrelease
   type: ClusterIP
-

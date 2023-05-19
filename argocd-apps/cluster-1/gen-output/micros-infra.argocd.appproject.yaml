@@ -34,4 +34,3 @@ spec:
     - p, proj:prod:Dev-Admin, applications, *, micros-infra/*, allow
   sourceRepos:
   - https://github.com/microspray/deployments-infra.git
-

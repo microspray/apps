@@ -55,4 +55,3 @@ spec:
             path: ca.crt
           optional: true
           secretName: argocd-repo-server-tls
-

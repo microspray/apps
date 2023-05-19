@@ -58,4 +58,3 @@ spec:
             storage: 1000Gi
         storageClassName: ceph
   version: 2.38.0
-

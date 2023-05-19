@@ -22,4 +22,3 @@ spec:
       app.kubernetes.io/name: prometheus-operator
       app.kubernetes.io/part-of: kube-prometheus
       app.kubernetes.io/version: 0.58.0
-

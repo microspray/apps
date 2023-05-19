@@ -76,4 +76,3 @@ kind: ConfigMap
 metadata:
   name: hubble-ui-envoy
   namespace: kube-network
-

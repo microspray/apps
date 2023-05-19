@@ -18,4 +18,3 @@ spec:
       app.kubernetes.io/component: queue
       app.kubernetes.io/name: jetstream
       app.kubernetes.io/part-of: nats
-

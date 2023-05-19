@@ -11,4 +11,3 @@ subjects:
 - kind: ServiceAccount
   name: default
   namespace: hnc-system
-

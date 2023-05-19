@@ -92,4 +92,3 @@ spec:
       - configMap:
           name: adapter-config
         name: config
-

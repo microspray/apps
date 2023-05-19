@@ -67,4 +67,3 @@ metadata:
     app.kubernetes.io/version: 0.9.1
   name: adapter-config
   namespace: monitoring
-

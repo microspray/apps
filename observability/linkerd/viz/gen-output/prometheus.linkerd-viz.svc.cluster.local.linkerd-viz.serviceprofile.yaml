@@ -17,4 +17,3 @@ spec:
       method: GET
       pathRegex: /api/v1/series
     name: GET /api/v1/series
-

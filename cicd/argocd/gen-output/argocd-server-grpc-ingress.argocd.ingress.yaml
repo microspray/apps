@@ -22,4 +22,3 @@ spec:
   - hosts:
     - grpc.argocd.microspray.io
     secretName: argocd-secret
-

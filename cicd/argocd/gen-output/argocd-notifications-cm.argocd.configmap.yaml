@@ -3,4 +3,3 @@ kind: ConfigMap
 metadata:
   name: argocd-notifications-cm
   namespace: argocd
-

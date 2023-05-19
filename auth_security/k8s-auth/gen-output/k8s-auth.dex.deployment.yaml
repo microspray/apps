@@ -34,4 +34,3 @@ spec:
             path: config.yaml
           name: k8s-auth-config-7hhb4bkhf9
         name: config
-

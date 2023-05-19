@@ -24,4 +24,3 @@ spec:
       app.kubernetes.io/name: argocd-dex-server
   policyTypes:
   - Ingress
-

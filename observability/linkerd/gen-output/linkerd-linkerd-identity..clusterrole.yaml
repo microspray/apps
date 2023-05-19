@@ -25,4 +25,3 @@ rules:
   verbs:
   - create
   - patch
-

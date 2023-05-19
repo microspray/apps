@@ -30,4 +30,3 @@ spec:
     release: myrelease
     statefulset.kubernetes.io/pod-name: redis-ha-server-4
   type: ClusterIP
-

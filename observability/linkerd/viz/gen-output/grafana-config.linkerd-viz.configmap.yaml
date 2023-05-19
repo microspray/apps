@@ -55,4 +55,3 @@ metadata:
     namespace: linkerd-viz
   name: grafana-config
   namespace: linkerd-viz
-

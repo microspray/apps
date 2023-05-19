@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/name: cilium-operator
+    app.kubernetes.io/part-of: cilium
     io.cilium/app: operator
     name: cilium-operator
   name: cilium-operator
@@ -20,8 +22,10 @@ spec:
   template:
     metadata:
       annotations:
-        cilium.io/cilium-configmap-checksum: e044d8e167dbc80b11853e1da1a7802c928030fd91dc9a69e8aaf94ce664307e
+        cilium.io/cilium-configmap-checksum: 435cde670acf820a75b6062d9c71db279215c5b5c913248d434f92646c758323
       labels:
+        app.kubernetes.io/name: cilium-operator
+        app.kubernetes.io/part-of: cilium
         io.cilium/app: operator
         name: cilium-operator
     spec:
@@ -32,6 +36,7 @@ spec:
               matchLabels:
                 io.cilium/app: operator
             topologyKey: kubernetes.io/hostname
+      automountServiceAccountToken: true
       containers:
       - args:
         - --config-dir=/tmp/cilium/config-map
@@ -55,7 +60,7 @@ spec:
               key: debug
               name: cilium-config
               optional: true
-        image: quay.io/cilium/operator-generic:v1.12.4@sha256:071089ec5bca1f556afb8e541d9972a0dfb09d1e25504ae642ced021ecbedbd1
+        image: quay.io/cilium/operator-generic:v1.13.2@sha256:a1982c0a22297aaac3563e428c330e17668305a41865a842dec53d241c5490ab
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -91,4 +96,3 @@ spec:
       - configMap:
           name: cilium-config
         name: cilium-config-path
-

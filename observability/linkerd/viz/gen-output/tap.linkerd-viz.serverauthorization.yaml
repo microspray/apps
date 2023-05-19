@@ -13,4 +13,3 @@ spec:
     unauthenticated: true
   server:
     name: tap-api
-

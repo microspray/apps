@@ -16,4 +16,3 @@ subjects:
 - kind: ServiceAccount
   name: prometheus-adapter
   namespace: monitoring
-

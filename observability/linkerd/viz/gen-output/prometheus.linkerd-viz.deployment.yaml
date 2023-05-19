@@ -76,4 +76,3 @@ spec:
       - configMap:
           name: prometheus-config
         name: prometheus-config
-

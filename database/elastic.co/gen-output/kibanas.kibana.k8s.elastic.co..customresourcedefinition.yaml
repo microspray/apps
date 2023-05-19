@@ -1332,4 +1332,3 @@ spec:
         type: object
     served: false
     storage: false
-

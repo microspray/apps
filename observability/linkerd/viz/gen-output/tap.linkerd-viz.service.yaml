@@ -21,4 +21,3 @@ spec:
     component: tap
     linkerd.io/extension: viz
   type: ClusterIP
-

@@ -29,4 +29,3 @@ spec:
   - hosts:
     - linkerd.microspray.io
     secretName: linkerd-certs
-

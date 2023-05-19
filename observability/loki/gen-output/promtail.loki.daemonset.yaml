@@ -68,4 +68,3 @@ spec:
         name: varlibdockercontainers
   updateStrategy:
     type: RollingUpdate
-
