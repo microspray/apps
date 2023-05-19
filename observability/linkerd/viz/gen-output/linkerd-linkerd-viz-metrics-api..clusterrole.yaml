@@ -64,4 +64,3 @@ rules:
   verbs:
   - list
   - get
-

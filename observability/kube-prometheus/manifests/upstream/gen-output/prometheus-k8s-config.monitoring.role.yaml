@@ -16,4 +16,3 @@ rules:
   - configmaps
   verbs:
   - get
-

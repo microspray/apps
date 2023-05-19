@@ -15,4 +15,3 @@ spec:
   selector:
     k8s-app: cilium
   type: ClusterIP
-

@@ -38,4 +38,3 @@ rules:
   - secrets
   verbs:
   - get
-

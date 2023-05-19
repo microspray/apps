@@ -67,4 +67,3 @@ spec:
       - operator: Exists
   updateStrategy:
     type: RollingUpdate
-

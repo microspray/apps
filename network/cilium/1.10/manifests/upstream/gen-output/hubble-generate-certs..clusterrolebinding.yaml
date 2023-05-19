@@ -10,4 +10,3 @@ subjects:
 - kind: ServiceAccount
   name: hubble-generate-certs
   namespace: kube-network
-

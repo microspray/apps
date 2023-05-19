@@ -214,4 +214,3 @@ metadata:
     linkerd.io/control-plane-ns: linkerd
   name: linkerd-config
   namespace: linkerd
-

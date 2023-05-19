@@ -17,4 +17,3 @@ spec:
     io.cilium/app: operator
     name: cilium-operator
   type: ClusterIP
-

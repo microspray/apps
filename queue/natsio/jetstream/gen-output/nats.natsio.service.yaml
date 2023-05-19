@@ -24,4 +24,3 @@ spec:
   selector:
     app.kubernetes.io/name: jetstream
     app.kubernetes.io/version: 2.6.1
-

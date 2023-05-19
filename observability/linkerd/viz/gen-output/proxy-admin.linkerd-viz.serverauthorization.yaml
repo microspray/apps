@@ -12,4 +12,3 @@ spec:
     unauthenticated: true
   server:
     name: proxy-admin
-

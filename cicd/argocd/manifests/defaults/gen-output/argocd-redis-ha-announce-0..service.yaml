@@ -23,4 +23,3 @@ spec:
     app.kubernetes.io/name: argocd-redis-ha
     statefulset.kubernetes.io/pod-name: argocd-redis-ha-server-0
   type: ClusterIP
-

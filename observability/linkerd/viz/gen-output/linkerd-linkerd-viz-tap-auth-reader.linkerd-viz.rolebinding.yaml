@@ -15,4 +15,3 @@ subjects:
 - kind: ServiceAccount
   name: tap
   namespace: linkerd-viz
-

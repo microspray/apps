@@ -27,4 +27,3 @@ spec:
   - hosts:
     - pyrra.microspray.io
     secretName: pyrra-certs
-

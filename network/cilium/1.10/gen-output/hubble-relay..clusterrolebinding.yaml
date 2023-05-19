@@ -10,4 +10,3 @@ subjects:
 - kind: ServiceAccount
   name: hubble-relay
   namespace: kube-network
-

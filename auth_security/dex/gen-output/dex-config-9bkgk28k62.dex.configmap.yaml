@@ -111,4 +111,3 @@ metadata:
     app.kubernetes.io/part-of: dex
   name: dex-config-9bkgk28k62
   namespace: dex
-

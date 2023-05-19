@@ -20,4 +20,3 @@ rules:
   - signers
   verbs:
   - approve
-

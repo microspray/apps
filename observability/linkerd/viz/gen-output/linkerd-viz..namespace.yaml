@@ -7,4 +7,3 @@ metadata:
   labels:
     linkerd.io/extension: viz
   name: linkerd-viz
-

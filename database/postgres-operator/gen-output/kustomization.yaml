@@ -10,3 +10,4 @@ resources:
 - postgres-operator.postgres-operator.serviceaccount.yaml
 - postgres-pod..clusterrole.yaml
 - postgresql-operator-default-configuration.postgres-operator.operatorconfiguration.yaml
+- postgresteams.acid.zalan.do..customresourcedefinition.yaml

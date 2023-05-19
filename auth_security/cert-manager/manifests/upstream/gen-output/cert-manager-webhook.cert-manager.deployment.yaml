@@ -85,4 +85,3 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       serviceAccountName: cert-manager-webhook
-

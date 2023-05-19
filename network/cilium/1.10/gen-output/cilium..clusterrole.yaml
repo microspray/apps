@@ -90,4 +90,3 @@ rules:
   - ciliumegressnatpolicies
   verbs:
   - '*'
-

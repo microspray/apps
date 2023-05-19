@@ -24,4 +24,3 @@ spec:
         metric: http_requests_total{service="dex"}
   target: "99.95"
   window: 2w
-

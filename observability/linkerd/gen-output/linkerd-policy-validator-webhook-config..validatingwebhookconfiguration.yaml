@@ -36,4 +36,3 @@ webhooks:
     - serverauthorizations
     - servers
   sideEffects: None
-

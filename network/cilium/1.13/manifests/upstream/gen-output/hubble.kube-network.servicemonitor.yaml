@@ -1,7 +1,8 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  labels: null
+  labels:
+    app.kubernetes.io/part-of: cilium
   name: hubble
   namespace: kube-network
 spec:
@@ -10,10 +11,14 @@ spec:
     interval: 10s
     path: /metrics
     port: hubble-metrics
+    relabelings:
+    - replacement: ${1}
+      sourceLabels:
+      - __meta_kubernetes_pod_node_name
+      targetLabel: node
   namespaceSelector:
     matchNames:
     - kube-network
   selector:
     matchLabels:
       k8s-app: hubble
-

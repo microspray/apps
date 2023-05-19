@@ -22,4 +22,3 @@ kind: ConfigMap
 metadata:
   name: pg-env
   namespace: postgres-operator
-

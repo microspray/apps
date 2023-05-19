@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/name: hubble-relay
+    app.kubernetes.io/part-of: cilium
     k8s-app: hubble-relay
   name: hubble-relay
   namespace: kube-network
@@ -19,6 +21,8 @@ spec:
       annotations:
         cilium.io/hubble-relay-configmap-checksum: 1356fe4f89051bf8e0069538e7dfc3a5a3072d035b153e2c18e48b04505e5402
       labels:
+        app.kubernetes.io/name: hubble-relay
+        app.kubernetes.io/part-of: cilium
         k8s-app: hubble-relay
     spec:
       affinity:
@@ -34,7 +38,7 @@ spec:
         - serve
         command:
         - hubble-relay
-        image: quay.io/cilium/hubble-relay:v1.12.4@sha256:dc5b396e94f986f83ccef89f13a91c29df482d4af491ff3bd4d40c05873d351a
+        image: quay.io/cilium/hubble-relay:v1.13.2@sha256:51b772cab0724511583c3da3286439791dc67d7c35077fa30eaba3b5d555f8f4
         imagePullPolicy: IfNotPresent
         livenessProbe:
           tcpSocket:
@@ -84,4 +88,3 @@ spec:
               - key: tls.key
                 path: client.key
               name: hubble-relay-client-certs
-

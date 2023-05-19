@@ -1,6 +1,8 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/part-of: cilium
   name: hubble-ui
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -10,4 +12,3 @@ subjects:
 - kind: ServiceAccount
   name: hubble-ui
   namespace: kube-network
-

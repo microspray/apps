@@ -3,6 +3,8 @@ kind: DaemonSet
 metadata:
   labels:
     app: cilium-node-init
+    app.kubernetes.io/name: cilium-node-init
+    app.kubernetes.io/part-of: cilium
   name: cilium-node-init
   namespace: kube-network
 spec:
@@ -14,6 +16,8 @@ spec:
       annotations: null
       labels:
         app: cilium-node-init
+        app.kubernetes.io/name: cilium-node-init
+        app.kubernetes.io/part-of: cilium
     spec:
       containers:
       - env:
@@ -67,4 +71,3 @@ spec:
       - operator: Exists
   updateStrategy:
     type: RollingUpdate
-

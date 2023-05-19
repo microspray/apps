@@ -36,4 +36,3 @@ rules:
   verbs:
   - create
   - list
-

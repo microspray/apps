@@ -22,4 +22,3 @@ spec:
   - hosts:
     - k8s-auth.microspray.io
     secretName: k8s-auth-certs
-

@@ -24,4 +24,3 @@ spec:
   - hosts:
     - argocd.microspray.io
     secretName: argocd-certs-secret
-

@@ -45,4 +45,3 @@ metadata:
     release: myrelease
   name: redis-ha-health-configmap
   namespace: redis-ha
-

@@ -13,4 +13,3 @@ spec:
       linkerd.io/extension: viz
   port: linkerd-admin
   proxyProtocol: HTTP/1
-

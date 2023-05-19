@@ -13,4 +13,3 @@ spec:
   selector:
     matchLabels:
       linkerd.io/control-plane-component: destination
-

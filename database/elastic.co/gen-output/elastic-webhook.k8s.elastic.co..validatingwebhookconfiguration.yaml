@@ -271,4 +271,3 @@ webhooks:
     resources:
     - stackconfigpolicies
   sideEffects: None
-

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    application: postgres-operator
+  name: postgres-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: postgres-operator
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: postgres-operator
+    spec:
+      containers:
+      - env:
+        - name: CONFIG_MAP_NAME
+          value: postgres-operator
+        image: registry.opensource.zalan.do/acid/postgres-operator:v1.10.0
+        imagePullPolicy: IfNotPresent
+        name: postgres-operator
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+          requests:
+            cpu: 100m
+            memory: 250Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+      serviceAccountName: postgres-operator

@@ -17,4 +17,3 @@ metadata:
     app.kubernetes.io/part-of: argocd
   name: argocd-ssh-known-hosts-cm
   namespace: argocd
-

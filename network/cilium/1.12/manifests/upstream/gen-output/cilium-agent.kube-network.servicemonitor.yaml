@@ -18,4 +18,3 @@ spec:
       k8s-app: cilium
   targetLabels:
   - k8s-app
-
