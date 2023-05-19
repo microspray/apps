@@ -71,6 +71,6 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: 20Gi
+          storage: 2Gi
       storageClassName: ceph
       volumeMode: Filesystem
