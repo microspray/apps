@@ -17,4 +17,3 @@ spec:
     targetPort: metrics
   selector:
     k8s-app: oauth2-proxy
-

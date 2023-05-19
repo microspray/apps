@@ -25,4 +25,3 @@ metadata:
     app.kubernetes.io/version: 9.1.0
   name: grafana-dashboards
   namespace: monitoring
-

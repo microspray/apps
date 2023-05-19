@@ -13,4 +13,3 @@ spec:
     targetPort: 10257
   selector:
     component: kube-controller-manager
-

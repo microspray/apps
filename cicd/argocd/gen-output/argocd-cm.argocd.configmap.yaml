@@ -91,4 +91,3 @@ metadata:
     app.kubernetes.io/part-of: argocd
   name: argocd-cm
   namespace: argocd
-

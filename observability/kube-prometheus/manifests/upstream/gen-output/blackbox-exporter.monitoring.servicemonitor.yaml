@@ -22,4 +22,3 @@ spec:
       app.kubernetes.io/component: exporter
       app.kubernetes.io/name: blackbox-exporter
       app.kubernetes.io/part-of: kube-prometheus
-

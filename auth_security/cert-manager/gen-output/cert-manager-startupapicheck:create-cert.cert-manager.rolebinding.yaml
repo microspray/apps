@@ -23,4 +23,3 @@ subjects:
 - kind: ServiceAccount
   name: cert-manager-startupapicheck
   namespace: cert-manager
-

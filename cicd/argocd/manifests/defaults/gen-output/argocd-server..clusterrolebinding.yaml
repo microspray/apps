@@ -14,4 +14,3 @@ subjects:
 - kind: ServiceAccount
   name: argocd-server
   namespace: argocd
-

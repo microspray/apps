@@ -34,4 +34,3 @@ webhooks:
     - pods
     - services
   sideEffects: None
-

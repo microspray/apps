@@ -18,4 +18,3 @@ spec:
     targetPort: metrics
   selector:
     app.kubernetes.io/name: argocd-applicationset-controller
-

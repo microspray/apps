@@ -28,4 +28,3 @@ spec:
     app: redis-ha
     release: myrelease
   type: ClusterIP
-

@@ -16,4 +16,3 @@ spec:
     targetPort: 8080
   selector:
     linkerd.io/control-plane-component: identity
-

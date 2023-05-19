@@ -27,4 +27,3 @@ spec:
   - hosts:
     - grafana.microspray.io
     secretName: monitoring-certs
-

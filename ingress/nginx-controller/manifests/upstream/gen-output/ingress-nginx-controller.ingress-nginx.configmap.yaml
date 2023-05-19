@@ -13,4 +13,3 @@ metadata:
     helm.sh/chart: ingress-nginx-4.4.0
   name: ingress-nginx-controller
   namespace: ingress-nginx
-

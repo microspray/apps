@@ -33,4 +33,3 @@ spec:
       method: POST
       pathRegex: /api/v1/Edges
     name: POST /api/v1/Edges
-

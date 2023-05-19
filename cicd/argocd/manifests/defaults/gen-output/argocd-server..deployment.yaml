@@ -296,4 +296,3 @@ spec:
             path: ca.crt
           optional: true
           secretName: argocd-dex-server-tls
-

@@ -261,4 +261,3 @@ spec:
         name: var-files
       - emptyDir: {}
         name: plugins
-

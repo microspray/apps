@@ -18,4 +18,3 @@ subjects:
 - kind: ServiceAccount
   name: cert-manager-cainjector
   namespace: cert-manager
-

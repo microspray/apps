@@ -90,4 +90,3 @@ metadata:
     app.kubernetes.io/part-of: grafana
   name: grafana-config-b242c8hh99
   namespace: grafana
-

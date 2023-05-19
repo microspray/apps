@@ -23,4 +23,3 @@ spec:
     app.kubernetes.io/instance: cluster
     app.kubernetes.io/name: ingress-nginx
   type: ClusterIP
-

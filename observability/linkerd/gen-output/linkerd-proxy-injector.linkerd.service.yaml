@@ -17,4 +17,3 @@ spec:
   selector:
     linkerd.io/control-plane-component: proxy-injector
   type: ClusterIP
-

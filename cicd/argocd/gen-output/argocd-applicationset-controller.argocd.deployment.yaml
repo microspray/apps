@@ -68,4 +68,3 @@ spec:
         name: gpg-keyring
       - emptyDir: {}
         name: tmp
-

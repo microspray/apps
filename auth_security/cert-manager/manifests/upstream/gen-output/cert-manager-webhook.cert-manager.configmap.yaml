@@ -9,4 +9,3 @@ metadata:
     app.kubernetes.io/name: webhook
   name: cert-manager-webhook
   namespace: cert-manager
-

@@ -50,4 +50,3 @@ spec:
           serviceAccountName: linkerd-heartbeat
   schedule: 51 21 * * *
   successfulJobsHistoryLimit: 0
-

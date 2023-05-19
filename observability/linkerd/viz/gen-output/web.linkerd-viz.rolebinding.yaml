@@ -15,4 +15,3 @@ subjects:
 - kind: ServiceAccount
   name: web
   namespace: linkerd-viz
-

@@ -103,4 +103,3 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
       serviceAccountName: kube-state-metrics
-

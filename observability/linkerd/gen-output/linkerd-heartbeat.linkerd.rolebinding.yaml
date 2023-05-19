@@ -13,4 +13,3 @@ subjects:
 - kind: ServiceAccount
   name: linkerd-heartbeat
   namespace: linkerd
-

@@ -142,4 +142,3 @@ metadata:
     namespace: linkerd-viz
   name: prometheus-config
   namespace: linkerd-viz
-

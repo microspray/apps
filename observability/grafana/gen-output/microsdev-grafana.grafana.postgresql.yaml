@@ -56,4 +56,3 @@ spec:
   volume:
     size: 50Gi
     storageClass: ceph
-

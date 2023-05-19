@@ -24,4 +24,3 @@ spec:
   - hosts:
     - pgadmin.microspray.io
     secretName: microspray.io-certs
-

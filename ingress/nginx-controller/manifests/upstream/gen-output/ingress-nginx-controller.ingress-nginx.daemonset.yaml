@@ -118,4 +118,3 @@ spec:
       - name: webhook-cert
         secret:
           secretName: ingress-nginx-admission
-

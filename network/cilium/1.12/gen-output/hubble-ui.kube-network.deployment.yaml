@@ -60,4 +60,3 @@ spec:
         name: hubble-ui-nginx-conf
       - emptyDir: {}
         name: tmp-dir
-

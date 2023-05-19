@@ -20,4 +20,3 @@ spec:
         metric: oauth2_proxy_response_duration_seconds_count{service="oauth2-proxy"}
   target: "90"
   window: 2w
-

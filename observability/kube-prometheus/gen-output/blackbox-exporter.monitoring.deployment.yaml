@@ -113,4 +113,3 @@ spec:
       - configMap:
           name: blackbox-exporter-configuration
         name: config
-

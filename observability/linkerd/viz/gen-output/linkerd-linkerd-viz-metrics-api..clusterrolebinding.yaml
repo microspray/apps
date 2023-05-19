@@ -13,4 +13,3 @@ subjects:
 - kind: ServiceAccount
   name: metrics-api
   namespace: linkerd-viz
-

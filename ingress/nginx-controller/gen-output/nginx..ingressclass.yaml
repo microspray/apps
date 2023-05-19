@@ -17,4 +17,3 @@ metadata:
   name: nginx
 spec:
   controller: k8s.io/ingress-nginx
-

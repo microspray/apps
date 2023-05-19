@@ -14,4 +14,3 @@ spec:
     targetPort: 4244
   selector:
     k8s-app: cilium
-

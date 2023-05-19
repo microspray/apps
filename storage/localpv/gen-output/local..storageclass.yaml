@@ -5,4 +5,3 @@ metadata:
 provisioner: rancher.io/local-path
 reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
-

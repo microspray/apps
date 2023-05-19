@@ -58,4 +58,3 @@ kind: ConfigMap
 metadata:
   name: local-path-config
   namespace: localpv
-
