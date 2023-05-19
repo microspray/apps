@@ -27,3 +27,5 @@ images:
     newTag: v2.8.1
   - name: goharbor/trivy-adapter-photon
     newTag: v2.8.1
+  - name: goharbor/redis-photon
+    newTag: v2.8.1
