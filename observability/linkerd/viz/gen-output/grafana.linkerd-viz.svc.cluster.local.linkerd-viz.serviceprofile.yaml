@@ -49,4 +49,3 @@ spec:
       method: GET
       pathRegex: /public/img/.*
     name: GET /public/img/{img}
-

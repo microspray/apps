@@ -18,4 +18,3 @@ spec:
     component: prometheus
     linkerd.io/extension: viz
   type: ClusterIP
-

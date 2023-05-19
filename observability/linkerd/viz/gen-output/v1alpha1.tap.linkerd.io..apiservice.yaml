@@ -14,4 +14,3 @@ spec:
     namespace: linkerd-viz
   version: v1alpha1
   versionPriority: 100
-

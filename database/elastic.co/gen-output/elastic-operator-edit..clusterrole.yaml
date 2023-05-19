@@ -98,4 +98,3 @@ rules:
   - deletecollection
   - patch
   - update
-

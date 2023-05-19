@@ -44,4 +44,3 @@ spec:
         - containerPort: 4190
           name: metrics
           protocol: TCP
-

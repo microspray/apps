@@ -18,4 +18,3 @@ spec:
         metric: oauth2_proxy_requests_total{service="oauth2-proxy"}
   target: "99.95"
   window: 2w
-

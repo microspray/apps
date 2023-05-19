@@ -95,4 +95,3 @@ spec:
         name: shared-socket
       - emptyDir: {}
         name: data
-

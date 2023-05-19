@@ -41,4 +41,3 @@ spec:
   policyTypes:
   - Ingress
   - Egress
-

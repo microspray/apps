@@ -9,4 +9,3 @@ kind: ConfigMap
 metadata:
   name: hubble-relay-config
   namespace: kube-network
-

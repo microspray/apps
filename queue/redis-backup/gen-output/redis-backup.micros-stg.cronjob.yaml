@@ -73,4 +73,3 @@ spec:
           - emptyDir: {}
             name: backup
   schedule: '*/30 * * * *'
-

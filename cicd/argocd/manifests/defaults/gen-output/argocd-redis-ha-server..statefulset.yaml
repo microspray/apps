@@ -201,4 +201,3 @@ spec:
         name: data
   updateStrategy:
     type: RollingUpdate
-

@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/name: hubble-ui
+    app.kubernetes.io/part-of: cilium
     k8s-app: hubble-ui
   name: hubble-ui
   namespace: kube-network
@@ -10,15 +12,22 @@ spec:
   selector:
     matchLabels:
       k8s-app: hubble-ui
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       annotations:
-        cilium.io/hubble-ui-nginx-configmap-checksum: b175746d53577d278ce3e74c3c7310fd94e1c11c187df330efa2546bd900ad4b
+        cilium.io/hubble-ui-nginx-configmap-checksum: db58895f8bfc7a9858091698dbb61e43d5fd0160963d17c1eeedf3fd326a993d
       labels:
+        app.kubernetes.io/name: hubble-ui
+        app.kubernetes.io/part-of: cilium
         k8s-app: hubble-ui
     spec:
+      automountServiceAccountToken: true
       containers:
-      - image: quay.io/cilium/hubble-ui:v0.9.2@sha256:d3596efc94a41c6b772b9afe6fe47c17417658956e04c3e2a28d293f2670663e
+      - image: quay.io/cilium/hubble-ui:v0.11.0@sha256:bcb369c47cada2d4257d63d3749f7f87c91dde32e010b223597306de95d1ecc8
         imagePullPolicy: IfNotPresent
         name: frontend
         ports:
@@ -36,7 +45,7 @@ spec:
           value: "8090"
         - name: FLOWS_API_ADDR
           value: hubble-relay:80
-        image: quay.io/cilium/hubble-ui-backend:v0.9.2@sha256:a3ac4d5b87889c9f7cc6323e86d3126b0d382933bd64f44382a92778b0cde5d7
+        image: quay.io/cilium/hubble-ui-backend:v0.11.0@sha256:14c04d11f78da5c363f88592abae8d2ecee3cbe009f443ef11df6ac5f692d839
         imagePullPolicy: IfNotPresent
         name: backend
         ports:
@@ -60,4 +69,3 @@ spec:
         name: hubble-ui-nginx-conf
       - emptyDir: {}
         name: tmp-dir
-

@@ -13,4 +13,3 @@ spec:
     targetPort: 9001
   selector:
     app.kubernetes.io/name: argocd-notifications-controller
-

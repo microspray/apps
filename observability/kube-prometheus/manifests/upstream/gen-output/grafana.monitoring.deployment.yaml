@@ -240,4 +240,3 @@ spec:
       - name: grafana-config
         secret:
           secretName: grafana-config
-

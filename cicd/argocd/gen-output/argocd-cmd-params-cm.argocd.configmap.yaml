@@ -6,4 +6,3 @@ metadata:
     app.kubernetes.io/part-of: argocd
   name: argocd-cmd-params-cm
   namespace: argocd
-

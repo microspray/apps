@@ -13,4 +13,3 @@ rules:
   - endpoints
   verbs:
   - get
-

@@ -23,4 +23,3 @@ metadata:
     app.kubernetes.io/part-of: grafana
   name: grafana-dashboards-8tftdd46d5
   namespace: grafana
-

@@ -84,4 +84,3 @@ spec:
               - key: tls.key
                 path: client.key
               name: hubble-relay-client-certs
-

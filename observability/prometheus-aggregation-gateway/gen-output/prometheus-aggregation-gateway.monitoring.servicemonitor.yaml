@@ -14,4 +14,3 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: prometheus-aggregation-gateway
-

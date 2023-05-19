@@ -5,4 +5,3 @@ metadata:
     app.kubernetes.io/component: logging
     app.kubernetes.io/part-of: loki
   name: loki
-

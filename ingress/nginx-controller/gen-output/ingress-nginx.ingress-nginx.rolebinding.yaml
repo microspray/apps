@@ -23,4 +23,3 @@ subjects:
 - kind: ServiceAccount
   name: ingress-nginx
   namespace: ingress-nginx
-

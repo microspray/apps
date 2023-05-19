@@ -15,4 +15,3 @@ spec:
       linkerd.io/extension: viz
   port: apiserver
   proxyProtocol: TLS
-

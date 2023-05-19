@@ -1,7 +1,9 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  labels: null
+  labels:
+    app.kubernetes.io/name: cilium-operator
+    app.kubernetes.io/part-of: cilium
   name: cilium-operator
   namespace: kube-network
 spec:
@@ -19,4 +21,3 @@ spec:
       name: cilium-operator
   targetLabels:
   - io.cilium/app
-

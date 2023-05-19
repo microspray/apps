@@ -20,4 +20,3 @@ spec:
       app: redis-ha
       component: redis-ha-haproxy
       release: myrelease
-

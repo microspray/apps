@@ -15,4 +15,3 @@ spec:
     app.kubernetes.io/component: gateway
     app.kubernetes.io/name: prometheus-aggregation-gateway
     app.kubernetes.io/part-of: prometheus-aggregation-gateway
-

@@ -63,4 +63,3 @@ spec:
       - name: tls
         secret:
           secretName: tap-injector-k8s-tls
-

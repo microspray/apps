@@ -254,4 +254,3 @@ spec:
       - configMap:
           name: grafana-dashboard-workload-total
         name: grafana-dashboard-workload-total
-

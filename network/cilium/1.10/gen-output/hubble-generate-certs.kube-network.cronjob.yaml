@@ -42,4 +42,3 @@ spec:
           serviceAccountName: hubble-generate-certs
       ttlSecondsAfterFinished: 1800
   schedule: 0 0 1 */4 *
-

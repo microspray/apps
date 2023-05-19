@@ -16,4 +16,3 @@ spec:
       app.kubernetes.io/component: identity-provider
       app.kubernetes.io/name: dex
       app.kubernetes.io/part-of: dex
-

@@ -23,4 +23,3 @@ spec:
     targetPort: 5558
   selector:
     app.kubernetes.io/name: argocd-dex-server
-

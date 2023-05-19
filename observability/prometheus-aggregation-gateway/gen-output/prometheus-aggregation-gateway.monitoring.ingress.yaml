@@ -26,4 +26,3 @@ spec:
   - hosts:
     - prometheus-aggregation-gateway.microspray.io
     secretName: prometheus-aggregation-gateway-certs
-

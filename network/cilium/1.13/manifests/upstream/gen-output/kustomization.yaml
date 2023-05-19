@@ -4,6 +4,8 @@ resources:
 - cilium-agent.kube-network.service.yaml
 - cilium-agent.kube-network.servicemonitor.yaml
 - cilium-ca.kube-network.secret.yaml
+- cilium-config-agent.kube-network.role.yaml
+- cilium-config-agent.kube-network.rolebinding.yaml
 - cilium-config.kube-network.configmap.yaml
 - cilium-node-init.kube-network.daemonset.yaml
 - cilium-operator..clusterrole.yaml
@@ -17,6 +19,7 @@ resources:
 - cilium.kube-network.daemonset.yaml
 - cilium.kube-network.serviceaccount.yaml
 - hubble-ca-secret.kube-network.secret.yaml
+- hubble-l7-http-metrics-by-workload.grafana.configmap.yaml
 - hubble-metrics.kube-network.service.yaml
 - hubble-peer.kube-network.service.yaml
 - hubble-relay-client-certs.kube-network.secret.yaml

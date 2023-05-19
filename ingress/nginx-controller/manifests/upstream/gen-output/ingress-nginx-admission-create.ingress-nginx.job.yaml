@@ -51,4 +51,3 @@ spec:
         runAsNonRoot: true
         runAsUser: 2000
       serviceAccountName: ingress-nginx-admission
-

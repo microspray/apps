@@ -335,4 +335,3 @@ spec:
           rate(node_network_transmit_drop_total{job="node-exporter", device!="lo"}[5m])
         )
       record: instance:node_network_transmit_drop_excluding_lo:rate5m
-

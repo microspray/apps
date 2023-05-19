@@ -35,4 +35,3 @@ webhooks:
     resources:
     - serviceprofiles
   sideEffects: None
-

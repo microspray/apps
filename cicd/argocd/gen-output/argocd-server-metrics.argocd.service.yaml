@@ -15,4 +15,3 @@ spec:
     targetPort: 8083
   selector:
     app.kubernetes.io/name: argocd-server
-

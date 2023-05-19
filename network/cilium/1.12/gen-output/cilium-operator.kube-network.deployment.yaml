@@ -91,4 +91,3 @@ spec:
       - configMap:
           name: cilium-config
         name: cilium-config-path
-

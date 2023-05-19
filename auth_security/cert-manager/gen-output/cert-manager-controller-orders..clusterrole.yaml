@@ -65,4 +65,3 @@ rules:
   verbs:
   - create
   - patch
-

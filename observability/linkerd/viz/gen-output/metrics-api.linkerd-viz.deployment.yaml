@@ -58,4 +58,3 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
       serviceAccountName: metrics-api
-

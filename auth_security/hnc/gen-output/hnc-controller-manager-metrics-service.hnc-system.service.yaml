@@ -16,4 +16,3 @@ spec:
     targetPort: https
   selector:
     control-plane: controller-manager
-

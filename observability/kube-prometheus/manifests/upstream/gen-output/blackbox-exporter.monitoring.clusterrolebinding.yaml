@@ -16,4 +16,3 @@ subjects:
 - kind: ServiceAccount
   name: blackbox-exporter
   namespace: monitoring
-

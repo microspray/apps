@@ -29,4 +29,3 @@ spec:
             cpu: 5m
             memory: 8Mi
       serviceAccountName: jetstream-controller
-

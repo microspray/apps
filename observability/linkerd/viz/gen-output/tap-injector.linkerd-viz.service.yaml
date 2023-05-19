@@ -17,4 +17,3 @@ spec:
     component: tap-injector
     linkerd.io/extension: viz
   type: ClusterIP
-

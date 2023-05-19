@@ -90,4 +90,3 @@ spec:
       record: count:up1
     - expr: count without(instance, pod, node) (up == 0)
       record: count:up0
-

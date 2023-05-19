@@ -792,4 +792,3 @@ metadata:
     release: myrelease
   name: redis-ha-configmap
   namespace: redis-ha
-
