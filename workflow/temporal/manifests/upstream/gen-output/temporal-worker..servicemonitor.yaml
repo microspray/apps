@@ -1,0 +1,43 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: temporal
+    app.kubernetes.io/part-of: temporal
+    app.kubernetes.io/version: 1.20.0
+    helm.sh/chart: temporal-0.20.0
+  name: temporal-worker
+spec:
+  endpoints:
+  - interval: 30s
+    metricRelabelings:
+    - action: replace
+      sourceLabels:
+      - exported_namespace
+      targetLabel: temporal_namespace
+    - action: replace
+      regex: service_errors_(.+)
+      replacement: ${1}
+      sourceLabels:
+      - __name__
+      targetLabel: temporal_error_kind
+    - action: replace
+      regex: service_errors_.+
+      replacement: temporal_service_errors
+      sourceLabels:
+      - __name__
+      targetLabel: __name__
+    port: metrics
+  jobLabel: temporal-worker
+  namespaceSelector:
+    matchNames:
+    - temporal
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: worker
+      app.kubernetes.io/headless: "true"
+      app.kubernetes.io/instance: myrelease
+      app.kubernetes.io/name: temporal

@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-delete-policy: hook-succeeded,hook-failed
+    helm.sh/hook-weight: "0"
+  labels:
+    app.kubernetes.io/component: database
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: temporal
+    app.kubernetes.io/part-of: temporal
+    app.kubernetes.io/version: 1.20.0
+    helm.sh/chart: temporal-0.20.0
+  name: temporal-es-index-setup
+spec:
+  backoffLimit: 100
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: database
+        app.kubernetes.io/instance: myrelease
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: temporal
+        app.kubernetes.io/part-of: temporal
+        app.kubernetes.io/version: 1.20.0
+        helm.sh/chart: temporal-0.20.0
+      name: temporal-es-index-setup
+    spec:
+      containers:
+      - args:
+        - 'curl -X PUT --fail --user temporal-adm:Au3!!!CHANGEME https://es-es-http.temporal.svc.cluster.local:9200/_template/temporal_visibility_v1_template
+          -H "Content-Type: application/json" --data-binary "@schema/elasticsearch/visibility/index_template_v8.json"
+          2>&1 && curl -X PUT --fail --user temporal-adm:Au3!!!CHANGEME https://es-es-http.temporal.svc.cluster.local:9200/temporal_visibility_v1_dev
+          2>&1'
+        command:
+        - sh
+        - -c
+        image: temporalio/admin-tools:1.20.0
+        imagePullPolicy: IfNotPresent
+        name: create-elasticsearch-index
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - until curl --silent --fail --user temporal-adm:Au3!!!CHANGEME https://es-es-http.temporal.svc.cluster.local:9200
+          2>&1 > /dev/null; do echo waiting for elasticsearch to start; sleep 1; done;
+        image: temporalio/admin-tools:1.20.0
+        imagePullPolicy: IfNotPresent
+        name: check-elasticsearch
+      restartPolicy: OnFailure

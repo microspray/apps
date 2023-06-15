@@ -1,0 +1,29 @@
+apiVersion: v1
+data:
+  config.yml: |
+    auth:
+      enabled: true
+      providers:
+      - audience: null
+        callback_base_uri: http://temporal.micros.io
+        client_id: xxxxxxxxxxxxxxxxxxxx
+        client_secret: xxxxxxxxxxxxxxxxxxxx
+        issuer: https://sso.micros.io
+        label: SSO
+        pass_id_token: false
+        scope: openid profile email groups
+        type: oidc
+    routing:
+      issue_report_link: https://github.com/temporalio/web/issues/new/choose
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: web
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: temporal
+    app.kubernetes.io/part-of: temporal
+    app.kubernetes.io/version: 1.20.0
+    helm.sh/chart: temporal-0.20.0
+  name: temporal-web-config
+  namespace: temporal
