@@ -1,0 +1,27 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+spec:
+  config:
+    server.publicBaseUrl: https://kibana-temporal.microspray.io
+  count: 1
+  elasticsearchRef:
+    name: es
+  http:
+    service:
+      metadata: {}
+      spec: {}
+    tls:
+      certificate: {}
+  monitoring:
+    logs: {}
+    metrics: {}
+  podTemplate:
+    metadata:
+      creationTimestamp: null
+      labels:
+        scrape: kb
+    spec:
+      containers: null
+  version: 8.3.3

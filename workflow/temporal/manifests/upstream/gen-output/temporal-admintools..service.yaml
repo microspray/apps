@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: admintools
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: temporal
+    app.kubernetes.io/part-of: temporal
+    app.kubernetes.io/version: 1.20.0
+    helm.sh/chart: temporal-0.20.0
+  name: temporal-admintools
+spec:
+  ports:
+  - name: ssh
+    port: 22
+    protocol: TCP
+    targetPort: 22
+  selector:
+    app.kubernetes.io/component: admintools
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/name: temporal
+  type: ClusterIP

@@ -1,0 +1,86 @@
+apiVersion: acid.zalan.do/v1
+kind: postgresql
+metadata:
+  annotations:
+    acid.zalan.do/controller: infra
+    linkerd.io/inject: disabled
+  labels:
+    cluster: infra-temporal
+  name: infra-temporal
+  namespace: temporal
+spec:
+  additionalVolumes:
+  - mountPath: /opt/empty
+    name: empty
+    targetContainers:
+    - all
+    volumeSource:
+      emptyDir: {}
+  allowedSourceRanges:
+  - 127.0.0.1/32
+  - 10.233.0.0/16
+  - 192.168.1.0/24
+  databases:
+    temporal: temporal.temporal
+    temporal_visibility: temporal.temporal_visbility
+  enableConnectionPooler: false
+  enableLogicalBackup: true
+  enableMasterLoadBalancer: false
+  enableReplicaConnectionPooler: false
+  enableReplicaLoadBalancer: false
+  enableShmVolume: true
+  numberOfInstances: 2
+  postgresql:
+    parameters:
+      log_statement: all
+      max_connections: "100"
+      shared_buffers: 512MB
+    version: "14"
+  preparedDatabases:
+    temporal:
+      defaultUsers: true
+      schemas:
+        public: {}
+    temporal_visibility:
+      defaultUsers: true
+      schemas:
+        public: {}
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      cpu: 1000m
+      memory: 2000Mi
+  sidecars:
+  - env:
+    - name: DATA_SOURCE_URI
+      value: localhost/postgres?sslmode=disable
+    - name: DATA_SOURCE_USER
+      value: $(POSTGRES_USER)
+    - name: DATA_SOURCE_PASS
+      value: $(POSTGRES_PASSWORD)
+    image: quay.io/prometheuscommunity/postgres-exporter
+    name: exporter
+    ports:
+    - containerPort: 9187
+      name: exporter
+      protocol: TCP
+    resources:
+      limits:
+        cpu: 500m
+        memory: 2000M
+      requests:
+        cpu: 500m
+        memory: 2000M
+  teamId: infra
+  users:
+    temporal.temporal:
+    - superuser
+    - createdb
+    temporal.temporal_visibility:
+    - superuser
+    - createdb
+  volume:
+    size: 50Gi
+    storageClass: local

@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-signin: https://oauth2-proxy.microspray.io/oauth2/start?rd=https%3A%2F%2F$host$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-url: https://oauth2-proxy.microspray.io/oauth2/auth
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+  name: kibana
+  namespace: prod-es-fe
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: kibana-temporal.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: kibana-kb-http
+            port:
+              number: 5601
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - kibana-temporal.microspray.io
+    secretName: kibana-certs

@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-delete-policy: hook-succeeded,hook-failed
+    helm.sh/hook-weight: "1"
+  labels:
+    app.kubernetes.io/component: database
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: temporal
+    app.kubernetes.io/part-of: temporal
+    app.kubernetes.io/version: 1.20.0
+    helm.sh/chart: temporal-0.20.0
+  name: temporal-schema-update
+  namespace: temporal
+spec:
+  backoffLimit: 100
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: database
+        app.kubernetes.io/instance: myrelease
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: temporal
+        app.kubernetes.io/part-of: temporal
+        app.kubernetes.io/version: 1.20.0
+        helm.sh/chart: temporal-0.20.0
+      name: temporal-schema-update
+    spec:
+      containers:
+      - env: null
+        image: temporalio/admin-tools:1.20.0
+        imagePullPolicy: IfNotPresent
+        name: default-schema
+      - env: null
+        image: temporalio/admin-tools:1.20.0
+        imagePullPolicy: IfNotPresent
+        name: visibility-schema
+      initContainers: []
+      restartPolicy: OnFailure

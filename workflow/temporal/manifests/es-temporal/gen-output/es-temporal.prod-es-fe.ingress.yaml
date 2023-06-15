@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+  name: es-temporal
+  namespace: prod-es-fe
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: es-temporal.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: es-es-http
+            port:
+              number: 9200
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - es-temporal.microspray.io
+    secretName: es-temporal-certs

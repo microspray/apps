@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: history
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: temporal
+    app.kubernetes.io/part-of: temporal
+    app.kubernetes.io/version: 1.20.0
+    helm.sh/chart: temporal-0.20.0
+  name: temporal-history
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: history
+      app.kubernetes.io/instance: myrelease
+      app.kubernetes.io/name: temporal
+  template:
+    metadata:
+      annotations:
+        checksum/config: 6bc5636428a9608954c37757011a81e67b803fa999b3ddebdd0838584348491f
+        prometheus.io/job: temporal-history
+        prometheus.io/port: "9090"
+        prometheus.io/scrape: "true"
+      labels:
+        app.kubernetes.io/component: history
+        app.kubernetes.io/instance: myrelease
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: temporal
+        app.kubernetes.io/part-of: temporal
+        app.kubernetes.io/version: 1.20.0
+        helm.sh/chart: temporal-0.20.0
+    spec:
+      containers:
+      - env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: ENABLE_ES
+          value: "true"
+        - name: ES_SEEDS
+          value: es-es-http.temporal.svc.cluster.local
+        - name: ES_PORT
+          value: "9200"
+        - name: ES_VERSION
+          value: v8
+        - name: ES_SCHEME
+          value: https
+        - name: ES_VIS_INDEX
+          value: temporal_visibility_v1_dev
+        - name: ES_USER
+          value: temporal-adm
+        - name: ES_PWD
+          value: Au3!!!CHANGEME
+        - name: SERVICES
+          value: history
+        - name: TEMPORAL_STORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: temporal.temporal.infra-temporal.pg.creds
+        - name: TEMPORAL_VISIBILITY_STORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: temporal_visibility.temporal.infra-temporal.pg.creds
+        image: temporalio/server:1.20.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          initialDelaySeconds: 150
+          tcpSocket:
+            port: rpc
+        name: temporal-history
+        ports:
+        - containerPort: 7234
+          name: rpc
+          protocol: TCP
+        - containerPort: 9090
+          name: metrics
+          protocol: TCP
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/temporal/config/config_template.yaml
+          name: config
+          subPath: config_template.yaml
+        - mountPath: /etc/temporal/dynamic_config
+          name: dynamic-config
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - until curl --silent --fail --user temporal-adm:Au3!!!CHANGEME https://es-es-http.temporal.svc.cluster.local:9200/temporal_visibility_v1_dev
+          2>&1 > /dev/null; do echo waiting for elasticsearch index to become ready;
+          sleep 1; done;
+        image: temporalio/admin-tools:1.20.0
+        imagePullPolicy: IfNotPresent
+        name: check-elasticsearch-index
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      volumes:
+      - configMap:
+          name: temporal-history-config
+        name: config
+      - configMap:
+          items:
+          - key: dynamic_config.yaml
+            path: dynamic_config.yaml
+          name: temporal-dynamic-config
+        name: dynamic-config

@@ -1,0 +1,50 @@
+apiVersion: v1
+data:
+  config_template.yaml: "log:\n  stdout: true\n  level: \"debug,info\"\n\npersistence:\n
+    \ defaultStore: default\n  visibilityStore: visibility\n  advancedVisibilityStore:
+    es-visibility\n  numHistoryShards: 512\n  datastores:\n    default:\n      sql:\n
+    \       pluginName: \"postgres\"\n        driverName: \"postgres\"\n        databaseName:
+    \"temporal\"\n        connectAddr: \"infra-temporal.pg-infra.svc.cluster.local:5432\"\n
+    \       connectProtocol: \"tcp\"\n        user: temporal\n        password: \"{{
+    .Env.TEMPORAL_STORE_PASSWORD }}\"\n        maxConnLifetime: 1h\n        maxConns:
+    50\n        secretName: temporal-pg\n    visibility:\n      sql:\n        pluginName:
+    \"postgres\"\n        driverName: \"postgres\"\n        databaseName: \"temporal_visibility\"\n
+    \       connectAddr: \"infra-temporal.pg-infra.svc.cluster.local:5432\"\n        connectProtocol:
+    \"tcp\"\n        user: \"temporal_visibility\"\n        password: \"{{ .Env.TEMPORAL_VISIBILITY_STORE_PASSWORD
+    }}\"\n        maxConnLifetime: 1h\n        maxConns: 50\n        secretName: temporal_visibility-pg\n
+    \   es-visibility:\n        elasticsearch:\n            version: \"v8\"\n            url:\n
+    \               scheme: \"https\"\n                host: \"es-es-http.temporal.svc.cluster.local:9200\"\n
+    \           username: \"temporal-adm\"\n            password: \"Au3!!!CHANGEME\"\n
+    \           logLevel: \"error\"\n            indices:\n                visibility:
+    \"temporal_visibility_v1_dev\"\n\nglobal:\n  membership:\n    name: temporal\n
+    \   maxJoinDuration: 30s\n    broadcastAddress: {{ default .Env.POD_IP \"0.0.0.0\"
+    }}\n\n  pprof:\n    port: 7936\n    \n  metrics:\n    tags:\n      type: matching\n
+    \   prometheus:\n      timerType: histogram\n      listenAddress: \"0.0.0.0:9090\"\n\n\nservices:\n
+    \ frontend:\n    rpc:\n      grpcPort: 7233\n      membershipPort: 6933\n      bindOnIP:
+    \"0.0.0.0\"\n\n  history:\n    rpc:\n      grpcPort: 7234\n      membershipPort:
+    6934\n      bindOnIP: \"0.0.0.0\"\n\n  matching:\n    rpc:\n      grpcPort: 7235\n
+    \     membershipPort: 6935\n      bindOnIP: \"0.0.0.0\"\n\n  worker:\n    rpc:\n
+    \     grpcPort: 7239\n      membershipPort: 6939\n      bindOnIP: \"0.0.0.0\"\nclusterMetadata:\n
+    \ enableGlobalDomain: false\n  failoverVersionIncrement: 10\n  masterClusterName:
+    \"active\"\n  currentClusterName: \"active\"\n  clusterInformation:\n    active:\n
+    \     enabled: true\n      initialFailoverVersion: 1\n      rpcName: \"temporal-frontend\"\n
+    \     rpcAddress: \"127.0.0.1:7933\"\ndcRedirectionPolicy:\n  policy: \"noop\"\n
+    \ toDC: \"\"\narchival:\n  history:\n    enableRead: true\n    provider:\n      s3store:\n
+    \       region: eu-central-1\n    state: enabled\n  visibility:\n    enableRead:
+    true\n    provider:\n      s3store:\n        region: eu-central-1\n    state:
+    enabled\nnamespaceDefaults:\n  archival:\n    history:\n      URI: s3://archival-bucket-name\n
+    \     state: enabled\n    visibility:\n      URI: s3://visibility-archival-bucket-name\n
+    \     state: enabled\n\npublicClient:\n  hostPort: \"temporal-frontend:7233\"\n\ndynamicConfigClient:\n
+    \ filepath: \"/etc/temporal/dynamic_config/dynamic_config.yaml\"\n  pollInterval:
+    \"10s\""
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: temporal
+    app.kubernetes.io/part-of: temporal
+    app.kubernetes.io/version: 1.20.0
+    helm.sh/chart: temporal-0.20.0
+  name: temporal-matching-config
+  namespace: temporal
