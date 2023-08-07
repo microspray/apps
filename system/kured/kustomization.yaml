@@ -15,10 +15,9 @@ patches:
           - --drain-grace-period=120
           - --annotate-nodes
           - --ds-namespace=kured
-          - --prometheus-url=http://prometheus.monitoring.svc.cluster.local
+          - --prometheus-url=http://prometheus-k8s.monitoring.svc.cluster.local:9090
           - --lock-release-delay=360m
           - --slack-channel=alerts
-          - --notify-url=https://hooks.slack.com/services/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
           - --end-time=23:59
           - --start-time=00:00
           - --period=30m
