@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kured
+  namespace: kured
+spec:
+  selector:
+    matchLabels:
+      name: kured
+  template:
+    metadata:
+      labels:
+        name: kured
+    spec:
+      containers:
+      - command:
+        - /usr/bin/kured
+        - --drain-grace-period=120
+        - --annotate-nodes
+        - --ds-namespace=kured
+        - --prometheus-url=http://prometheus.monitoring.svc.cluster.local
+        - --lock-release-delay=360m
+        - --slack-channel=alerts
+        - --notify-url=https://hooks.slack.com/services/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
+        - --end-time=23:59
+        - --start-time=00:00
+        - --period=30m
+        - --reboot-days=mon,tue,wed,thu,fri
+        - --time-zone=Europe/Berlin
+        env:
+        - name: KURED_NODE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        image: ghcr.io/kubereboot/kured:1.13.2
+        imagePullPolicy: IfNotPresent
+        name: kured
+        ports:
+        - containerPort: 8080
+          name: metrics
+        securityContext:
+          privileged: true
+      hostPID: true
+      restartPolicy: Always
+      serviceAccountName: kured
+      tolerations:
+      - effect: NoSchedule
+        key: group
+        operator: Equal
+        value: cloud
+  updateStrategy:
+    type: RollingUpdate

@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- manifests/upstream
+namespace: kured
+patches:
+  - target:
+      name: kured
+      kind: DaemonSet
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/command
+        value:
+          - /usr/bin/kured
+          - --drain-grace-period=120
+          - --annotate-nodes
+          - --ds-namespace=kured
+          - --prometheus-url=http://prometheus.monitoring.svc.cluster.local
+          - --lock-release-delay=360m
+          - --slack-channel=alerts
+          - --notify-url=https://hooks.slack.com/services/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
+          - --end-time=23:59
+          - --start-time=00:00
+          - --period=30m
+          - --reboot-days=mon,tue,wed,thu,fri
+          - --time-zone=Europe/Berlin
+      - op: add
+        path: /spec/template/spec/tolerations
+        value:
+            - effect: NoSchedule
+              key: group
+              operator: Equal
+              value: cloud
