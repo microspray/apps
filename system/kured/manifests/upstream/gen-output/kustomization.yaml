@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- kured..clusterrole.yaml
+- kured..clusterrolebinding.yaml
+- kured.kube-system.daemonset.yaml
+- kured.kube-system.role.yaml
+- kured.kube-system.rolebinding.yaml
+- kured.kube-system.serviceaccount.yaml
