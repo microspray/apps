@@ -14,7 +14,7 @@ resources:
 - alertmanagers.monitoring.coreos.com..customresourcedefinition.yaml
 - blackbox-exporter-configuration.monitoring.configmap.yaml
 - blackbox-exporter..clusterrole.yaml
-- blackbox-exporter.monitoring.clusterrolebinding.yaml
+- blackbox-exporter..clusterrolebinding.yaml
 - blackbox-exporter.monitoring.deployment.yaml
 - blackbox-exporter.monitoring.networkpolicy.yaml
 - blackbox-exporter.monitoring.service.yaml
@@ -28,6 +28,7 @@ resources:
 - grafana-dashboard-controller-manager.monitoring.configmap.yaml
 - grafana-dashboard-grafana-overview.monitoring.configmap.yaml
 - grafana-dashboard-k8s-resources-cluster.monitoring.configmap.yaml
+- grafana-dashboard-k8s-resources-multicluster.monitoring.configmap.yaml
 - grafana-dashboard-k8s-resources-namespace.monitoring.configmap.yaml
 - grafana-dashboard-k8s-resources-node.monitoring.configmap.yaml
 - grafana-dashboard-k8s-resources-pod.monitoring.configmap.yaml
@@ -75,8 +76,8 @@ resources:
 - main.monitoring.alertmanager.yaml
 - monitoring..namespace.yaml
 - node-exporter-rules.monitoring.prometheusrule.yaml
-- node-exporter.monitoring.clusterrole.yaml
-- node-exporter.monitoring.clusterrolebinding.yaml
+- node-exporter..clusterrole.yaml
+- node-exporter..clusterrolebinding.yaml
 - node-exporter.monitoring.daemonset.yaml
 - node-exporter.monitoring.networkpolicy.yaml
 - node-exporter.monitoring.service.yaml
@@ -84,8 +85,8 @@ resources:
 - node-exporter.monitoring.servicemonitor.yaml
 - podmonitors.monitoring.coreos.com..customresourcedefinition.yaml
 - probes.monitoring.coreos.com..customresourcedefinition.yaml
-- prometheus-adapter.monitoring.clusterrole.yaml
-- prometheus-adapter.monitoring.clusterrolebinding.yaml
+- prometheus-adapter..clusterrole.yaml
+- prometheus-adapter..clusterrolebinding.yaml
 - prometheus-adapter.monitoring.deployment.yaml
 - prometheus-adapter.monitoring.networkpolicy.yaml
 - prometheus-adapter.monitoring.poddisruptionbudget.yaml
@@ -117,12 +118,14 @@ resources:
 - prometheus-operator.monitoring.serviceaccount.yaml
 - prometheus-operator.monitoring.servicemonitor.yaml
 - prometheus.monitoring.ingress.yaml
+- prometheusagents.monitoring.coreos.com..customresourcedefinition.yaml
 - prometheuses.monitoring.coreos.com..customresourcedefinition.yaml
 - prometheusrules.monitoring.coreos.com..customresourcedefinition.yaml
 - resource-metrics-auth-reader.kube-system.rolebinding.yaml
-- resource-metrics-server-resources.monitoring.clusterrole.yaml
-- resource-metrics:system:auth-delegator.monitoring.clusterrolebinding.yaml
+- resource-metrics-server-resources..clusterrole.yaml
+- resource-metrics:system:auth-delegator..clusterrolebinding.yaml
+- scrapeconfigs.monitoring.coreos.com..customresourcedefinition.yaml
 - servicemonitors.monitoring.coreos.com..customresourcedefinition.yaml
-- system:aggregated-metrics-reader.monitoring.clusterrole.yaml
+- system:aggregated-metrics-reader..clusterrole.yaml
 - thanosrulers.monitoring.coreos.com..customresourcedefinition.yaml
 - v1beta1.metrics.k8s.io..apiservice.yaml
