@@ -1540,7 +1540,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(kube_pod_container_info{image=~\".*prometheus.*\"}, cluster)",
+                    "query": "label_values(prometheus_build_info, cluster)",
                     "refresh": 2,
                     "regex": "",
                     "sort": 0,
@@ -1654,6 +1654,6 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 9.1.0
+    app.kubernetes.io/version: 9.5.3
   name: grafana-dashboard-prometheus-remote-write
   namespace: monitoring
