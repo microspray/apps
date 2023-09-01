@@ -2,6 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 patches:
+- path: manifests/patches/0prometheusCustomResourceDefinition.yaml
+- path: manifests/patches/0prometheusagentCustomResourceDefinition.yaml
 - path: manifests/patches/prometheus-ClusterRole.yaml
 - path: manifests/patches/prometheus-prometheus.yaml
 - path: manifests/patches/alertmanager-secret.secret.yaml
