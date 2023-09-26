@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-thanos
+  namespace: argocd
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: micros-infra
+  source:
+    path: envs/cluster-1/observability/kube-thanos
+    plugin:
+      name: kustomize-gcrypt
+    repoURL: https://github.com/microspray/deployments-infra.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated: {}

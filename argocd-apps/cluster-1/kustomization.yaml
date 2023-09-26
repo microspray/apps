@@ -24,6 +24,7 @@ resources:
 - ../manifests/storage_localpv
 - ../manifests/storage_rook-operator
 - ../manifests/observability_pyrra
+- ../manifests/observability_kube-thanos
 
 
 replacements:

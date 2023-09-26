@@ -12,6 +12,7 @@ resources:
 - hnc.argocd.application.yaml
 - keycloak.argocd.application.yaml
 - kube-prometheus.argocd.application.yaml
+- kube-thanos.argocd.application.yaml
 - linkerd.argocd.application.yaml
 - localpv.argocd.application.yaml
 - micros-infra.argocd.appproject.yaml
