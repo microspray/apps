@@ -2,9 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/component: api
     app.kubernetes.io/name: pyrra
-    app.kubernetes.io/part-of: pyrra
     app.kubernetes.io/version: 0.7.0
   name: pyrra-api
   namespace: monitoring
@@ -12,9 +11,8 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/component: monitoring
+      app.kubernetes.io/component: api
       app.kubernetes.io/name: pyrra
-      app.kubernetes.io/part-of: pyrra
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -22,9 +20,8 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/component: monitoring
+        app.kubernetes.io/component: api
         app.kubernetes.io/name: pyrra
-        app.kubernetes.io/part-of: pyrra
         app.kubernetes.io/version: 0.7.0
     spec:
       containers:
