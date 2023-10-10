@@ -6,15 +6,15 @@ metadata:
     app.kubernetes.io/name: pyrra
     app.kubernetes.io/part-of: pyrra
     app.kubernetes.io/version: 0.7.0
-  name: pyrra-kubernetes
+  name: pyrra-api
   namespace: monitoring
 spec:
   endpoints:
-  - port: metrics
+  - port: http
   namespaceSelector:
     matchNames:
     - monitoring
   selector:
     matchLabels:
-      app.kubernetes.io/component: kubernetes
+      app.kubernetes.io/component: api
       app.kubernetes.io/name: pyrra

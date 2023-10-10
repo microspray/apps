@@ -3,12 +3,16 @@ kind: Kustomization
 resources:
 - pyrra-api.monitoring.deployment.yaml
 - pyrra-api.monitoring.service.yaml
-- pyrra-kubernetes..clusterrole.yaml
+- pyrra-api.monitoring.serviceaccount.yaml
+- pyrra-api.monitoring.servicemonitor.yaml
+- pyrra-kubernetes.monitoring.clusterrole.yaml
 - pyrra-kubernetes.monitoring.clusterrolebinding.yaml
 - pyrra-kubernetes.monitoring.deployment.yaml
 - pyrra-kubernetes.monitoring.service.yaml
 - pyrra-kubernetes.monitoring.serviceaccount.yaml
 - pyrra-kubernetes.monitoring.servicemonitor.yaml
+- pyrra-webhook-validation.monitoring.certificate.yaml
 - pyrra.monitoring.ingress.yaml
-- pyrra.monitoring.servicemonitor.yaml
+- selfsigned.monitoring.issuer.yaml
 - servicelevelobjectives.pyrra.dev..customresourcedefinition.yaml
+- validating-webhook-configuration..validatingwebhookconfiguration.yaml
