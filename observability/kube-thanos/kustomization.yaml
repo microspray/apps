@@ -1,0 +1,47 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- manifests/upstream
+- manifests/ingress.yaml
+- manifests/namespace.yaml
+- manifests/thanos-store-cache-serviceMonitor.yaml
+- manifests/thanos-query-frontend-cache-serviceMonitor.yaml
+
+patches:
+- patch: |-
+    - op: replace
+      path: /spec/selector
+      value:
+        app.kubernetes.io/component: prometheus
+        app.kubernetes.io/instance: k8s
+        app.kubernetes.io/name: prometheus
+        app.kubernetes.io/part-of: kube-prometheus
+  target:
+    kind: Service
+    name: thanos-sidecar
+- patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: monitoring
+  target:
+    kind: Service
+    name: thanos-sidecar
+- patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: monitoring
+  target:
+    kind: ServiceMonitor
+    name: thanos-sidecar
+- patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value: --endpoint=dnssrv+_grpc._tcp.thanos-sidecar.monitoring.svc.cluster.local
+  target:
+    kind: Deployment
+    name: thanos-query
+
+images:
+  - name: quay.io/thanos/thanos
+    newTag: v0.32.2
