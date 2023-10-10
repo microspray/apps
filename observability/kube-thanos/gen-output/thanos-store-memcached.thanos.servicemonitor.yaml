@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/component: store-cache
+    app.kubernetes.io/name: memcached
+    app.kubernetes.io/part-of: thanos
+    app.kubernetes.io/version: 1.6.3-alpine
+  name: thanos-store-memcached
+  namespace: thanos
+spec:
+  endpoints:
+  - port: metrics
+    relabelings:
+    - action: replace
+      separator: /
+      sourceLabels:
+      - namespace
+      - pod
+      targetLabel: instance
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: store-cache
+      app.kubernetes.io/name: memcached
+      app.kubernetes.io/part-of: thanos

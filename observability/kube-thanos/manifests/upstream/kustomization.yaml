@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- manifests/thanos-compact-serviceAccount.yaml
+- manifests/thanos-compact-serviceMonitor.yaml
+- manifests/thanos-compact-service.yaml
+- manifests/thanos-compact-statefulSet.yaml
+- manifests/thanos-query-deployment.yaml
+- manifests/thanos-query-frontend-cache-serviceAccount.yaml
+- manifests/thanos-query-frontend-cache-service.yaml
+- manifests/thanos-query-frontend-cache-statefulSet.yaml
+- manifests/thanos-query-frontend-deployment.yaml
+- manifests/thanos-query-frontend-serviceAccount.yaml
+- manifests/thanos-query-frontend-serviceMonitor.yaml
+- manifests/thanos-query-frontend-service.yaml
+- manifests/thanos-query-serviceAccount.yaml
+- manifests/thanos-query-serviceMonitor.yaml
+- manifests/thanos-query-service.yaml
+- manifests/thanos-sidecar-serviceMonitor.yaml
+- manifests/thanos-sidecar-service.yaml
+- manifests/thanos-store-cache-serviceAccount.yaml
+- manifests/thanos-store-cache-service.yaml
+- manifests/thanos-store-cache-statefulSet.yaml
+- manifests/thanos-store-serviceAccount.yaml
+- manifests/thanos-store-serviceMonitor.yaml
+- manifests/thanos-store-service.yaml
+- manifests/thanos-store-statefulSet.yaml
