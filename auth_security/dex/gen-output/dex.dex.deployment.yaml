@@ -62,7 +62,8 @@ spec:
       serviceAccountName: dex
       terminationGracePeriodSeconds: 30
       volumes:
-      - secret:
+      - name: config
+        secret:
           defaultMode: 420
           secretName: config-mb4t842792
       - name: google-sa
