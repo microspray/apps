@@ -62,14 +62,10 @@ spec:
       serviceAccountName: dex
       terminationGracePeriodSeconds: 30
       volumes:
-      - configMap:
+      - secret:
           defaultMode: 420
-          items:
-          - key: config.yaml
-            path: config.yaml
-          name: dex-config-9bkgk28k62
-        name: config
+          secretName: config-mb4t842792
       - name: google-sa
         secret:
           defaultMode: 420
-          secretName: micros-google-sa-m9m2d84mhc
+          secretName: google-sa-7dmbdbd24h

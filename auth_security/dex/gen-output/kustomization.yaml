@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- dex-config-9bkgk28k62.dex.configmap.yaml
+- config-mb4t842792.dex.secret.yaml
 - dex-http-errors.dex.servicelevelobjective.yaml
 - dex..clusterrole.yaml
 - dex..clusterrolebinding.yaml
@@ -10,4 +10,4 @@ resources:
 - dex.dex.service.yaml
 - dex.dex.serviceaccount.yaml
 - dex.dex.servicemonitor.yaml
-- micros-google-sa-m9m2d84mhc.dex.secret.yaml
+- google-sa-7dmbdbd24h.dex.secret.yaml

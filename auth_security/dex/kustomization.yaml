@@ -9,13 +9,14 @@ commonLabels:
 
 secretGenerator:
 - files:
-  - manifests/secrets/microsauth.json
-  name: micros-google-sa
+  - manifests/secrets/google-sa.json
+  name: google-sa
   type: Opaque
-configMapGenerator:
 - files:
-  - manifests/configs/config.yaml
-  name: dex-config
+  - manifests/secrets/config.yaml
+  name: config
+  type: Opaque
+
 resources:
 - manifests/dex.deploy.yaml
 - manifests/dex.ingress.yaml
