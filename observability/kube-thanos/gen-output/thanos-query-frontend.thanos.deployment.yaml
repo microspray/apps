@@ -85,7 +85,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP
-        image: quay.io/thanos/thanos:v0.32.2
+        image: quay.io/thanos/thanos:v0.32.5
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 4
