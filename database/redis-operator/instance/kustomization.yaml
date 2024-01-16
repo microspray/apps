@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: toto-redis
+nameSuffix: -al
+resources:
+- manifests/redis.yaml
+- manifests/sentinels.yaml
+- manifests/servicemonitor.yaml
+
+configMapGenerator:
+- behavior: create
+  files:
+  - manifests/configs/redis-additional.conf
+  name: redis-config
+- behavior: create
+  envs:
+    - manifests/configs/config.yaml
+  name: redis-resources
+configurations:
+  - kustomconfig.yaml
+
+replacements:
+  - path: replacements.yaml

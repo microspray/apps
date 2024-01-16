@@ -1,0 +1,3 @@
+storageClass=hcloud
+storageSize=2Gi
+replicas=2
