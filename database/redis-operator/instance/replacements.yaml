@@ -1,0 +1,55 @@
+- source:
+    kind: RedisReplication
+    fieldPath: metadata.name
+  targets:
+    - select:
+        kind: ServiceMonitor
+      fieldPaths:
+        - "spec.selector.matchLabels.app"
+    - select:
+        kind: RedisSentinel
+      fieldPaths:
+        - "spec.redisSentinelConfig.redisReplicationName"
+        - "spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution.0.labelSelector.matchExpressions.0.values.0"
+    - select:
+        kind: RedisReplication
+      fieldPaths:
+        - "spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution.0.labelSelector.matchExpressions.0.values.0"
+
+- source:
+    kind: RedisReplication
+    fieldPath: metadata.namespace
+  targets:
+    - select:
+        kind: ServiceMonitor
+      fieldPaths:
+        - "spec.namespaceSelector.matchNames.0"
+
+- source:
+    kind: ConfigMap
+    name: redis-resources
+    fieldPath: data.storageClass
+  targets:
+    - select:
+        kind: RedisReplication
+      fieldPaths:
+        - "spec.storage.volumeClaimTemplate.spec.storageClassName"
+
+- source:
+    kind: ConfigMap
+    name: redis-resources
+    fieldPath: data.storageSize
+  targets:
+    - select:
+        kind: RedisReplication
+      fieldPaths:
+        - "spec.storage.volumeClaimTemplate.spec.resources.requests.storage"
+- source:
+    kind: ConfigMap
+    name: redis-resources
+    fieldPath: data.replicas
+  targets:
+    - select:
+        kind: RedisReplication
+      fieldPaths:
+        - "spec.clusterSize"
