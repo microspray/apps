@@ -1,0 +1,18 @@
+# Source: redis-ha/templates/redis-ha-servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-ha
+  namespace: "prod-redis"
+spec:
+  endpoints:
+  - port: redis-exporter
+
+  namespaceSelector:
+    matchNames:
+    - "prod-redis"
+  selector:
+    matchLabels:
+      app: redis-ha
+      redis_setup_type: replication
+      role: replication

@@ -1,10 +1,6 @@
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-image:
-  repository: redis
-  tag: 7.0.5-alpine3.16
-  pullPolicy: IfNotPresent
 
 ## Reference to one or more secrets to be used when pulling images
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/

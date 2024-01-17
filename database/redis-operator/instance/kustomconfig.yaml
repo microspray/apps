@@ -1,0 +1,5 @@
+nameReference:
+- kind: ConfigMap
+  fieldSpecs:
+  - path: spec/redisConfig/additionalRedisConfig
+    kind: RedisReplication

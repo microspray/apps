@@ -1,14 +1,13 @@
-RELEASENAME="myrelease"
-REPONAME=rook-release
-REPOURL="https://charts.rook.io/release"
+RELEASENAME="redis-operator"
+REPONAME=ot-helm
+REPOURL="https://ot-container-kit.github.io/helm-charts/"
 
-NAME=rook-ceph-cluster
-NAMESPACE=rook-ceph
+NAME=redis-operator
+NAMESPACE=redis-operator
 
 CHART=$(REPONAME)/$(NAME)
 
-
-init: values.upstream.yaml values.yaml template  manifests/upstream/kustomization.yaml kustomization.yaml
+init: update values.upstream.yaml values.yaml template  manifests/upstream/kustomization.yaml kustomization.yaml
 
 
 create-namespace:
@@ -41,6 +40,7 @@ manifests/upstream/kustomization.yaml:
 template:
 	mkdir -p manifests/upstream
 	helm template $(RELEASENAME) $(CHART) \
+	--include-crds \
     --kube-version=1.25 -a 'networking.k8s.io/v1/Ingress' -a monitoring.coreos.com/v1 \
 	-f values.yaml --namespace $(NAMESPACE) > manifests/upstream/$(NAME).aio.yaml
 	@sed -i".bu" "s/$(RELEASENAME)-//g" manifests/upstream/$(NAME).aio.yaml
