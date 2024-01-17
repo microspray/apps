@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  replicas: "2"
+  storageClass: hcloud
+  storageSize: 2Gi
+kind: ConfigMap
+metadata:
+  name: redis-resources-hfhmc8kchk
+  namespace: redis-operator

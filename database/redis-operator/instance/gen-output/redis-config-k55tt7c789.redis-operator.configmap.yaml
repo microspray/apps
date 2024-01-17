@@ -1,0 +1,28 @@
+apiVersion: v1
+data:
+  redis-additional.conf: |+
+    tcp-keepalive 400
+    slowlog-max-len 158
+    stream-node-max-bytes 2048
+    save 300 10
+    save 60 1000
+    save 900 1
+    appendonly yes
+    appendfsync everysec
+    databases 16
+    always-show-logo yes
+    stop-writes-on-bgsave-error yes
+    loglevel notice
+    # Minimum replica to reply
+    min-replicas-to-write 1
+    min-replicas-max-lag 5
+    maxmemory 0
+    maxmemory-policy noeviction
+    repl-diskless-sync no
+    rdbcompression yes
+    rdbchecksum yes
+
+kind: ConfigMap
+metadata:
+  name: redis-config-k55tt7c789
+  namespace: redis-operator
