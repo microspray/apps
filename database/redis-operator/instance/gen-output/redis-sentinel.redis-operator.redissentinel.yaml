@@ -1,0 +1,33 @@
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: RedisSentinel
+metadata:
+  name: redis-sentinel
+  namespace: redis-operator
+spec:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - redis
+        topologyKey: kubernetes.io/region
+  clusterSize: 3
+  kubernetesConfig:
+    image: quay.io/opstree/redis-sentinel:v7.2.3
+    imagePullPolicy: IfNotPresent
+  pdb:
+    enabled: false
+    minAvailable: 1
+  podSecurityContext:
+    fsGroup: 1000
+    runAsUser: 1000
+  redisSentinelConfig:
+    downAfterMilliseconds: "10000"
+    failoverTimeout: "180000"
+    masterGroupName: myMaster
+    parallelSyncs: "1"
+    quorum: "2"
+    redisReplicationName: redis
