@@ -29,7 +29,7 @@ resources:
 - grafana-dashboard-scheduler.grafana.configmap.yaml
 - grafana-dashboard-workload-total.grafana.configmap.yaml
 - grafana-dashboards-8tftdd46d5.grafana.configmap.yaml
-- grafana-datasources-885m9t6h2f.grafana.secret.yaml
+- grafana-datasources-g8bkd5h479.grafana.secret.yaml
 - grafana.grafana.deployment.yaml
 - grafana.grafana.ingress.yaml
 - grafana.grafana.service.yaml
