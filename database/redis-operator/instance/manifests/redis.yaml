@@ -21,7 +21,7 @@ spec:
     #     cpu: 2000m
     #     memory: 2Gi
   redisExporter:
-    enabled: false
+    enabled: true
     image: quay.io/opstree/redis-exporter:v1.45.0
     imagePullPolicy: Always
     env:

@@ -24,7 +24,7 @@ spec:
   redisConfig:
     additionalRedisConfig: redis-config-k55tt7c789
   redisExporter:
-    enabled: false
+    enabled: true
     env:
     - name: REDIS_EXPORTER_INCL_SYSTEM_METRICS
       value: "true"
