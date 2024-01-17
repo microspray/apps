@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-ha
+  namespace: redis-operator
+spec:
+  endpoints:
+  - port: redis-exporter
+  namespaceSelector:
+    matchNames:
+    - redis-operator
+  selector:
+    matchLabels:
+      app: redis
+      redis_setup_type: replication
+      role: replication

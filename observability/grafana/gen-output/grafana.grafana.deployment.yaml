@@ -172,7 +172,7 @@ spec:
         name: grafana-storage
       - name: grafana-datasources
         secret:
-          secretName: grafana-datasources-885m9t6h2f
+          secretName: grafana-datasources-g8bkd5h479
       - configMap:
           name: grafana-dashboards-8tftdd46d5
         name: grafana-dashboards
