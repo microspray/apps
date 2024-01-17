@@ -11,7 +11,7 @@ spec:
   redisConfig:
     additionalRedisConfig: redis-config
   kubernetesConfig:
-    image: quay.io/opstree/redis-sentinel:v7.2.3
+    image: quay.io/opstree/redis:v7.2.3
     imagePullPolicy: IfNotPresent
     # resources:
     #   requests:

@@ -16,7 +16,7 @@ spec:
         topologyKey: kubernetes.io/hostname
   clusterSize: 2
   kubernetesConfig:
-    image: quay.io/opstree/redis-sentinel:v7.2.3
+    image: quay.io/opstree/redis:v7.2.3
     imagePullPolicy: IfNotPresent
   podSecurityContext:
     fsGroup: 1000
