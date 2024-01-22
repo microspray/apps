@@ -2,13 +2,13 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: redis-ha
-  namespace: redis-operator
+  namespace: redis-stg
 spec:
   endpoints:
   - port: redis-exporter
   namespaceSelector:
     matchNames:
-    - redis-operator
+    - redis-stg
   selector:
     matchLabels:
       app: redis

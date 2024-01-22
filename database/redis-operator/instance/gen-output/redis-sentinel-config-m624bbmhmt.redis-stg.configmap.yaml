@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  redis-sentinel-additional.conf: |
+    sentinel resolve-hostnames yes
+kind: ConfigMap
+metadata:
+  name: redis-sentinel-config-m624bbmhmt
+  namespace: redis-stg

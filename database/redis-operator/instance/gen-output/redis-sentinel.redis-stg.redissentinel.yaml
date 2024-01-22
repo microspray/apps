@@ -2,7 +2,7 @@ apiVersion: redis.redis.opstreelabs.in/v1beta2
 kind: RedisSentinel
 metadata:
   name: redis-sentinel
-  namespace: redis-operator
+  namespace: redis-stg
 spec:
   affinity:
     podAntiAffinity:
@@ -25,6 +25,7 @@ spec:
     fsGroup: 1000
     runAsUser: 1000
   redisSentinelConfig:
+    additionalSentinelConfig: redis-sentinel-config
     downAfterMilliseconds: "10000"
     failoverTimeout: "180000"
     masterGroupName: myMaster
