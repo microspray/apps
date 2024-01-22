@@ -3,10 +3,10 @@ kind: Kustomization
 resources:
 - redis-operator..clusterrole.yaml
 - redis-operator..clusterrolebinding.yaml
-- redis-operator.redis-operator.deployment.yaml
-- redis-operator.redis-operator.serviceaccount.yaml
+- redis-operator.redis-stg.deployment.yaml
+- redis-operator.redis-stg.serviceaccount.yaml
 - redis.redis.redis.opstreelabs.in..customresourcedefinition.yaml
 - redisclusters.redis.redis.opstreelabs.in..customresourcedefinition.yaml
 - redisreplications.redis.redis.opstreelabs.in..customresourcedefinition.yaml
 - redissentinels.redis.redis.opstreelabs.in..customresourcedefinition.yaml
-- webhook-service.redis-operator.service.yaml
+- webhook-service.redis-stg.service.yaml

@@ -12,6 +12,7 @@ spec:
     enabled: false
     minAvailable: 1
   redisSentinelConfig:
+    additionalSentinelConfig: redis-sentinel-config
     redisReplicationName: redis-replication
     downAfterMilliseconds: "10000"
     failoverTimeout: "180000"
