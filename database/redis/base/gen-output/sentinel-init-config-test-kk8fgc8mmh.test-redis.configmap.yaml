@@ -1,0 +1,25 @@
+apiVersion: v1
+data:
+  sentinel-init.conf: |
+    daemonize no
+    pidfile "/var/run/redis-sentinel.pid"
+    logfile ""
+    dir "/tmp"
+
+    protected-mode no
+    sentinel deny-scripts-reconfig yes
+    sentinel resolve-hostnames yes
+    sentinel announce-hostnames yes
+
+    sentinel monitor __REDIS_NAME__ __REDIS_MASTER__ 6379 __QUORUM__
+    sentinel announce-port 26379
+    sentinel announce-ip __POD_FQDN__
+
+    port 26379
+    include /opt/sentinel-extra/*.conf
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: test
+  name: sentinel-init-config-test-kk8fgc8mmh
+  namespace: test-redis

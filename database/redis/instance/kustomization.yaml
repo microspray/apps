@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: redis-example
+
+# For more customization use patches
+configMapGenerator:
+- literals:
+    - quorum=2
+    - storageSize=2Gi
+    - storageClass=local
+  name: redis-resources
+  behavior: merge
+
+# Recommended to pin to a specific sha
+resources:
+  - https://github.com/microspray/apps//database/redis/base?ref=main
+
+# The replacement is required
+replacements:
+  - path: https://raw.githubusercontent.com/microspray/apps/main/database/redis/base/replacements.yaml
+
+nameSuffix: -example
+
+
+## The label is required
+labels:
+- includeSelectors: true
+  includeTemplates: true
+  pairs:
+    app.kubernetes.io/instance: example
