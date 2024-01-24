@@ -7,6 +7,39 @@ nameReference:
   - path: spec/template/metadata/labels/app.redis.instance
     kind: StatefulSet
     group: apps
+  - path: spec/selector/matchLabels/app.redis.instance
+    kind: StatefulSet
+    group: apps
+  - path: spec/selector/matchLabels/app.redis.instance
+    kind: StatefulSet
+    group: apps
+  - path: spec/template/spec/affinity/podAntiAffinity/preferredDuringSchedulingIgnoredDuringExecution/podAffinityTerm/labelSelector/matchLabels/app.redis.instance
+    kind: StatefulSet
+    group: apps
+  - path: spec/volumeClaimTemplates/metadata/labels/app.redis.instance
+    kind: StatefulSet
+    group: apps
+
+  - path: metadata/labels/app.redis.instance
+    kind: CronJob
+  - path:   spec/jobTemplate/metadata/labels/app.redis.instance
+    kind: CronJob
+  - path:   spec/jobTemplate/spec/template/metadata/labels/app.redis.instance
+    kind: CronJob
+
+  - path: spec/selector/matchLabels/app.redis.instance
+    kind: ServiceMonitor
+
+  - path: spec/selector/app.redis.instance
+    kind: Service
+  - path: metadata/labels/app.redis.instance
+    kind: Service
+  - path: metadata/labels/app.redis.instance
+    kind: ConfigMap
+  - path: metadata/labels/app.redis.instance
+    kind: Secret
+
+
 - kind: Service
   fieldSpecs:
   - path: metadata/labels/app.redis.headless
@@ -21,6 +54,18 @@ nameReference:
   - path: spec/template/metadata/labels/app.redis.svc
     kind: StatefulSet
     group: apps
+  - path: metadata/labels/app.redis.svc
+    kind: CronJob
+  - path:   spec/jobTemplate/metadata/labels/app.redis.svc
+    kind: CronJob
+  - path:   spec/jobTemplate/spec/template/metadata/labels/app.redis.svc
+    kind: CronJob
+  - path: metadata/labels/app.redis.headless
+    kind: CronJob
+  - path:   spec/jobTemplate/metadata/labels/app.redis.headless
+    kind: CronJob
+  - path:   spec/jobTemplate/spec/template/metadata/labels/app.redis.headless
+    kind: CronJob
 
 commonLabels:
   - path: spec/selector/matchLabels

@@ -148,6 +148,6 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    app.kubernetes.io/instance: prod
+    app.redis.instance: redis
   name: redis-scripts-295k5m4dcb
   namespace: test-redis

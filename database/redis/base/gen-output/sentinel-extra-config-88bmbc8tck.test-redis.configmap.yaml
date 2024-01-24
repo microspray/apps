@@ -7,6 +7,6 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    app.kubernetes.io/instance: prod
+    app.redis.instance: redis
   name: sentinel-extra-config-88bmbc8tck
   namespace: test-redis

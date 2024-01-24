@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/instance: prod
     app.kubernetes.io/name: redis
     app.kubernetes.io/part-of: redis
+    app.redis.instance: redis
   name: redis
   namespace: test-redis
 spec:
@@ -22,8 +22,8 @@ spec:
     protocol: TCP
     targetPort: 9121
   selector:
-    app.kubernetes.io/instance: prod
     app.kubernetes.io/name: redis
     app.kubernetes.io/part-of: redis
+    app.redis.instance: redis
   sessionAffinity: None
   type: ClusterIP

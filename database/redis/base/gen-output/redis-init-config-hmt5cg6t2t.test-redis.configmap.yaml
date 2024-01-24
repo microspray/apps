@@ -15,6 +15,6 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    app.kubernetes.io/instance: prod
+    app.redis.instance: redis
   name: redis-init-config-hmt5cg6t2t
   namespace: test-redis
