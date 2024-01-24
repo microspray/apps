@@ -25,4 +25,4 @@ data:
 kind: ConfigMap
 metadata:
   name: redis-config-k55tt7c789
-  namespace: redis-operator
+  namespace: redis-stg

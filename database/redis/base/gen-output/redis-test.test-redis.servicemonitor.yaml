@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/part-of: redis
+  name: redis-test
+  namespace: test-redis
+spec:
+  endpoints:
+  - port: redis-exporter
+  namespaceSelector:
+    matchNames:
+    - test-redis
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/name: redis
+      app.kubernetes.io/part-of: redis

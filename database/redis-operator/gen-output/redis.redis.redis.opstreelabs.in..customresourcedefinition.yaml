@@ -12,7 +12,7 @@ spec:
       clientConfig:
         service:
           name: webhook-service
-          namespace: redis-operator
+          namespace: redis-stg
           path: /convert
       conversionReviewVersions:
       - v1beta1

@@ -17,4 +17,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: redis-operator
-  namespace: redis-operator
+  namespace: redis-stg

@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/version: 0.15.1
     helm.sh/chart: 0.15.9
   name: redis-operator
-  namespace: redis-operator
+  namespace: redis-stg
 spec:
   replicas: 1
   selector:
@@ -31,6 +31,8 @@ spec:
         env:
         - name: ENABLE_WEBHOOKS
           value: "false"
+        - name: WATCH_NAMESPACE
+          value: redis-stg
         image: quay.io/opstree/redis-operator:v0.15.1
         imagePullPolicy: Always
         name: redis-operator

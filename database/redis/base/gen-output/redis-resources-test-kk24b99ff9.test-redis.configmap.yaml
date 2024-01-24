@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  quorum: "2"
+  storageClass: local
+  storageSize: 5Gi
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: test
+  name: redis-resources-test-kk24b99ff9
+  namespace: test-redis
