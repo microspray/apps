@@ -6,7 +6,6 @@ metadata:
     app.redis.headless: redis-headless
     app.redis.svc: redis
     app.kubernetes.io/component: node
-    app.kubernetes.io/instance: redis
     app.kubernetes.io/name: redis
     app.kubernetes.io/part-of: redis
   name: redis
@@ -19,8 +18,8 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
+      app.redis.instance: redis
       app.kubernetes.io/component: node
-      app.kubernetes.io/instance: redis
       app.kubernetes.io/name: redis
       app.kubernetes.io/part-of: redis
   serviceName: redis-headless
@@ -32,7 +31,6 @@ spec:
         app.redis.svc: redis
 
         app.kubernetes.io/component: node
-        app.kubernetes.io/instance: prod
         app.kubernetes.io/name: redis
         app.kubernetes.io/part-of: redis
     spec:
@@ -43,7 +41,7 @@ spec:
               labelSelector:
                 matchLabels:
                   app.kubernetes.io/component: node
-                  app.kubernetes.io/instance: redis
+                  app.redis.instance: redis
                   app.kubernetes.io/name: redis
               topologyKey: kubernetes.io/hostname
             weight: 10
@@ -397,7 +395,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: node
-        app.kubernetes.io/instance: redis
+        app.redis.instance: redis
         app.kubernetes.io/name: redis
         app.kubernetes.io/part-of: redis
       name: redis-data

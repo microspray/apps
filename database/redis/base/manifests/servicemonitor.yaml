@@ -5,10 +5,9 @@ metadata:
   name: redis
   labels:
     app.kubernetes.io/component: monitoring
-    app.kubernetes.io/instance: prod
+    app.redis.instance: redis
     app.kubernetes.io/name: redis
     app.kubernetes.io/part-of: redis
-
 spec:
   endpoints:
   - port: redis-exporter
@@ -18,6 +17,6 @@ spec:
     - "prod-redis"
   selector:
     matchLabels:
-      app.kubernetes.io/instance: prod
+      app.redis.instance: redis
       app.kubernetes.io/name: redis
       app.kubernetes.io/part-of: redis
