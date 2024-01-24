@@ -27,6 +27,6 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    app.kubernetes.io/instance: test
-  name: redis-extra-config-test-64mb42ck4d
+    app.kubernetes.io/instance: prod
+  name: redis-extra-config-64mb42ck4d
   namespace: test-redis

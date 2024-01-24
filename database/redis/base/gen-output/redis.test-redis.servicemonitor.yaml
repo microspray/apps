@@ -3,10 +3,10 @@ kind: ServiceMonitor
 metadata:
   labels:
     app.kubernetes.io/component: monitoring
-    app.kubernetes.io/instance: test
+    app.kubernetes.io/instance: prod
     app.kubernetes.io/name: redis
     app.kubernetes.io/part-of: redis
-  name: redis-test
+  name: redis
   namespace: test-redis
 spec:
   endpoints:
@@ -16,6 +16,6 @@ spec:
     - test-redis
   selector:
     matchLabels:
-      app.kubernetes.io/instance: test
+      app.kubernetes.io/instance: prod
       app.kubernetes.io/name: redis
       app.kubernetes.io/part-of: redis

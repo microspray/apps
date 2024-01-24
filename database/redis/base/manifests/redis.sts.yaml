@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
+    app.redis.instance: redis
+    app.redis.headless: redis-headless
+    app.redis.svc: redis
     app.kubernetes.io/component: node
     app.kubernetes.io/instance: redis
     app.kubernetes.io/name: redis
@@ -50,19 +53,25 @@ spec:
         - name: REDIS_INSTANCE
           valueFrom:
             fieldRef:
-              fieldPath: metadata.labels['app.kubernetes.io/instance']
+              fieldPath: metadata.labels['app.redis.instance']
+        - name: REDIS_HEADLESS_SVC
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.redis.headless']
+        - name: REDIS_SVC
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.redis.svc']
         - name: POD_NAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        - name: SVC_NAME
-          value: redis-headless-$(REDIS_INSTANCE)
         - name: REDIS_INITIAL_MASTER_HOST
-          value:  "redis-$(REDIS_INSTANCE)-0.$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+          value:  "$(REDIS_INSTANCE)-0.$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local"
         - name: REDIS_NAME
           value: "myMaster"
         - name: POD_FQDN
-          value: "$(POD_NAME).$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+          value: "$(POD_NAME).$(REDIS_SVC).$(NAMESPACE).svc.cluster.local"
         name: init
         command:
           - "bash"
@@ -92,19 +101,25 @@ spec:
         - name: REDIS_INSTANCE
           valueFrom:
             fieldRef:
-              fieldPath: metadata.labels['app.kubernetes.io/instance']
+              fieldPath: metadata.labels['app.redis.instance']
+        - name: REDIS_HEADLESS_SVC
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.redis.headless']
+        - name: REDIS_SVC
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.redis.svc']
         - name: POD_NAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        - name: SVC_NAME
-          value: redis-headless-$(REDIS_INSTANCE)
         - name: REDIS_INITIAL_MASTER_HOST
-          value:  "redis-$(REDIS_INSTANCE)-0.$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+          value:  "$(REDIS_INSTANCE)-0.$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local"
         - name: REDIS_NAME
           value: "myMaster"
         - name: POD_FQDN
-          value: "$(POD_NAME).$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+          value: "$(POD_NAME).$(REDIS_SVC).$(NAMESPACE).svc.cluster.local"
         name: init-sentinel
         command:
           - "bash"
@@ -140,19 +155,25 @@ spec:
         - name: REDIS_INSTANCE
           valueFrom:
             fieldRef:
-              fieldPath: metadata.labels['app.kubernetes.io/instance']
+              fieldPath: metadata.labels['app.redis.instance']
+        - name: REDIS_HEADLESS_SVC
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.redis.headless']
+        - name: REDIS_SVC
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.redis.svc']
         - name: POD_NAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        - name: SVC_NAME
-          value: redis-headless-$(REDIS_INSTANCE)
         - name: REDIS_INITIAL_MASTER_HOST
-          value:  "redis-$(REDIS_INSTANCE)-0.$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+          value:  "$(REDIS_INSTANCE)-0.$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local"
         - name: REDIS_NAME
           value: "myMaster"
         - name: POD_FQDN
-          value: "$(POD_NAME).$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+          value: "$(POD_NAME).$(REDIS_SVC).$(NAMESPACE).svc.cluster.local"
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
         - name: REDIS_TLS_ENABLED
@@ -222,19 +243,25 @@ spec:
         - name: REDIS_INSTANCE
           valueFrom:
             fieldRef:
-              fieldPath: metadata.labels['app.kubernetes.io/instance']
+              fieldPath: metadata.labels['app.redis.instance']
+        - name: REDIS_HEADLESS_SVC
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.redis.headless']
+        - name: REDIS_SVC
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.redis.svc']
         - name: POD_NAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        - name: SVC_NAME
-          value: redis-headless-$(REDIS_INSTANCE)
         - name: REDIS_INITIAL_MASTER_HOST
-          value:  "redis-$(REDIS_INSTANCE)-0.$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+          value:  "$(REDIS_INSTANCE)-0.$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local"
         - name: REDIS_NAME
           value: "myMaster"
         - name: POD_FQDN
-          value: "$(POD_NAME).$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+          value: "$(POD_NAME).$(REDIS_SVC).$(NAMESPACE).svc.cluster.local"
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
         - name: REDIS_TLS_ENABLED
