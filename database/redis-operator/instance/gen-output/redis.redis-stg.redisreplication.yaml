@@ -2,7 +2,7 @@ apiVersion: redis.redis.opstreelabs.in/v1beta2
 kind: RedisReplication
 metadata:
   name: redis
-  namespace: redis-operator
+  namespace: redis-stg
 spec:
   affinity:
     podAntiAffinity:

@@ -3,3 +3,5 @@ nameReference:
   fieldSpecs:
   - path: spec/redisConfig/additionalRedisConfig
     kind: RedisReplication
+  - path: spec/redisSentinelConfig/additionalSentinelConfig
+    kind: RedisSentinel

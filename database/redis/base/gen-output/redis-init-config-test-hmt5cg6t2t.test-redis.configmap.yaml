@@ -1,0 +1,20 @@
+apiVersion: v1
+data:
+  redis-init.conf: |
+    bind 0.0.0.0 ::
+    port 6379
+    daemonize no
+    supervised no
+    dir /data
+
+    replica-announce-ip "__POD_FQDN__"
+    replica-announce-port 6379
+    __REPLICAOF__
+
+    include /opt/redis-extra/*.conf
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: test
+  name: redis-init-config-test-hmt5cg6t2t
+  namespace: test-redis

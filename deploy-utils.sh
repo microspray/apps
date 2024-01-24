@@ -25,6 +25,10 @@ for envpath in $ENVS; do
             echo "GEN: $dir"
             cp "$makefile" "$dir"
             mv $dir/apps.Makefile $dir/apps.Makefile
+            if [ -f $dir/.gen-skip ]; then
+                echo "skipping $dir"
+                continue
+            fi
             make gen -f apps.Makefile &
            if [ $? -ne 0 ]; then
                echo "Error with: $dir"
