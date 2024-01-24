@@ -32,6 +32,9 @@ spec:
         app.kubernetes.io/instance: prod
         app.kubernetes.io/name: redis
         app.kubernetes.io/part-of: redis
+        app.redis.headless: redis-headless
+        app.redis.instance: redis
+        app.redis.svc: redis
     spec:
       affinity:
         podAntiAffinity:
@@ -75,7 +78,7 @@ spec:
         - name: REDIS_NAME
           value: myMaster
         - name: POD_FQDN
-          value: $(POD_NAME).$(REDIS_SVC).$(NAMESPACE).svc.cluster.local
+          value: $(POD_NAME).$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
         - name: REDIS_TLS_ENABLED
@@ -161,7 +164,7 @@ spec:
         - name: REDIS_NAME
           value: myMaster
         - name: POD_FQDN
-          value: $(POD_NAME).$(REDIS_SVC).$(NAMESPACE).svc.cluster.local
+          value: $(POD_NAME).$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
         - name: REDIS_TLS_ENABLED
@@ -280,7 +283,7 @@ spec:
         - name: REDIS_NAME
           value: myMaster
         - name: POD_FQDN
-          value: $(POD_NAME).$(REDIS_SVC).$(NAMESPACE).svc.cluster.local
+          value: $(POD_NAME).$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         image: bash
         name: init
         volumeMounts:
@@ -331,7 +334,7 @@ spec:
         - name: REDIS_NAME
           value: myMaster
         - name: POD_FQDN
-          value: $(POD_NAME).$(REDIS_SVC).$(NAMESPACE).svc.cluster.local
+          value: $(POD_NAME).$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         image: bash
         name: init-sentinel
         volumeMounts:
