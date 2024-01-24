@@ -6,6 +6,6 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    app.kubernetes.io/instance: test
-  name: redis-resources-test-kk24b99ff9
+    app.kubernetes.io/instance: prod
+  name: redis-resources-kk24b99ff9
   namespace: test-redis

@@ -1,9 +1,17 @@
-# nameReference:
-# - kind: Service
-#   version: v1
-#   fieldSpecs:
-#   - kind: StatefulSet
-#     path: spec/serviceName
+nameReference:
+- kind: StatefulSet
+  fieldSpecs:
+  - path: metadata/labels/app.redis.instance
+    kind: StatefulSet
+    group: apps
+- kind: Service
+  fieldSpecs:
+  - path: metadata/labels/app.redis.headless
+    kind: StatefulSet
+    group: apps
+  - path: metadata/labels/app.redis.svc
+    kind: StatefulSet
+    group: apps
 
 commonLabels:
   - path: spec/selector/matchLabels

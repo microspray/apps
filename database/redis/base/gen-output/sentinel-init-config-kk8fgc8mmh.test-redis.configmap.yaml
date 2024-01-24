@@ -20,6 +20,6 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    app.kubernetes.io/instance: test
-  name: sentinel-init-config-test-kk8fgc8mmh
+    app.kubernetes.io/instance: prod
+  name: sentinel-init-config-kk8fgc8mmh
   namespace: test-redis

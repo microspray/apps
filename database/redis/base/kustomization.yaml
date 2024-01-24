@@ -33,13 +33,11 @@ resources:
 - manifests/redis.svc.yaml
 - manifests/servicemonitor.yaml
 
-nameSuffix: -test
-
 labels:
 - includeSelectors: true
   includeTemplates: true
   pairs:
-    app.kubernetes.io/instance: test
+    app.kubernetes.io/instance: prod
 
 configurations:
 - kustomizeconfig.yaml
