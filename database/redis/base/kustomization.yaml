@@ -1,0 +1,88 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: test-redis
+
+
+configMapGenerator:
+- files:
+  - manifests/configs/scripts/redis_liveness.sh
+  - manifests/configs/scripts/redis_readiness.sh
+  - manifests/configs/scripts/sentinel_liveness.sh
+  - manifests/configs/scripts/prestart.sh
+  - manifests/configs/scripts/prestop.sh
+  - manifests/configs/scripts/replace-values.sh
+  name: redis-scripts
+- files:
+  - manifests/configs/redis-init.conf
+  name: redis-init-config
+- files:
+  - manifests/configs/redis-extra.conf
+  name: redis-extra-config
+- files:
+  - manifests/configs/sentinel-extra.conf
+  name: sentinel-extra-config
+- files:
+  - manifests/configs/sentinel-init.conf
+  name: sentinel-init-config
+- envs:
+    - manifests/configs/config.yaml
+  name: redis-resources
+resources:
+- manifests/redis-headless.svc.yaml
+- manifests/redis.sts.yaml
+- manifests/redis.svc.yaml
+- manifests/servicemonitor.yaml
+
+nameSuffix: -test
+
+labels:
+- includeSelectors: true
+  includeTemplates: true
+  pairs:
+    app.kubernetes.io/instance: test
+
+configurations:
+- kustomizeconfig.yaml
+
+replacements:
+- source:
+    fieldPath: metadata.namespace
+    kind: StatefulSet
+  targets:
+  - fieldPaths:
+    - spec.namespaceSelector.matchNames.0
+    select:
+      kind: ServiceMonitor
+
+- source:
+    kind: ConfigMap
+    name: redis-resources
+    fieldPath: data.quorum
+  targets:
+    - select:
+        kind: StatefulSet
+        name: redis
+      fieldPaths:
+        - "spec.template.spec.containers.[name=sentinel].env.[name=QUORUM].value"
+
+- source:
+    kind: ConfigMap
+    name: redis-resources
+    fieldPath: data.storageSize
+  targets:
+    - select:
+        kind: StatefulSet
+        name: redis
+      fieldPaths:
+        - "spec.volumeClaimTemplates.0.spec.resources.requests.storage"
+
+- source:
+    kind: ConfigMap
+    name: redis-resources
+    fieldPath: data.storageClass
+  targets:
+    - select:
+        kind: StatefulSet
+        name: redis
+      fieldPaths:
+        - "spec.volumeClaimTemplates.0.spec.storageClassName"

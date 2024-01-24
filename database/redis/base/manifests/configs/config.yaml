@@ -1,0 +1,3 @@
+storageClass=local
+storageSize=5Gi
+quorum=2

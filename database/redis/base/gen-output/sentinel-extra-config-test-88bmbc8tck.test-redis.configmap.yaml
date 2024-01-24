@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  sentinel-extra.conf: |
+    sentinel down-after-milliseconds __REDIS_NAME__ 2000
+    sentinel parallel-syncs __REDIS_NAME__ 1
+    sentinel failover-timeout __REDIS_NAME__ 180000
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: test
+  name: sentinel-extra-config-test-88bmbc8tck
+  namespace: test-redis

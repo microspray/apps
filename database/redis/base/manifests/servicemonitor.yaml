@@ -1,0 +1,23 @@
+# Source: redis-ha/templates/redis-ha-servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis
+  labels:
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/part-of: redis
+
+spec:
+  endpoints:
+  - port: redis-exporter
+
+  namespaceSelector:
+    matchNames:
+    - "prod-redis"
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: prod
+      app.kubernetes.io/name: redis
+      app.kubernetes.io/part-of: redis

@@ -1,0 +1,32 @@
+apiVersion: v1
+data:
+  redis-extra.conf: |
+    repl-diskless-sync yes
+    # Minimum replica to reply
+    min-replicas-to-write 1
+    min-replicas-max-lag 5
+    maxmemory 0
+    maxmemory-policy noeviction
+    rename-command FLUSHDB "IAM_SURE_TO_DELETE_THE_DB"
+    rename-command FLUSHALL ""
+    protected-mode no
+    pidfile /var/run/redis.pid
+    loglevel notice
+    databases 16
+
+
+    timeout 0
+    shutdown-timeout 10
+
+    ## On disk backups
+    # Disable rdb saves as it uses aof
+    save ""
+    appendfsync everysec
+    appendonly yes
+    appendfilename "appendonly.aof"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: test
+  name: redis-extra-config-test-64mb42ck4d
+  namespace: test-redis

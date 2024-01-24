@@ -1,0 +1,380 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/component: node
+    app.kubernetes.io/instance: redis
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/part-of: redis
+  name: redis
+spec:
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: node
+      app.kubernetes.io/instance: redis
+      app.kubernetes.io/name: redis
+      app.kubernetes.io/part-of: redis
+  serviceName: redis-headless
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: node
+        app.kubernetes.io/instance: prod
+        app.kubernetes.io/name: redis
+        app.kubernetes.io/part-of: redis
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: node
+                  app.kubernetes.io/instance: redis
+                  app.kubernetes.io/name: redis
+              topologyKey: kubernetes.io/hostname
+            weight: 10
+      initContainers:
+      - image: bash
+        env:
+        - name: NAMESPACE
+          valueFrom:
+           fieldRef:
+             fieldPath: metadata.namespace
+        - name: REDIS_INSTANCE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.kubernetes.io/instance']
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: SVC_NAME
+          value: redis-headless-$(REDIS_INSTANCE)
+        - name: REDIS_INITIAL_MASTER_HOST
+          value:  "redis-$(REDIS_INSTANCE)-0.$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+        - name: REDIS_NAME
+          value: "myMaster"
+        - name: POD_FQDN
+          value: "$(POD_NAME).$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+        name: init
+        command:
+          - "bash"
+        args:
+          - "/opt/scripts/prestart.sh"
+          - "/opt/redis/redis-init.conf"
+          - "/data/conf/redis.conf"
+        volumeMounts:
+        - mountPath: /opt/scripts
+          name: redis-scripts
+        - mountPath: /data
+          name: redis-data
+        - mountPath: /opt/redis
+          name: redis-init-config
+        - mountPath: /opt/redis-extra
+          name: redis-extra-config
+        - mountPath: /opt/redis-sentinel
+          name: sentinel-init-config
+        - mountPath: /opt/sentinel-extra
+          name: sentinel-extra-config
+      - image: bash
+        env:
+        - name: NAMESPACE
+          valueFrom:
+           fieldRef:
+             fieldPath: metadata.namespace
+        - name: REDIS_INSTANCE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.kubernetes.io/instance']
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: SVC_NAME
+          value: redis-headless-$(REDIS_INSTANCE)
+        - name: REDIS_INITIAL_MASTER_HOST
+          value:  "redis-$(REDIS_INSTANCE)-0.$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+        - name: REDIS_NAME
+          value: "myMaster"
+        - name: POD_FQDN
+          value: "$(POD_NAME).$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+        name: init-sentinel
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - |-
+               /opt/scripts/prestart.sh /opt/redis-sentinel/sentinel-init.conf /data/conf/sentinel.conf && \
+               /opt/scripts/prestart.sh /opt/redis-sentinel/sentinel-init.conf /data/conf/sentinel.conf && \
+               cp /opt/sentinel-extra-ro/*.conf /opt/sentinel-extra/ && \
+               /opt/scripts/replace-values.sh /opt/sentinel-extra
+        volumeMounts:
+        - mountPath: /opt/scripts
+          name: redis-scripts
+        - mountPath: /data
+          name: redis-data
+        - mountPath: /opt/redis
+          name: redis-init-config
+        - mountPath: /opt/redis-extra
+          name: redis-extra-config
+        - mountPath: /opt/redis-sentinel
+          name: sentinel-init-config
+        - mountPath: /opt/sentinel-extra-ro
+          name: sentinel-extra-config-ro
+        - mountPath: /opt/sentinel-extra
+          name: sentinel-extra-config
+
+      containers:
+      - env:
+        - name: NAMESPACE
+          valueFrom:
+           fieldRef:
+             fieldPath: metadata.namespace
+        - name: REDIS_INSTANCE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.kubernetes.io/instance']
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: SVC_NAME
+          value: redis-headless-$(REDIS_INSTANCE)
+        - name: REDIS_INITIAL_MASTER_HOST
+          value:  "redis-$(REDIS_INSTANCE)-0.$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+        - name: REDIS_NAME
+          value: "myMaster"
+        - name: POD_FQDN
+          value: "$(POD_NAME).$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        - name: REDIS_TLS_ENABLED
+          value: "no"
+        - name: REDIS_SENTINEL_TLS_ENABLED
+          value: "no"
+        - name: REDIS_SENTINEL_HOST
+          value: "0.0.0.0"
+        lifecycle:
+          preStop:
+            exec:
+              command:
+                - /bin/bash
+                - "-c"
+                - "/opt/scripts/prestop.sh > /data/out.txt"
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /opt/scripts/redis_liveness.sh
+          failureThreshold: 5
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /opt/scripts/redis_readiness.sh
+          failureThreshold: 5
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        args:
+        - /data/conf/redis.conf
+        command:
+        - redis-server
+        ports:
+        - containerPort: 6379
+          name: tcp-redis
+        image: redis:7
+        imagePullPolicy: IfNotPresent
+        name: redis
+        volumeMounts:
+        - mountPath: /opt/scripts
+          name: redis-scripts
+        - mountPath: /data
+          name: redis-data
+        - mountPath: /opt/redis
+          name: redis-init-config
+        - mountPath: /opt/redis-extra-ro
+          name: redis-extra-config-ro
+        - mountPath: /opt/redis-extra
+          name: redis-extra-config
+
+
+# SENTINEL
+      - env:
+        - name: NAMESPACE
+          valueFrom:
+           fieldRef:
+             fieldPath: metadata.namespace
+        - name: REDIS_INSTANCE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.kubernetes.io/instance']
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: SVC_NAME
+          value: redis-headless-$(REDIS_INSTANCE)
+        - name: REDIS_INITIAL_MASTER_HOST
+          value:  "redis-$(REDIS_INSTANCE)-0.$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+        - name: REDIS_NAME
+          value: "myMaster"
+        - name: POD_FQDN
+          value: "$(POD_NAME).$(SVC_NAME).$(NAMESPACE).svc.cluster.local"
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        - name: REDIS_TLS_ENABLED
+          value: "no"
+        - name: REDIS_SENTINEL_TLS_ENABLED
+          value: "no"
+        - name: QUORUM
+          value: "2"
+        - name: REDIS_MODE
+          value: "sentinel"
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /opt/scripts/sentinel_liveness.sh
+          failureThreshold: 6
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /opt/scripts/sentinel_liveness.sh
+          failureThreshold: 5
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        args:
+        - /data/conf/sentinel.conf
+        - "--sentinel"
+        lifecycle:
+          preStop:
+            exec:
+              command:
+                - sleep
+                - "120"
+        command:
+        - redis-server
+        ports:
+        - containerPort: 26379
+          name: tcp-sentinel
+        image: redis:7
+        imagePullPolicy: IfNotPresent
+        name: sentinel
+        volumeMounts:
+        - mountPath: /opt/scripts
+          name: redis-scripts
+
+        - mountPath: /data
+          name: redis-data
+
+        - mountPath: /opt/redis-sentinel
+          name: sentinel-init-config
+
+        - mountPath: /opt/sentinel-extra-ro
+          name: sentinel-extra-config-ro
+
+        - mountPath: /opt/sentinel-extra
+          name: sentinel-extra-config
+
+
+      # Exporter
+      - name: redis-exporter
+        env:
+        - name: REDIS_ADDR
+          value: redis://localhost:6379
+        image: oliver006/redis_exporter:latest
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 9121
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 3
+        ports:
+        - containerPort: 9121
+          name: exporter-port
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 9121
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 3
+
+      volumes:
+      - configMap:
+          defaultMode: 493
+          name: redis-scripts
+        name: redis-scripts
+      - configMap:
+          name: redis-init-config
+        name: redis-init-config
+      - configMap:
+          name: sentinel-init-config
+        name: sentinel-init-config
+      - configMap:
+          name: redis-extra-config
+        name: redis-extra-config-ro
+      - configMap:
+          name: sentinel-extra-config
+        name: sentinel-extra-config-ro
+      - name: redis-extra-config
+        emptyDir: {}
+      - name: sentinel-extra-config
+        emptyDir: {}
+
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      labels:
+        app.kubernetes.io/component: node
+        app.kubernetes.io/instance: redis
+        app.kubernetes.io/name: redis
+        app.kubernetes.io/part-of: redis
+      name: redis-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 3Gi
+      storageClassName: local
+      volumeMode: Filesystem

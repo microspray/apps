@@ -1,0 +1,153 @@
+apiVersion: v1
+data:
+  prestart.sh: |
+    #!/usr/bin/env bash
+
+    # 1. Copy baseconfig to /data/redis.conf if doesn't exists
+    # 2. Sed values in /data/redis.conf
+    # 3. print /data/redis.conf
+    REDIS_NAME=${REDIS_NAME:-"myMaster"}
+    REDIS_MASTER=${REDIS_INITIAL_MASTER_HOST:-"localost"}
+    QUORUM=${QUORUM:-"2"}
+    POD_FQDN=${POD_FQDN:-"localhost"}
+
+    initconf=$1
+    confdest=$2
+    echo "$initconf $confdest"
+    mkdir -p $(dirname $confdest)
+    if [ ! -f $confdest ]; then
+        cp $initconf $confdest
+    fi
+
+    sed_values() {
+        file=$1
+        sed -i "s/__REDIS_NAME__/${REDIS_NAME}/g" $file
+        sed -i "s/__REDIS_MASTER__/${REDIS_MASTER}/g" $file
+        sed -i "s/__POD_FQDN__/${POD_FQDN}/g" $file
+        sed -i "s/__QUORUM__/${QUORUM}/g" $file
+        sed -r -i "s/(sentinel monitor .*)[0-9]$/\1 ${QUORUM}/g" $file
+        if [[ "$POD_FQDN" == "$REDIS_MASTER" ]]; then
+            sed -i "s/__REPLICAOF__//g" $file
+        else
+            sed -i "s/__REPLICAOF__/replicaof ${REDIS_MASTER} 6379/g" $file
+        fi
+
+    }
+
+    sed_values $confdest
+    chmod 766 $confdest
+    cat $confdest
+  prestop.sh: |
+    #!/usr/bin/env bash
+    REDIS_NAME=${REDIS_NAME:-"myMaster"}
+    REDIS_PORT=${REDIS_PORT:-"6379"}
+    REDIS_HOST=${REDIS_HOST:-"0.0.0.0"}
+    REDIS_SENTINEL_HOST=${REDIS_SENTINEL_HOST:-"0.0.0.0"}
+    REDIS_SENTINEL_PORT=${REDIS_SENTINEL_PORT:-"26379"}
+    REDIS_MODE=${REDIS_MODE:-"server"}
+
+    get_redis_role() {
+      is_master=$(
+        redis-cli \
+          -h localhost \
+          -p 6379 \
+          info | grep -c 'role:master' || true
+      )
+    }
+    get_redis_role
+    if [[ "$is_master" -eq 1 ]]; then
+      if [[ "$REDIS_MODE" == "sentinel" ]]; then
+        echo "We are in sentinel mode, we're waiting for the failover to happen."
+      else
+        echo "This node is currently master, we trigger a failover."
+      response=$(
+        redis-cli \
+          -h localhost \
+          -p 26379 \
+          SENTINEL failover $REDIS_NAME
+      )
+      fi
+      if [[ "$response" != "OK" ]] ; then
+        echo "$response"
+        exit 1
+      fi
+      timeout=30
+      while [[ "$is_master" -eq 1 && $timeout -gt 0 ]]; do
+        sleep 1
+        get_redis_role
+        timeout=$((timeout - 1))
+      done
+      echo "Failover successful"
+    else
+        echo "This node is currently slave, we do nothing."
+    fi
+  redis_liveness.sh: |
+    #!/bin/bash
+    response=$(
+      redis-cli \
+        -h localhost \
+        -p 6379 \
+        ping
+    )
+    if [ "$response" != "PONG" ] && [ "${response:0:7}" != "LOADING" ] ; then
+      echo "$response"
+      exit 1
+    fi
+    echo "response=$response"
+  redis_readiness.sh: |
+    #!/bin/bash
+    response=$(
+      redis-cli \
+        -h localhost \
+        -p 6379 \
+        ping
+    )
+    if [ "$response" != "PONG" ] ; then
+      echo "$response"
+      exit 1
+    fi
+    echo "response=$response"
+  replace-values.sh: |
+    #!/usr/bin/env bash
+    REDIS_NAME=${REDIS_NAME:-"myMaster"}
+    REDIS_MASTER=${REDIS_INITIAL_MASTER_HOST:-"localost"}
+    QUORUM=${QUORUM:-"2"}
+    POD_FQDN=${POD_FQDN:-"localhost"}
+    sed_values() {
+        file=$1
+        sed -i "s/__REDIS_NAME__/${REDIS_NAME}/g" $file
+        sed -i "s/__REDIS_MASTER__/${REDIS_MASTER}/g" $file
+        sed -i "s/__POD_FQDN__/${POD_FQDN}/g" $file
+        sed -i "s/__QUORUM__/${QUORUM}/g" $file
+        sed -r -i "s/(sentinel monitor .*)[0-9]$/\1 ${QUORUM}/g" $file
+        if [[ "$POD_FQDN" == "$REDIS_MASTER" ]] ; then
+            sed -i "s/__REPLICAOF__//g" $file
+        else
+            sed -i "s/__REPLICAOF__/replicaof ${REDIS_MASTER} 6379/g" $file
+        fi
+
+    }
+
+    dir=$1
+    for file in `find $dir -type f -name "*.conf"`; do
+        sed_values $file
+    done
+  sentinel_liveness.sh: |
+    #!/bin/bash
+    response=$(
+      redis-cli \
+        -h localhost \
+        -p 26379 \
+        ping
+    )
+    if [ "$response" != "PONG" ]; then
+      echo "$response"
+      exit 1
+    fi
+    echo "response=$response"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: test
+  name: redis-scripts-test-295k5m4dcb
+  namespace: test-redis
