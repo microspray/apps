@@ -15,6 +15,7 @@ spec:
     targetPort: tcp-redis
   - name: tcp-sentinel
     port: 26379
+    protocol: TCP
     targetPort: tcp-sentinel
   - name: redis-exporter
     port: 9121
