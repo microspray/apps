@@ -72,15 +72,18 @@ spec:
           value:  "$(REDIS_INSTANCE)-0.$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local"
         - name: REDIS_NAME
           value: "myMaster"
+        - name: HEADLESS_SVC
+          value: "$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local"
         - name: POD_FQDN
           value: "$(POD_NAME).$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local"
         name: init
         command:
           - "bash"
         args:
-          - "/opt/scripts/prestart.sh"
-          - "/opt/redis/redis-init.conf"
-          - "/data/conf/redis.conf"
+          - "-c"
+          - |-
+              /opt/scripts/prestart.sh /opt/redis/redis-init.conf /data/conf/redis.conf && \
+               /opt/scripts/prestart.sh /opt/haproxy/haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
         volumeMounts:
         - mountPath: /opt/scripts
           name: redis-scripts
@@ -94,6 +97,11 @@ spec:
           name: sentinel-init-config
         - mountPath: /opt/sentinel-extra
           name: sentinel-extra-config
+        - mountPath: /opt/haproxy
+          name: haproxy-config-ro
+        - mountPath: /usr/local/etc/haproxy
+          name: haproxy-config
+
       - image: bash
         env:
         - name: NAMESPACE
@@ -329,6 +337,51 @@ spec:
         - mountPath: /opt/sentinel-extra
           name: sentinel-extra-config
 
+      # HAPROXY
+      - image: haproxy:2.9
+        imagePullPolicy: IfNotPresent
+        lifecycle: {}
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8888
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: haproxy
+        ports:
+        - containerPort: 6380
+          name: ha-redis
+          protocol: TCP
+        - containerPort: 9101
+          name: ha-metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8888
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/local/etc/haproxy
+          name: haproxy-config
+        - mountPath: /run/haproxy
+          name: shared-socket
 
       # Exporter
       - name: redis-exporter
@@ -383,7 +436,13 @@ spec:
         emptyDir: {}
       - name: sentinel-extra-config
         emptyDir: {}
-
+      - name: haproxy-config
+        emptyDir: {}
+      - configMap:
+          name: haproxy-config
+        name: haproxy-config-ro
+      - emptyDir: {}
+        name: shared-socket
   updateStrategy:
     rollingUpdate:
       partition: 0

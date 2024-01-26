@@ -1,8 +1,9 @@
 .PHONY: clean
+all: lint
+
 clean:
 	find . -name '*~' -exec rm -f {} +
 	find . -name '.#*' -exec rm -f {} +
-all: lint
 
 .PHONY: gen-all lint
 gen-all:
