@@ -6,14 +6,12 @@ data:
       hold valid 10s
       accepted_payload_size 8192
 
-    global
-     log stdout format raw local0
-
     defaults REDIS
      mode tcp
      timeout connect  4s
-     timeout server  30s
-     timeout client  30s
+     timeout server  600s
+     timeout client  600s
+     timeout check 2s
      log global
 
     frontend ft_redis
@@ -48,5 +46,5 @@ kind: ConfigMap
 metadata:
   labels:
     app.redis.instance: redis
-  name: haproxy-config-gk8td675gm
+  name: haproxy-config-k698g56cf2
   namespace: test-redis

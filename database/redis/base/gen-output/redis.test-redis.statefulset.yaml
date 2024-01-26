@@ -429,7 +429,7 @@ spec:
       - emptyDir: {}
         name: haproxy-config
       - configMap:
-          name: haproxy-config-gk8td675gm
+          name: haproxy-config-k698g56cf2
         name: haproxy-config-ro
       - emptyDir: {}
         name: shared-socket
