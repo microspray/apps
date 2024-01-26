@@ -19,6 +19,9 @@ configMapGenerator:
   - manifests/configs/redis-extra.conf
   name: redis-extra-config
 - files:
+  - manifests/configs/haproxy.cfg
+  name: haproxy-config
+- files:
   - manifests/configs/sentinel-extra.conf
   name: sentinel-extra-config
 - files:
