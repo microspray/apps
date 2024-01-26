@@ -3,10 +3,12 @@
 # 1. Copy baseconfig to /data/redis.conf if doesn't exists
 # 2. Sed values in /data/redis.conf
 # 3. print /data/redis.conf
+
 REDIS_NAME=${REDIS_NAME:-"myMaster"}
 REDIS_MASTER=${REDIS_INITIAL_MASTER_HOST:-"localost"}
 QUORUM=${QUORUM:-"2"}
 POD_FQDN=${POD_FQDN:-"localhost"}
+REDISCONF=${REDISCONF:-"/data/conf/redis.conf"}
 
 initconf=$1
 confdest=$2
@@ -17,8 +19,13 @@ fi
 
 echo "$initconf $confdest" "$overwrite"
 mkdir -p $(dirname $confdest)
+
 if [ ! -f $confdest ] || [[ "$overwrite" == "yes" ]]; then
     cp $initconf $confdest
+fi
+
+if [ ! -f $REDISCONF ]; then
+    REDIS_MASTER=`cat $REDISCONF | grep replicaof | cut -d" " -f2`
 fi
 
 sed_values() {

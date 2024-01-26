@@ -419,7 +419,7 @@ spec:
       volumes:
       - configMap:
           defaultMode: 493
-          name: redis-scripts-5htg8245ck
+          name: redis-scripts-hdg8h4d4dd
         name: redis-scripts
       - configMap:
           name: redis-init-config-hmt5cg6t2t
