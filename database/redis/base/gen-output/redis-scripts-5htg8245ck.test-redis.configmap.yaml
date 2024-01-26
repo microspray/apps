@@ -13,9 +13,14 @@ data:
 
     initconf=$1
     confdest=$2
-    echo "$initconf $confdest"
+    overwrite="no"
+    if [ $# == 3 ]; then
+        overwrite=$3
+    fi
+
+    echo "$initconf $confdest" "$overwrite"
     mkdir -p $(dirname $confdest)
-    if [ ! -f $confdest ]; then
+    if [ ! -f $confdest ] || [[ "$overwrite" == "yes" ]]; then
         cp $initconf $confdest
     fi
 
@@ -151,5 +156,5 @@ kind: ConfigMap
 metadata:
   labels:
     app.redis.instance: redis
-  name: redis-scripts-99k9g5949h
+  name: redis-scripts-5htg8245ck
   namespace: test-redis

@@ -10,9 +10,14 @@ POD_FQDN=${POD_FQDN:-"localhost"}
 
 initconf=$1
 confdest=$2
-echo "$initconf $confdest"
+overwrite="no"
+if [ $# == 3 ]; then
+    overwrite=$3
+fi
+
+echo "$initconf $confdest" "$overwrite"
 mkdir -p $(dirname $confdest)
-if [ ! -f $confdest ]; then
+if [ ! -f $confdest ] || [[ "$overwrite" == "yes" ]]; then
     cp $initconf $confdest
 fi
 
