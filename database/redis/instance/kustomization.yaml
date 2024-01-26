@@ -19,7 +19,9 @@ resources:
 # The replacement is required
 replacements:
   - path: https://raw.githubusercontent.com/microspray/apps/main/database/redis/base/replacements.yaml
-
+replicas:
+  - name: redis
+    count: 5
 nameSuffix: -ha
 
 

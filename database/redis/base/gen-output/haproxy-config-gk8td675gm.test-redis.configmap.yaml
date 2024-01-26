@@ -29,7 +29,7 @@ data:
      tcp-check expect string role:master
      tcp-check send QUIT\r\n
      tcp-check expect string +OK
-     server-template R __QUORUM__ _tcp-redis._tcp.__HEADLESS_SVC__. resolvers coredns check inter 1s init-addr none
+     server-template R 1-9 _tcp-redis._tcp.__HEADLESS_SVC__. resolvers coredns check inter 1s init-addr none
 
     listen health_check_http_url
           bind [::]:8888  v4v6
@@ -48,5 +48,5 @@ kind: ConfigMap
 metadata:
   labels:
     app.redis.instance: redis
-  name: haproxy-config-k86cf2b54h
+  name: haproxy-config-gk8td675gm
   namespace: test-redis
