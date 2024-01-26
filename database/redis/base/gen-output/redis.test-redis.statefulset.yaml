@@ -180,7 +180,7 @@ spec:
             exec:
               command:
               - sleep
-              - "120"
+              - "30"
         livenessProbe:
           exec:
             command:
@@ -297,7 +297,9 @@ spec:
         - -c
         - |-
           /opt/scripts/prestart.sh /opt/redis/redis-init.conf /data/conf/redis.conf && \
-           /opt/scripts/prestart.sh /opt/haproxy/haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+           /opt/scripts/prestart.sh /opt/haproxy/haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg && \
+           cp /opt/redis-extra-ro/*.conf /opt/redis-extra/ && \
+           /opt/scripts/replace-values.sh /opt/redis-extra
         command:
         - bash
         env:
@@ -338,8 +340,6 @@ spec:
           name: redis-data
         - mountPath: /opt/redis
           name: redis-init-config
-        - mountPath: /opt/redis-extra
-          name: redis-extra-config
         - mountPath: /opt/redis-sentinel
           name: sentinel-init-config
         - mountPath: /opt/sentinel-extra
@@ -348,6 +348,10 @@ spec:
           name: haproxy-config-ro
         - mountPath: /usr/local/etc/haproxy
           name: haproxy-config
+        - mountPath: /opt/redis-extra-ro
+          name: redis-extra-config-ro
+        - mountPath: /opt/redis-extra
+          name: redis-extra-config
       - args:
         - -c
         - |-
