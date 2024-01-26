@@ -74,7 +74,7 @@ spec:
         - name: REDIS_INITIAL_MASTER_HOST
           value: $(REDIS_INSTANCE)-0.$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         - name: REDIS_NAME
-          value: myMaster
+          value: $(REDIS_INSTANCE)_$(NAMESPACE)
         - name: POD_FQDN
           value: $(POD_NAME).$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         - name: ALLOW_EMPTY_PASSWORD
@@ -131,6 +131,12 @@ spec:
           name: redis-extra-config-ro
         - mountPath: /opt/redis-extra
           name: redis-extra-config
+        - mountPath: /opt/redis-sentinel
+          name: sentinel-init-config
+        - mountPath: /opt/sentinel-extra-ro
+          name: sentinel-extra-config-ro
+        - mountPath: /opt/sentinel-extra
+          name: sentinel-extra-config
       - args:
         - /data/conf/sentinel.conf
         - --sentinel
@@ -160,7 +166,7 @@ spec:
         - name: REDIS_INITIAL_MASTER_HOST
           value: $(REDIS_INSTANCE)-0.$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         - name: REDIS_NAME
-          value: myMaster
+          value: $(REDIS_INSTANCE)_$(NAMESPACE)
         - name: POD_FQDN
           value: $(POD_NAME).$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         - name: ALLOW_EMPTY_PASSWORD
@@ -218,6 +224,12 @@ spec:
           name: sentinel-extra-config-ro
         - mountPath: /opt/sentinel-extra
           name: sentinel-extra-config
+        - mountPath: /opt/redis
+          name: redis-init-config
+        - mountPath: /opt/redis-extra-ro
+          name: redis-extra-config-ro
+        - mountPath: /opt/redis-extra
+          name: redis-extra-config
       - image: haproxy:2.9
         imagePullPolicy: IfNotPresent
         lifecycle: {}
@@ -326,7 +338,7 @@ spec:
         - name: REDIS_INITIAL_MASTER_HOST
           value: $(REDIS_INSTANCE)-0.$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         - name: REDIS_NAME
-          value: myMaster
+          value: $(REDIS_INSTANCE)_$(NAMESPACE)
         - name: HEADLESS_SVC
           value: $(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         - name: POD_FQDN
@@ -385,7 +397,7 @@ spec:
         - name: REDIS_INITIAL_MASTER_HOST
           value: $(REDIS_INSTANCE)-0.$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         - name: REDIS_NAME
-          value: myMaster
+          value: $(REDIS_INSTANCE)_$(NAMESPACE)
         - name: POD_FQDN
           value: $(POD_NAME).$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         image: bash
