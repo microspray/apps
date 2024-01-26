@@ -83,7 +83,7 @@ spec:
           - "-c"
           - |-
               /opt/scripts/prestart.sh /opt/redis/redis-init.conf /data/conf/redis.conf && \
-               /opt/scripts/prestart.sh /opt/haproxy/haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg && \
+               /opt/scripts/prestart.sh /opt/haproxy/haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg yes && \
                cp /opt/redis-extra-ro/*.conf /opt/redis-extra/ && \
                /opt/scripts/replace-values.sh /opt/redis-extra
 
@@ -141,10 +141,9 @@ spec:
         args:
           - "-c"
           - |-
-               /opt/scripts/prestart.sh /opt/redis-sentinel/sentinel-init.conf /data/conf/sentinel.conf && \
-               /opt/scripts/prestart.sh /opt/redis-sentinel/sentinel-init.conf /data/conf/sentinel.conf && \
-               cp /opt/sentinel-extra-ro/*.conf /opt/sentinel-extra/ && \
-               /opt/scripts/replace-values.sh /opt/sentinel-extra
+               /opt/scripts/prestart.sh /opt/redis-sentinel/sentinel-init.conf /data/conf/sentinel.conf yes && \
+                cp /opt/sentinel-extra-ro/*.conf /opt/sentinel-extra/ && \
+                /opt/scripts/replace-values.sh /opt/sentinel-extra
         volumeMounts:
         - mountPath: /opt/scripts
           name: redis-scripts
