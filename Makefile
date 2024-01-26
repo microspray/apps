@@ -1,5 +1,5 @@
 .PHONY: clean
-all: lint
+all: gen-all
 
 clean:
 	find . -name '*~' -exec rm -f {} +
