@@ -6,7 +6,7 @@ resources:
 - redis-headless.test-redis.service.yaml
 - redis-init-config-hmt5cg6t2t.test-redis.configmap.yaml
 - redis-resources-kk24b99ff9.test-redis.configmap.yaml
-- redis-scripts-hdg8h4d4dd.test-redis.configmap.yaml
+- redis-scripts-b856f88d6h.test-redis.configmap.yaml
 - redis.test-redis.service.yaml
 - redis.test-redis.servicemonitor.yaml
 - redis.test-redis.statefulset.yaml

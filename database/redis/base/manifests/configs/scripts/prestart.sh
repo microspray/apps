@@ -24,7 +24,7 @@ if [ ! -f $confdest ] || [[ "$overwrite" == "yes" ]]; then
     cp $initconf $confdest
 fi
 
-if [ ! -f $REDISCONF ]; then
+if [ -f $REDISCONF ]; then
     REDIS_MASTER=`cat $REDISCONF | grep replicaof | cut -d" " -f2`
 fi
 
