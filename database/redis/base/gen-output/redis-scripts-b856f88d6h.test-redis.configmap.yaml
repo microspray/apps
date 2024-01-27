@@ -27,7 +27,7 @@ data:
         cp $initconf $confdest
     fi
 
-    if [ ! -f $REDISCONF ]; then
+    if [ -f $REDISCONF ]; then
         REDIS_MASTER=`cat $REDISCONF | grep replicaof | cut -d" " -f2`
     fi
 
@@ -163,5 +163,5 @@ kind: ConfigMap
 metadata:
   labels:
     app.redis.instance: redis
-  name: redis-scripts-hdg8h4d4dd
+  name: redis-scripts-b856f88d6h
   namespace: test-redis
