@@ -18,16 +18,8 @@ resources:
 
 # The replacement is required
 replacements:
-  - path: https://raw.githubusercontent.com/microspray/apps/main/database/redis/base/replacements.yaml
+  - path: replacements.yaml
 replicas:
   - name: redis
-    count: 5
-nameSuffix: -ha
-
-
-## The label is required
-labels:
-- includeSelectors: true
-  includeTemplates: true
-  pairs:
-    app.kubernetes.io/instance: ha
+    count: 3
+nameSuffix: -ha7

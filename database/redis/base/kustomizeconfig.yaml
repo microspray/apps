@@ -39,7 +39,6 @@ nameReference:
   - path: metadata/labels/app.redis.instance
     kind: Secret
 
-
 - kind: Service
   fieldSpecs:
   - path: metadata/labels/app.redis.headless
@@ -48,17 +47,29 @@ nameReference:
   - path: metadata/labels/app.redis.svc
     kind: StatefulSet
     group: apps
+  - path: metadata/labels/app.redis.svc-sentinel
+    kind: StatefulSet
+    group: apps
   - path: spec/template/metadata/labels/app.redis.headless
     kind: StatefulSet
     group: apps
   - path: spec/template/metadata/labels/app.redis.svc
     kind: StatefulSet
     group: apps
+  - path: spec/template/metadata/labels/app.redis.svc-sentinel
+    kind: StatefulSet
+    group: apps
   - path: metadata/labels/app.redis.svc
+    kind: CronJob
+  - path: metadata/labels/app.redis.svc-sentinel
     kind: CronJob
   - path:   spec/jobTemplate/metadata/labels/app.redis.svc
     kind: CronJob
+  - path:   spec/jobTemplate/metadata/labels/app.redis.svc-sentinel
+    kind: CronJob
   - path:   spec/jobTemplate/spec/template/metadata/labels/app.redis.svc
+    kind: CronJob
+  - path:   spec/jobTemplate/spec/template/metadata/labels/app.redis.svc-sentinel
     kind: CronJob
   - path: metadata/labels/app.redis.headless
     kind: CronJob
