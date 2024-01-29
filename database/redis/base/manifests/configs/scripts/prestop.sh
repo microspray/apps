@@ -5,7 +5,9 @@ REDIS_HOST=${REDIS_HOST:-"0.0.0.0"}
 REDIS_SENTINEL_HOST=${REDIS_SENTINEL_HOST:-"0.0.0.0"}
 REDIS_SENTINEL_PORT=${REDIS_SENTINEL_PORT:-"26379"}
 REDIS_MODE=${REDIS_MODE:-"server"}
-
+REDIS_USER=${REDIS_USER:-"default"}
+REDIS_PASSWORD=${REDIS_PASSWORD:-"default"}
+uri="redis://$REDIS_USER:$REDIS_PASSWORD@$REDIS_SENTINEL_HOST:$REDIS_SENTINEL_PORT"
 get_redis_role() {
   is_master=$(
     redis-cli \
@@ -14,6 +16,7 @@ get_redis_role() {
       info | grep -c 'role:master' || true
   )
 }
+
 get_redis_role
 if [[ "$is_master" -eq 1 ]]; then
   if [[ "$REDIS_MODE" == "sentinel" ]]; then
@@ -22,8 +25,7 @@ if [[ "$is_master" -eq 1 ]]; then
     echo "This node is currently master, we trigger a failover."
   response=$(
     redis-cli \
-      -h localhost \
-      -p 26379 \
+      -u $uri \
       SENTINEL failover $REDIS_NAME
   )
   fi
