@@ -8,11 +8,11 @@ REDIS_MODE=${REDIS_MODE:-"server"}
 REDIS_USER=${REDIS_USER:-"default"}
 REDIS_PASSWORD=${REDIS_PASSWORD:-"default"}
 uri="redis://$REDIS_USER:$REDIS_PASSWORD@$REDIS_SENTINEL_HOST:$REDIS_SENTINEL_PORT"
+urilocal="redis://$REDIS_USER:$REDIS_PASSWORD@$REDIS_HOST:$REDIS_PORT"
 get_redis_role() {
   is_master=$(
     redis-cli \
-      -h localhost \
-      -p 6379 \
+      -u $urilocal \
       info | grep -c 'role:master' || true
   )
 }
