@@ -3,18 +3,18 @@ kind: Service
 metadata:
   labels:
     app.redis.instance: redis
-    app.kubernetes.io/name: redis-headless
+    app.kubernetes.io/name: redis-sentinel-headless
     app.kubernetes.io/part-of: redis
-  name: redis-headless
+  name: headless-redis-sentinel
   namespace: redis
 spec:
   clusterIP: None
   ports:
-  - name: tcp-redis
-    port: 6379
-    targetPort: tcp-redis
+  - name: tcp-sentinel
+    port: 26379
+    targetPort: tcp-sentinel
   publishNotReadyAddresses: true
   selector:
     app.redis.instance: redis
-    app.kubernetes.io/name: redis
+    app.kubernetes.io/name: redis-sentinel
   type: ClusterIP

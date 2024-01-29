@@ -7,6 +7,7 @@
 REDIS_NAME=${REDIS_NAME:-"myMaster"}
 REDIS_MASTER=${REDIS_INITIAL_MASTER_HOST:-"localost"}
 QUORUM=${QUORUM:-"2"}
+REDIS_PASSWORD=${REDIS_PASSWORD:-"default"}
 POD_FQDN=${POD_FQDN:-"localhost"}
 REDISCONF=${REDISCONF:-"/data/conf/redis.conf"}
 
@@ -24,14 +25,11 @@ if [ ! -f $confdest ] || [[ "$overwrite" == "yes" ]]; then
     cp $initconf $confdest
 fi
 
-if [ -f $REDISCONF ]; then
-    REDIS_MASTER=`cat $REDISCONF | grep replicaof | cut -d" " -f2`
-fi
-
 sed_values() {
     file=$1
     sed -i "s/__REDIS_NAME__/${REDIS_NAME}/g" $file
     sed -i "s/__REDIS_MASTER__/${REDIS_MASTER}/g" $file
+    sed -i "s/__REDIS_PASSWORD__/${REDIS_PASSWORD}/g" $file
     sed -i "s/__POD_FQDN__/${POD_FQDN}/g" $file
     sed -i "s/__QUORUM__/${QUORUM}/g" $file
     sed -i "s/__HEADLESS_SVC__/${HEADLESS_SVC}/g" $file

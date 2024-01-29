@@ -28,19 +28,22 @@ configMapGenerator:
   - manifests/configs/sentinel-init.conf
   name: sentinel-init-config
 - envs:
-    - manifests/configs/config.yaml
+  - manifests/configs/config.yaml
   name: redis-resources
 resources:
 - manifests/redis-headless.svc.yaml
 - manifests/redis.sts.yaml
+- manifests/redis-sentinel.sts.yaml
 - manifests/redis.svc.yaml
 - manifests/servicemonitor.yaml
+- manifests/redis-sentinel-headless.svc.yaml
+- manifests/sentinel.svc.yaml
 generatorOptions:
- labels:
-   app.redis.instance: redis
+  labels:
+    app.redis.instance: redis
 
 configurations:
 - kustomizeconfig.yaml
 
 replacements:
-- path: "replacements.yaml"
+- path: replacements.yaml
