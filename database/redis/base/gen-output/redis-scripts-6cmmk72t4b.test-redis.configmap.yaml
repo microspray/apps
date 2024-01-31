@@ -10,6 +10,7 @@ data:
     REDIS_NAME=${REDIS_NAME:-"myMaster"}
     REDIS_MASTER=${REDIS_INITIAL_MASTER_HOST:-"localost"}
     QUORUM=${QUORUM:-"2"}
+    REDIS_PASSWORD=${REDIS_PASSWORD:-"default"}
     POD_FQDN=${POD_FQDN:-"localhost"}
     REDISCONF=${REDISCONF:-"/data/conf/redis.conf"}
 
@@ -27,14 +28,11 @@ data:
         cp $initconf $confdest
     fi
 
-    if [ -f $REDISCONF ]; then
-        REDIS_MASTER=`cat $REDISCONF | grep replicaof | cut -d" " -f2`
-    fi
-
     sed_values() {
         file=$1
         sed -i "s/__REDIS_NAME__/${REDIS_NAME}/g" $file
         sed -i "s/__REDIS_MASTER__/${REDIS_MASTER}/g" $file
+        sed -i "s/__REDIS_PASSWORD__/${REDIS_PASSWORD}/g" $file
         sed -i "s/__POD_FQDN__/${POD_FQDN}/g" $file
         sed -i "s/__QUORUM__/${QUORUM}/g" $file
         sed -i "s/__HEADLESS_SVC__/${HEADLESS_SVC}/g" $file
@@ -58,15 +56,18 @@ data:
     REDIS_SENTINEL_HOST=${REDIS_SENTINEL_HOST:-"0.0.0.0"}
     REDIS_SENTINEL_PORT=${REDIS_SENTINEL_PORT:-"26379"}
     REDIS_MODE=${REDIS_MODE:-"server"}
-
+    REDIS_USER=${REDIS_USER:-"default"}
+    REDIS_PASSWORD=${REDIS_PASSWORD:-"default"}
+    uri="redis://$REDIS_USER:$REDIS_PASSWORD@$REDIS_SENTINEL_HOST:$REDIS_SENTINEL_PORT"
+    urilocal="redis://$REDIS_USER:$REDIS_PASSWORD@$REDIS_HOST:$REDIS_PORT"
     get_redis_role() {
       is_master=$(
         redis-cli \
-          -h localhost \
-          -p 6379 \
+          -u $urilocal \
           info | grep -c 'role:master' || true
       )
     }
+
     get_redis_role
     if [[ "$is_master" -eq 1 ]]; then
       if [[ "$REDIS_MODE" == "sentinel" ]]; then
@@ -75,8 +76,7 @@ data:
         echo "This node is currently master, we trigger a failover."
       response=$(
         redis-cli \
-          -h localhost \
-          -p 26379 \
+          -u $uri \
           SENTINEL failover $REDIS_NAME
       )
       fi
@@ -96,10 +96,15 @@ data:
     fi
   redis_liveness.sh: |
     #!/bin/bash
+    REDIS_USER=${REDIS_USER:-"default"}
+    REDIS_PASSWORD=${REDIS_PASSWORD:-"default"}
+    REDIS_PORT=${REDIS_PORT:-"6379"}
+    REDIS_HOST=${REDIS_HOST:-"0.0.0.0"}
+    uri="redis://$REDIS_USER:$REDIS_PASSWORD@$REDIS_HOST:$REDIS_PORT"
+
     response=$(
       redis-cli \
-        -h localhost \
-        -p 6379 \
+        -u $uri \
         ping
     )
     if [ "$response" != "PONG" ] && [ "${response:0:7}" != "LOADING" ] ; then
@@ -109,10 +114,16 @@ data:
     echo "response=$response"
   redis_readiness.sh: |
     #!/bin/bash
+
+    REDIS_USER=${REDIS_USER:-"default"}
+    REDIS_PASSWORD=${REDIS_PASSWORD:-"default"}
+    REDIS_PORT=${REDIS_PORT:-"6379"}
+    REDIS_HOST=${REDIS_HOST:-"0.0.0.0"}
+    uri="redis://$REDIS_USER:$REDIS_PASSWORD@$REDIS_HOST:$REDIS_PORT"
+
     response=$(
       redis-cli \
-        -h localhost \
-        -p 6379 \
+        -u $uri \
         ping
     )
     if [ "$response" != "PONG" ] ; then
@@ -124,12 +135,14 @@ data:
     #!/usr/bin/env bash
     REDIS_NAME=${REDIS_NAME:-"myMaster"}
     REDIS_MASTER=${REDIS_INITIAL_MASTER_HOST:-"localost"}
+    REDIS_PASSWORD=${REDIS_PASSWORD:-"default"}
     QUORUM=${QUORUM:-"2"}
     POD_FQDN=${POD_FQDN:-"localhost"}
     sed_values() {
         file=$1
         sed -i "s/__REDIS_NAME__/${REDIS_NAME}/g" $file
         sed -i "s/__REDIS_MASTER__/${REDIS_MASTER}/g" $file
+        sed -i "s/__REDIS_PASSWORD__/${REDIS_PASSWORD}/g" $file
         sed -i "s/__POD_FQDN__/${POD_FQDN}/g" $file
         sed -i "s/__QUORUM__/${QUORUM}/g" $file
         sed -i "s/__HEADLESS_SVC__/${HEADLESS_SVC}/g" $file
@@ -148,10 +161,16 @@ data:
     done
   sentinel_liveness.sh: |
     #!/bin/bash
+
+    REDIS_SENTINEL_HOST=${REDIS_SENTINEL_HOST:-"0.0.0.0"}
+    REDIS_SENTINEL_PORT=${REDIS_SENTINEL_PORT:-"26379"}
+    REDIS_USER=${REDIS_USER:-"default"}
+    REDIS_PASSWORD=${REDIS_PASSWORD:-"default"}
+    uri="redis://$REDIS_USER:$REDIS_PASSWORD@$REDIS_SENTINEL_HOST:$REDIS_SENTINEL_PORT"
+
     response=$(
       redis-cli \
-        -h localhost \
-        -p 26379 \
+        -u $uri \
         ping
     )
     if [ "$response" != "PONG" ]; then
@@ -163,5 +182,5 @@ kind: ConfigMap
 metadata:
   labels:
     app.redis.instance: redis
-  name: redis-scripts-b856f88d6h
+  name: redis-scripts-6cmmk72t4b
   namespace: test-redis

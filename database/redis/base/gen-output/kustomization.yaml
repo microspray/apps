@@ -1,14 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- haproxy-config-k698g56cf2.test-redis.configmap.yaml
+- haproxy-config-mt8dkhfbgh.test-redis.configmap.yaml
+- headless-redis-sentinel.test-redis.service.yaml
 - redis-extra-config-64mb42ck4d.test-redis.configmap.yaml
 - redis-headless.test-redis.service.yaml
-- redis-init-config-hmt5cg6t2t.test-redis.configmap.yaml
+- redis-init-config-84gf49k2d5.test-redis.configmap.yaml
 - redis-resources-kk24b99ff9.test-redis.configmap.yaml
-- redis-scripts-b856f88d6h.test-redis.configmap.yaml
+- redis-scripts-6cmmk72t4b.test-redis.configmap.yaml
+- redis-sentinel.test-redis.service.yaml
+- redis-sentinel.test-redis.statefulset.yaml
 - redis.test-redis.service.yaml
 - redis.test-redis.servicemonitor.yaml
 - redis.test-redis.statefulset.yaml
 - sentinel-extra-config-88bmbc8tck.test-redis.configmap.yaml
-- sentinel-init-config-kk8fgc8mmh.test-redis.configmap.yaml
+- sentinel-init-config-4ctc9d68g5.test-redis.configmap.yaml

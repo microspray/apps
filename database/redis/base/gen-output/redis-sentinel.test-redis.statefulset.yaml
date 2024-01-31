@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app.kubernetes.io/component: node
-    app.kubernetes.io/name: redis
+    app.kubernetes.io/component: sentinel
+    app.kubernetes.io/name: redis-sentinel
     app.kubernetes.io/part-of: redis
     app.redis.headless: redis-headless
     app.redis.instance: redis
     app.redis.svc: redis
     app.redis.svc-sentinel: redis-sentinel
-  name: redis
+  name: redis-sentinel
   namespace: test-redis
 spec:
   persistentVolumeClaimRetentionPolicy:
@@ -20,16 +20,16 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app.kubernetes.io/component: node
-      app.kubernetes.io/name: redis
+      app.kubernetes.io/component: sentinel
+      app.kubernetes.io/name: redis-sentinel
       app.kubernetes.io/part-of: redis
       app.redis.instance: redis
-  serviceName: redis-headless
+  serviceName: headless-redis-sentinel
   template:
     metadata:
       labels:
-        app.kubernetes.io/component: node
-        app.kubernetes.io/name: redis
+        app.kubernetes.io/component: sentinel
+        app.kubernetes.io/name: redis-sentinel
         app.kubernetes.io/part-of: redis
         app.redis.headless: redis-headless
         app.redis.instance: redis
@@ -42,14 +42,15 @@ spec:
           - podAffinityTerm:
               labelSelector:
                 matchLabels:
-                  app.kubernetes.io/component: node
-                  app.kubernetes.io/name: redis
+                  app.kubernetes.io/component: sentinel
+                  app.kubernetes.io/name: redis-sentinel
                   app.redis.instance: redis
               topologyKey: kubernetes.io/hostname
             weight: 10
       containers:
       - args:
-        - /data/conf/redis.conf
+        - /data/conf/sentinel.conf
+        - --sentinel
         command:
         - redis-server
         env:
@@ -69,7 +70,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.labels['app.redis.svc']
-        - name: REDIS_SENTINEL_SVC
+        - name: SENTINEL_SVC
           valueFrom:
             fieldRef:
               fieldPath: metadata.labels['app.redis.svc-sentinel']
@@ -79,52 +80,51 @@ spec:
               fieldPath: metadata.name
         - name: REDIS_INITIAL_MASTER_HOST
           value: $(REDIS_INSTANCE)-0.$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
-        - name: REDIS_SENTINEL_HOST
-          value: $(REDIS_SENTINEL_SVC).$(NAMESPACE).svc.cluster.local
         - name: REDIS_NAME
           value: $(REDIS_INSTANCE)_$(NAMESPACE)
         - name: POD_FQDN
-          value: $(POD_NAME).$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
+          value: $(POD_NAME).headless-$(SENTINEL_SVC).$(NAMESPACE).svc.cluster.local
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
-        - name: REDIS_USER
-          value: default
         - name: REDIS_PASSWORD
           value: $(REDIS_INSTANCE)_$(NAMESPACE)
         - name: REDIS_TLS_ENABLED
           value: "no"
         - name: REDIS_SENTINEL_TLS_ENABLED
           value: "no"
+        - name: QUORUM
+          value: "2"
+        - name: REDIS_MODE
+          value: sentinel
         image: redis:7
         imagePullPolicy: IfNotPresent
         lifecycle:
           preStop:
             exec:
               command:
-              - /bin/bash
-              - -c
-              - /opt/scripts/prestop.sh > /data/out.txt
+              - sleep
+              - "30"
         livenessProbe:
           exec:
             command:
             - sh
             - -c
-            - /opt/scripts/redis_liveness.sh
-          failureThreshold: 5
+            - /opt/scripts/sentinel_liveness.sh
+          failureThreshold: 6
           initialDelaySeconds: 20
-          periodSeconds: 5
+          periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 5
-        name: redis
+        name: sentinel
         ports:
-        - containerPort: 6379
-          name: tcp-redis
+        - containerPort: 26379
+          name: tcp-sentinel
         readinessProbe:
           exec:
             command:
             - sh
             - -c
-            - /opt/scripts/redis_readiness.sh
+            - /opt/scripts/sentinel_liveness.sh
           failureThreshold: 5
           initialDelaySeconds: 20
           periodSeconds: 5
@@ -134,111 +134,20 @@ spec:
         - mountPath: /opt/scripts
           name: redis-scripts
         - mountPath: /data
-          name: redis-data
-        - mountPath: /opt/redis
-          name: redis-init-config
-        - mountPath: /opt/redis-extra-ro
-          name: redis-extra-config-ro
-        - mountPath: /opt/redis-extra
-          name: redis-extra-config
+          name: sentinel
         - mountPath: /opt/redis-sentinel
           name: sentinel-init-config
         - mountPath: /opt/sentinel-extra-ro
           name: sentinel-extra-config-ro
         - mountPath: /opt/sentinel-extra
           name: sentinel-extra-config
-      - image: haproxy:2.9
-        imagePullPolicy: IfNotPresent
-        lifecycle: {}
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /healthz
-            port: 8888
-            scheme: HTTP
-          initialDelaySeconds: 5
-          periodSeconds: 3
-          successThreshold: 1
-          timeoutSeconds: 1
-        name: haproxy
-        ports:
-        - containerPort: 6380
-          name: ha-redis
-          protocol: TCP
-        - containerPort: 9101
-          name: ha-metrics
-          protocol: TCP
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /healthz
-            port: 8888
-            scheme: HTTP
-          initialDelaySeconds: 5
-          periodSeconds: 3
-          successThreshold: 1
-          timeoutSeconds: 1
-        resources: {}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-        volumeMounts:
-        - mountPath: /usr/local/etc/haproxy
-          name: haproxy-config
-        - mountPath: /run/haproxy
-          name: shared-socket
-      - env:
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: REDIS_INSTANCE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.labels['app.redis.instance']
-        - name: REDIS_PASSWORD
-          value: $(REDIS_INSTANCE)_$(NAMESPACE)
-        - name: REDIS_ADDR
-          value: redis://default:$(REDIS_PASSWORD)@localhost:6379
-        image: oliver006/redis_exporter:latest
-        imagePullPolicy: IfNotPresent
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /metrics
-            port: 9121
-            scheme: HTTP
-          initialDelaySeconds: 15
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 3
-        name: redis-exporter
-        ports:
-        - containerPort: 9121
-          name: exporter-port
-          protocol: TCP
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /metrics
-            port: 9121
-            scheme: HTTP
-          initialDelaySeconds: 15
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 3
       initContainers:
       - args:
         - -c
         - |-
-          /opt/scripts/prestart.sh /opt/redis/redis-init.conf /data/conf/redis.conf && \
-           /opt/scripts/prestart.sh /opt/haproxy/haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg yes && \
-           cp /opt/redis-extra-ro/*.conf /opt/redis-extra/ && \
-           /opt/scripts/replace-values.sh /opt/redis-extra
+          /opt/scripts/prestart.sh /opt/redis-sentinel/sentinel-init.conf /data/conf/sentinel.conf && \
+           cp /opt/sentinel-extra-ro/*.conf /opt/sentinel-extra/ && \
+           /opt/scripts/replace-values.sh /opt/sentinel-extra
         command:
         - bash
         env:
@@ -262,6 +171,12 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: SENTINEL_SVC
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.redis.svc-sentinel']
+        - name: REDIS_SENTINEL_HOST
+          value: $(REDIS_SENTINEL_SVC).$(NAMESPACE).svc.cluster.local
         - name: REDIS_INITIAL_MASTER_HOST
           value: $(REDIS_INSTANCE)-0.$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         - name: REDIS_NAME
@@ -269,7 +184,7 @@ spec:
         - name: HEADLESS_SVC
           value: $(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
         - name: POD_FQDN
-          value: $(POD_NAME).$(REDIS_HEADLESS_SVC).$(NAMESPACE).svc.cluster.local
+          value: $(POD_NAME).headless-$(SENTINEL_SVC).$(NAMESPACE).svc.cluster.local
         - name: REDIS_USER
           value: default
         - name: REDIS_PASSWORD
@@ -280,68 +195,41 @@ spec:
         - mountPath: /opt/scripts
           name: redis-scripts
         - mountPath: /data
-          name: redis-data
-        - mountPath: /opt/redis
-          name: redis-init-config
+          name: sentinel
         - mountPath: /opt/redis-sentinel
           name: sentinel-init-config
         - mountPath: /opt/sentinel-extra
           name: sentinel-extra-config
-        - mountPath: /opt/haproxy
-          name: haproxy-config-ro
-        - mountPath: /usr/local/etc/haproxy
-          name: haproxy-config
-        - mountPath: /opt/redis-extra-ro
-          name: redis-extra-config-ro
-        - mountPath: /opt/redis-extra
-          name: redis-extra-config
+        - mountPath: /opt/sentinel-extra-ro
+          name: sentinel-extra-config-ro
       volumes:
       - configMap:
           defaultMode: 493
           name: redis-scripts-6cmmk72t4b
         name: redis-scripts
       - configMap:
-          name: redis-init-config-84gf49k2d5
-        name: redis-init-config
-      - configMap:
           name: sentinel-init-config-4ctc9d68g5
         name: sentinel-init-config
-      - configMap:
-          name: redis-extra-config-64mb42ck4d
-        name: redis-extra-config-ro
       - configMap:
           name: sentinel-extra-config-88bmbc8tck
         name: sentinel-extra-config-ro
       - emptyDir: {}
-        name: redis-extra-config
-      - emptyDir: {}
         name: sentinel-extra-config
-      - emptyDir: {}
-        name: haproxy-config
-      - configMap:
-          name: haproxy-config-mt8dkhfbgh
-        name: haproxy-config-ro
-      - emptyDir: {}
-        name: shared-socket
-  updateStrategy:
-    rollingUpdate:
-      partition: 0
-    type: RollingUpdate
   volumeClaimTemplates:
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
       labels:
-        app.kubernetes.io/component: node
-        app.kubernetes.io/name: redis
+        app.kubernetes.io/component: sentinel
+        app.kubernetes.io/name: redis-sentinel
         app.kubernetes.io/part-of: redis
         app.redis.instance: redis
-      name: redis-data
+      name: sentinel
     spec:
       accessModes:
       - ReadWriteOnce
       resources:
         requests:
-          storage: 5Gi
+          storage: 100Mi
       storageClassName: local
       volumeMode: Filesystem
