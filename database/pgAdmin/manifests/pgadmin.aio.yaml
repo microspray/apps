@@ -67,6 +67,14 @@ spec:
                 key: pgadmin-password
           - name: PGADMIN_PORT
             value: "80"
+          - name: PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT
+            value: "False"
+          - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
+            value: "False"
+          - name: PGADMIN_CONFIG_WTF_CSRF_ENABLED
+            value: "False"
+
+
           ports:
           - name: http
             containerPort: 80
