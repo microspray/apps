@@ -7,11 +7,11 @@ resources:
 - redis-headless.test-redis.service.yaml
 - redis-init-config-84gf49k2d5.test-redis.configmap.yaml
 - redis-resources-kk24b99ff9.test-redis.configmap.yaml
-- redis-scripts-6cmmk72t4b.test-redis.configmap.yaml
+- redis-scripts-g75g2chb8d.test-redis.configmap.yaml
 - redis-sentinel.test-redis.service.yaml
 - redis-sentinel.test-redis.statefulset.yaml
 - redis.test-redis.service.yaml
 - redis.test-redis.servicemonitor.yaml
 - redis.test-redis.statefulset.yaml
-- sentinel-extra-config-88bmbc8tck.test-redis.configmap.yaml
+- sentinel-extra-config-f98th7gb2b.test-redis.configmap.yaml
 - sentinel-init-config-4ctc9d68g5.test-redis.configmap.yaml
