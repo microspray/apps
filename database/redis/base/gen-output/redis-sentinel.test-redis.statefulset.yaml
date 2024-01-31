@@ -205,13 +205,13 @@ spec:
       volumes:
       - configMap:
           defaultMode: 493
-          name: redis-scripts-6cmmk72t4b
+          name: redis-scripts-g75g2chb8d
         name: redis-scripts
       - configMap:
           name: sentinel-init-config-4ctc9d68g5
         name: sentinel-init-config
       - configMap:
-          name: sentinel-extra-config-88bmbc8tck
+          name: sentinel-extra-config-f98th7gb2b
         name: sentinel-extra-config-ro
       - emptyDir: {}
         name: sentinel-extra-config

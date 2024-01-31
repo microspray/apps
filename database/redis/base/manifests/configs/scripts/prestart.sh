@@ -10,7 +10,7 @@ QUORUM=${QUORUM:-"2"}
 REDIS_PASSWORD=${REDIS_PASSWORD:-"default"}
 POD_FQDN=${POD_FQDN:-"localhost"}
 REDISCONF=${REDISCONF:-"/data/conf/redis.conf"}
-
+DOWN_AFTER=${DOWN_AFTER:-"5000"}
 initconf=$1
 confdest=$2
 overwrite="no"
@@ -32,6 +32,7 @@ sed_values() {
     sed -i "s/__REDIS_PASSWORD__/${REDIS_PASSWORD}/g" $file
     sed -i "s/__POD_FQDN__/${POD_FQDN}/g" $file
     sed -i "s/__QUORUM__/${QUORUM}/g" $file
+    sed -i "s/__DOWN_AFTER__/${DOWN_AFTER}/g" $file
     sed -i "s/__HEADLESS_SVC__/${HEADLESS_SVC}/g" $file
     sed -r -i "s/(sentinel monitor .*)[0-9]$/\1 ${QUORUM}/g" $file
     if [[ "$POD_FQDN" == "$REDIS_MASTER" ]]; then

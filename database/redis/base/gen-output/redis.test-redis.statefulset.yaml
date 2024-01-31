@@ -298,7 +298,7 @@ spec:
       volumes:
       - configMap:
           defaultMode: 493
-          name: redis-scripts-6cmmk72t4b
+          name: redis-scripts-g75g2chb8d
         name: redis-scripts
       - configMap:
           name: redis-init-config-84gf49k2d5
@@ -310,7 +310,7 @@ spec:
           name: redis-extra-config-64mb42ck4d
         name: redis-extra-config-ro
       - configMap:
-          name: sentinel-extra-config-88bmbc8tck
+          name: sentinel-extra-config-f98th7gb2b
         name: sentinel-extra-config-ro
       - emptyDir: {}
         name: redis-extra-config

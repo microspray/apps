@@ -1,12 +1,12 @@
 apiVersion: v1
 data:
   sentinel-extra.conf: |
-    sentinel down-after-milliseconds __REDIS_NAME__ 2000
+    sentinel down-after-milliseconds __REDIS_NAME__ __DOWN_AFTER__
     sentinel parallel-syncs __REDIS_NAME__ 1
     sentinel failover-timeout __REDIS_NAME__ 180000
 kind: ConfigMap
 metadata:
   labels:
     app.redis.instance: redis
-  name: sentinel-extra-config-88bmbc8tck
+  name: sentinel-extra-config-f98th7gb2b
   namespace: test-redis
