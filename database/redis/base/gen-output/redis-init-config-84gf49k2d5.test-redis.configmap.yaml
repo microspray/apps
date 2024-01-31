@@ -6,7 +6,8 @@ data:
     daemonize no
     supervised no
     dir /data
-
+    masterauth __REDIS_PASSWORD__
+    requirepass __REDIS_PASSWORD__
     replica-announce-ip "__POD_FQDN__"
     replica-announce-port 6379
     __REPLICAOF__
@@ -16,5 +17,5 @@ kind: ConfigMap
 metadata:
   labels:
     app.redis.instance: redis
-  name: redis-init-config-hmt5cg6t2t
+  name: redis-init-config-84gf49k2d5
   namespace: test-redis
