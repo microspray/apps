@@ -18,10 +18,6 @@ spec:
     port: 6380
     protocol: TCP
     targetPort: ha-redis
-  - name: tcp-sentinel
-    port: 26379
-    protocol: TCP
-    targetPort: tcp-sentinel
   - name: redis-exporter
     port: 9121
     protocol: TCP

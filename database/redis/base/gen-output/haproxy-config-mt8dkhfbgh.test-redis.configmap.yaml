@@ -21,6 +21,7 @@ data:
     backend bk_redis
      option tcp-check
      mode tcp
+    tcp-check send AUTH\ __REDIS_PASSWORD__\r\n
      tcp-check send PING\r\n
      tcp-check expect string +PONG
      tcp-check send info\ replication\r\n
@@ -46,5 +47,5 @@ kind: ConfigMap
 metadata:
   labels:
     app.redis.instance: redis
-  name: haproxy-config-k698g56cf2
+  name: haproxy-config-mt8dkhfbgh
   namespace: test-redis
