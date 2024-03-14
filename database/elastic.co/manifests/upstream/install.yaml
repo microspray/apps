@@ -14,7 +14,7 @@ metadata:
   namespace: elastic-system
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/version: "2.11.1"
 ---
 # Source: eck-operator/templates/webhook.yaml
 apiVersion: v1
@@ -24,7 +24,7 @@ metadata:
   namespace: elastic-system
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/version: "2.11.1"
 ---
 # Source: eck-operator/templates/configmap.yaml
 apiVersion: v1
@@ -34,9 +34,32 @@ metadata:
   namespace: elastic-system
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/version: "2.11.1"
 data:
-  eck.yaml: "log-verbosity: 0\nmetrics-port: 0\ncontainer-registry: docker.elastic.co\ncontainer-suffix: \nmax-concurrent-reconciles: 3\nca-cert-validity: 8760h\nca-cert-rotate-before: 24h\ncert-validity: 8760h\ncert-rotate-before: 24h\nexposed-node-labels: [topology.kubernetes.io/.*,failure-domain.beta.kubernetes.io/.*]\nset-default-security-context: auto-detect\nkube-client-timeout: 60s\nelasticsearch-client-timeout: 180s\ndisable-telemetry: false\ndistribution-channel: all-in-one\nvalidate-storage-class: true\nenable-webhook: true\nwebhook-name: elastic-webhook.k8s.elastic.co\nenable-leader-election: true\nelasticsearch-observation-interval: 10s"
+  eck.yaml: |-
+    log-verbosity: 0
+    metrics-port: 0
+    container-registry: docker.elastic.co
+    max-concurrent-reconciles: 3
+    ca-cert-validity: 8760h
+    ca-cert-rotate-before: 24h
+    cert-validity: 8760h
+    cert-rotate-before: 24h
+    disable-config-watch: false
+    exposed-node-labels: [topology.kubernetes.io/.*,failure-domain.beta.kubernetes.io/.*]
+    set-default-security-context: auto-detect
+    kube-client-timeout: 60s
+    elasticsearch-client-timeout: 180s
+    disable-telemetry: false
+    distribution-channel: all-in-one
+    validate-storage-class: true
+    enable-webhook: true
+    webhook-name: elastic-webhook.k8s.elastic.co
+    webhook-port: 9443
+    operator-namespace: elastic-system
+    enable-leader-election: true
+    elasticsearch-observation-interval: 10s
+    ubi-only: false
 ---
 # Source: eck-operator/templates/cluster-roles.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -45,7 +68,7 @@ metadata:
   name: elastic-operator
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/version: "2.11.1"
 rules:
 - apiGroups:
   - "authorization.k8s.io"
@@ -238,6 +261,19 @@ rules:
   - update
   - patch
 - apiGroups:
+  - logstash.k8s.elastic.co
+  resources:
+  - logstashes
+  - logstashes/status
+  - logstashes/finalizers # needed for ownerReferences with blockOwnerDeletion on OCP
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+- apiGroups:
   - storage.k8s.io
   resources:
   - storageclasses
@@ -276,7 +312,7 @@ metadata:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
     control-plane: elastic-operator
-    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/version: "2.11.1"
 rules:
 - apiGroups: ["elasticsearch.k8s.elastic.co"]
   resources: ["elasticsearches"]
@@ -304,6 +340,9 @@ rules:
   verbs: ["get", "list", "watch"]
 - apiGroups: ["stackconfigpolicy.k8s.elastic.co"]
   resources: ["stackconfigpolicies"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["logstash.k8s.elastic.co"]
+  resources: ["logstashes"]
   verbs: ["get", "list", "watch"]
 ---
 # Source: eck-operator/templates/cluster-roles.yaml
@@ -315,7 +354,7 @@ metadata:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
     control-plane: elastic-operator
-    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/version: "2.11.1"
 rules:
 - apiGroups: ["elasticsearch.k8s.elastic.co"]
   resources: ["elasticsearches"]
@@ -344,6 +383,9 @@ rules:
 - apiGroups: ["stackconfigpolicy.k8s.elastic.co"]
   resources: ["stackconfigpolicies"]
   verbs: ["create", "delete", "deletecollection", "patch", "update"]
+- apiGroups: ["logstash.k8s.elastic.co"]
+  resources: ["logstashes"]
+  verbs: ["create", "delete", "deletecollection", "patch", "update"]
 ---
 # Source: eck-operator/templates/role-bindings.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -352,7 +394,7 @@ metadata:
   name: elastic-operator
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/version: "2.11.1"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -370,7 +412,7 @@ metadata:
   namespace: elastic-system
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/version: "2.11.1"
 spec:
   ports:
   - name: https
@@ -387,7 +429,7 @@ metadata:
   namespace: elastic-system
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/version: "2.11.1"
 spec:
   selector:
     matchLabels:
@@ -400,7 +442,7 @@ spec:
         # Rename the fields "error" to "error.message" and "source" to "event.source"
         # This is to avoid a conflict with the ECS "error" and "source" documents.
         "co.elastic.logs/raw": "[{\"type\":\"container\",\"json.keys_under_root\":true,\"paths\":[\"/var/log/containers/*${data.kubernetes.container.id}.log\"],\"processors\":[{\"convert\":{\"mode\":\"rename\",\"ignore_missing\":true,\"fields\":[{\"from\":\"error\",\"to\":\"_error\"}]}},{\"convert\":{\"mode\":\"rename\",\"ignore_missing\":true,\"fields\":[{\"from\":\"_error\",\"to\":\"error.message\"}]}},{\"convert\":{\"mode\":\"rename\",\"ignore_missing\":true,\"fields\":[{\"from\":\"source\",\"to\":\"_source\"}]}},{\"convert\":{\"mode\":\"rename\",\"ignore_missing\":true,\"fields\":[{\"from\":\"_source\",\"to\":\"event.source\"}]}}]}]"
-        "checksum/config": 0450e8c4b583d982f43141029ee70e1035c0f6de518a87aa86427e98982338a7
+        "checksum/config": 052ce1ebc5f534ea096535035722ec268fcdc842b4dd6f2ac502dff91510aaff
       labels:
         control-plane: elastic-operator
     spec:
@@ -409,7 +451,7 @@ spec:
       securityContext:
         runAsNonRoot: true
       containers:
-      - image: "docker.elastic.co/eck/eck-operator:2.6.0"
+      - image: "docker.elastic.co/eck/eck-operator:2.11.1"
         imagePullPolicy: IfNotPresent
         name: manager
         args:
@@ -467,10 +509,9 @@ metadata:
   name: elastic-webhook.k8s.elastic.co
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/version: "2.11.1"
 webhooks:
 - clientConfig:
-    caBundle: Cg==
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -478,7 +519,7 @@ webhooks:
   failurePolicy: Ignore
   name: elastic-agent-validation-v1alpha1.k8s.elastic.co
   matchPolicy: Exact
-  admissionReviewVersions: [v1beta1]
+  admissionReviewVersions: [v1, v1beta1]
   sideEffects: None
   rules:
   - apiGroups:
@@ -491,7 +532,6 @@ webhooks:
     resources:
     - agents
 - clientConfig:
-    caBundle: Cg==
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -499,7 +539,7 @@ webhooks:
   failurePolicy: Ignore
   name: elastic-apm-validation-v1.k8s.elastic.co
   matchPolicy: Exact
-  admissionReviewVersions: [v1beta1]
+  admissionReviewVersions: [v1, v1beta1]
   sideEffects: None
   rules:
   - apiGroups:
@@ -512,7 +552,6 @@ webhooks:
     resources:
     - apmservers
 - clientConfig:
-    caBundle: Cg==
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -520,7 +559,7 @@ webhooks:
   failurePolicy: Ignore
   name: elastic-apm-validation-v1beta1.k8s.elastic.co
   matchPolicy: Exact
-  admissionReviewVersions: [v1beta1]
+  admissionReviewVersions: [v1, v1beta1]
   sideEffects: None
   rules:
   - apiGroups:
@@ -533,7 +572,6 @@ webhooks:
     resources:
     - apmservers
 - clientConfig:
-    caBundle: Cg==
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -541,7 +579,7 @@ webhooks:
   failurePolicy: Ignore
   name: elastic-beat-validation-v1beta1.k8s.elastic.co
   matchPolicy: Exact
-  admissionReviewVersions: [v1beta1]
+  admissionReviewVersions: [v1, v1beta1]
   sideEffects: None
   rules:
   - apiGroups:
@@ -554,7 +592,6 @@ webhooks:
     resources:
     - beats
 - clientConfig:
-    caBundle: Cg==
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -562,7 +599,7 @@ webhooks:
   failurePolicy: Ignore
   name: elastic-ent-validation-v1.k8s.elastic.co
   matchPolicy: Exact
-  admissionReviewVersions: [v1beta1]
+  admissionReviewVersions: [v1, v1beta1]
   sideEffects: None
   rules:
   - apiGroups:
@@ -575,7 +612,6 @@ webhooks:
     resources:
     - enterprisesearches
 - clientConfig:
-    caBundle: Cg==
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -583,7 +619,7 @@ webhooks:
   failurePolicy: Ignore
   name: elastic-ent-validation-v1beta1.k8s.elastic.co
   matchPolicy: Exact
-  admissionReviewVersions: [v1beta1]
+  admissionReviewVersions: [v1, v1beta1]
   sideEffects: None
   rules:
   - apiGroups:
@@ -596,7 +632,6 @@ webhooks:
     resources:
     - enterprisesearches
 - clientConfig:
-    caBundle: Cg==
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -604,7 +639,7 @@ webhooks:
   failurePolicy: Ignore
   name: elastic-es-validation-v1.k8s.elastic.co
   matchPolicy: Exact
-  admissionReviewVersions: [v1beta1]
+  admissionReviewVersions: [v1, v1beta1]
   sideEffects: None
   rules:
   - apiGroups:
@@ -617,7 +652,6 @@ webhooks:
     resources:
     - elasticsearches
 - clientConfig:
-    caBundle: Cg==
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -625,7 +659,7 @@ webhooks:
   failurePolicy: Ignore
   name: elastic-es-validation-v1beta1.k8s.elastic.co
   matchPolicy: Exact
-  admissionReviewVersions: [v1beta1]
+  admissionReviewVersions: [v1, v1beta1]
   sideEffects: None
   rules:
   - apiGroups:
@@ -638,7 +672,26 @@ webhooks:
     resources:
     - elasticsearches
 - clientConfig:
-    caBundle: Cg==
+    service:
+      name: elastic-webhook-server
+      namespace: elastic-system
+      path: /validate-ems-k8s-elastic-co-v1alpha1-mapsservers
+  failurePolicy: Ignore
+  name: elastic-ems-validation-v1alpha1.k8s.elastic.co
+  matchPolicy: Exact
+  admissionReviewVersions: [v1, v1beta1]
+  sideEffects: None
+  rules:
+  - apiGroups:
+    - maps.k8s.elastic.co
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - mapsservers
+- clientConfig:
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -646,7 +699,7 @@ webhooks:
   failurePolicy: Ignore
   name: elastic-kb-validation-v1.k8s.elastic.co
   matchPolicy: Exact
-  admissionReviewVersions: [v1beta1]
+  admissionReviewVersions: [v1, v1beta1]
   sideEffects: None
   rules:
   - apiGroups:
@@ -659,7 +712,6 @@ webhooks:
     resources:
     - kibanas
 - clientConfig:
-    caBundle: Cg==
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -667,7 +719,7 @@ webhooks:
   failurePolicy: Ignore
   name: elastic-kb-validation-v1beta1.k8s.elastic.co
   matchPolicy: Exact
-  admissionReviewVersions: [v1beta1]
+  admissionReviewVersions: [v1, v1beta1]
   sideEffects: None
   rules:
   - apiGroups:
@@ -680,7 +732,6 @@ webhooks:
     resources:
     - kibanas
 - clientConfig:
-    caBundle: Cg==
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -688,7 +739,7 @@ webhooks:
   failurePolicy: Ignore
   name: elastic-esa-validation-v1alpha1.k8s.elastic.co
   matchPolicy: Exact
-  admissionReviewVersions: [v1beta1]
+  admissionReviewVersions: [v1, v1beta1]
   sideEffects: None
   rules:
   - apiGroups:
@@ -701,7 +752,6 @@ webhooks:
     resources:
     - elasticsearchautoscalers
 - clientConfig:
-    caBundle: Cg==
     service:
       name: elastic-webhook-server
       namespace: elastic-system
@@ -721,4 +771,24 @@ webhooks:
     - UPDATE
     resources:
     - stackconfigpolicies
+- clientConfig:
+    service:
+      name: elastic-webhook-server
+      namespace: elastic-system
+      path: /validate-logstash-k8s-elastic-co-v1alpha1-logstash
+  failurePolicy: Ignore
+  name: elastic-logstash-validation-v1alpha1.k8s.elastic.co
+  matchPolicy: Exact
+  admissionReviewVersions: [v1, v1beta1]
+  sideEffects: None
+  rules:
+  - apiGroups:
+    - logstash.k8s.elastic.co
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - logstashes
 

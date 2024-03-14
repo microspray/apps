@@ -20,4 +20,5 @@ resources:
 - elasticsearches.elasticsearch.k8s.elastic.co..customresourcedefinition.yaml
 - enterprisesearches.enterprisesearch.k8s.elastic.co..customresourcedefinition.yaml
 - kibanas.kibana.k8s.elastic.co..customresourcedefinition.yaml
+- logstashes.logstash.k8s.elastic.co..customresourcedefinition.yaml
 - stackconfigpolicies.stackconfigpolicy.k8s.elastic.co..customresourcedefinition.yaml

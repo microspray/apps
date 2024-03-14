@@ -2,7 +2,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-    app.kubernetes.io/version: 2.6.0
+    app.kubernetes.io/version: 2.11.1
     control-plane: elastic-operator
   name: elastic-operator
 rules:
@@ -189,6 +189,19 @@ rules:
   - stackconfigpolicies
   - stackconfigpolicies/status
   - stackconfigpolicies/finalizers
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+- apiGroups:
+  - logstash.k8s.elastic.co
+  resources:
+  - logstashes
+  - logstashes/status
+  - logstashes/finalizers
   verbs:
   - get
   - list
