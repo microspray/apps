@@ -2,7 +2,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-    app.kubernetes.io/version: 2.6.0
+    app.kubernetes.io/version: 2.11.1
     control-plane: elastic-operator
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
@@ -77,6 +77,14 @@ rules:
   - stackconfigpolicy.k8s.elastic.co
   resources:
   - stackconfigpolicies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - logstash.k8s.elastic.co
+  resources:
+  - logstashes
   verbs:
   - get
   - list
