@@ -73,7 +73,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "(\n  prometheus_remote_storage_highest_timestamp_in_seconds{cluster=~\"$cluster\", instance=~\"$instance\"} \n-  \n  ignoring(remote_name, url) group_right(instance) (prometheus_remote_storage_queue_highest_sent_timestamp_seconds{cluster=~\"$cluster\", instance=~\"$instance\"} != 0)\n)\n",
+                                "expr": "(\n  prometheus_remote_storage_highest_timestamp_in_seconds{cluster=~\"$cluster\", instance=~\"$instance\"} \n-  \n  ignoring(remote_name, url) group_right(instance) (prometheus_remote_storage_queue_highest_sent_timestamp_seconds{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"} != 0)\n)\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -166,7 +166,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "clamp_min(\n  rate(prometheus_remote_storage_highest_timestamp_in_seconds{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])  \n- \n  ignoring (remote_name, url) group_right(instance) rate(prometheus_remote_storage_queue_highest_sent_timestamp_seconds{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])\n, 0)\n",
+                                "expr": "clamp_min(\n  rate(prometheus_remote_storage_highest_timestamp_in_seconds{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])  \n- \n  ignoring (remote_name, url) group_right(instance) rate(prometheus_remote_storage_queue_highest_sent_timestamp_seconds{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m])\n, 0)\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -272,7 +272,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "rate(\n  prometheus_remote_storage_samples_in_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])\n- \n  ignoring(remote_name, url) group_right(instance) (rate(prometheus_remote_storage_succeeded_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m]) or rate(prometheus_remote_storage_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m]))\n- \n  (rate(prometheus_remote_storage_dropped_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m]) or rate(prometheus_remote_storage_samples_dropped_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m]))\n",
+                                "expr": "rate(\n  prometheus_remote_storage_samples_in_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])\n- \n  ignoring(remote_name, url) group_right(instance) (rate(prometheus_remote_storage_succeeded_samples_total{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m]) or rate(prometheus_remote_storage_samples_total{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m]))\n- \n  (rate(prometheus_remote_storage_dropped_samples_total{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m]) or rate(prometheus_remote_storage_samples_dropped_total{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m]))\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -379,7 +379,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "prometheus_remote_storage_shards{cluster=~\"$cluster\", instance=~\"$instance\"}",
+                                "expr": "prometheus_remote_storage_shards{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -472,7 +472,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "prometheus_remote_storage_shards_max{cluster=~\"$cluster\", instance=~\"$instance\"}",
+                                "expr": "prometheus_remote_storage_shards_max{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -565,7 +565,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "prometheus_remote_storage_shards_min{cluster=~\"$cluster\", instance=~\"$instance\"}",
+                                "expr": "prometheus_remote_storage_shards_min{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -658,7 +658,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "prometheus_remote_storage_shards_desired{cluster=~\"$cluster\", instance=~\"$instance\"}",
+                                "expr": "prometheus_remote_storage_shards_desired{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -764,7 +764,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "prometheus_remote_storage_shard_capacity{cluster=~\"$cluster\", instance=~\"$instance\"}",
+                                "expr": "prometheus_remote_storage_shard_capacity{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -857,7 +857,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "prometheus_remote_storage_pending_samples{cluster=~\"$cluster\", instance=~\"$instance\"} or prometheus_remote_storage_samples_pending{cluster=~\"$cluster\", instance=~\"$instance\"}",
+                                "expr": "prometheus_remote_storage_pending_samples{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"} or prometheus_remote_storage_samples_pending{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -1162,7 +1162,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "rate(prometheus_remote_storage_dropped_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m]) or rate(prometheus_remote_storage_samples_dropped_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])",
+                                "expr": "rate(prometheus_remote_storage_dropped_samples_total{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m]) or rate(prometheus_remote_storage_samples_dropped_total{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m])",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -1255,7 +1255,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "rate(prometheus_remote_storage_failed_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m]) or rate(prometheus_remote_storage_samples_failed_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])",
+                                "expr": "rate(prometheus_remote_storage_failed_samples_total{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m]) or rate(prometheus_remote_storage_samples_failed_total{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m])",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -1348,7 +1348,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "rate(prometheus_remote_storage_retried_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m]) or rate(prometheus_remote_storage_samples_retried_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])",
+                                "expr": "rate(prometheus_remote_storage_retried_samples_total{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m]) or rate(prometheus_remote_storage_samples_retried_total{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m])",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -1441,7 +1441,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "rate(prometheus_remote_storage_enqueue_retries_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])",
+                                "expr": "rate(prometheus_remote_storage_enqueue_retries_total{cluster=~\"$cluster\", instance=~\"$instance\", url=~\"$url\"}[5m])",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
@@ -1654,6 +1654,6 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 9.5.3
+    app.kubernetes.io/version: 10.3.3
   name: grafana-dashboard-prometheus-remote-write
   namespace: monitoring
