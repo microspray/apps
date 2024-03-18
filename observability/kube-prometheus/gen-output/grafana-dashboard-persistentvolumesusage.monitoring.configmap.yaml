@@ -41,14 +41,13 @@ data:
 
                         },
                         "id": 2,
-                        "interval": "1m",
                         "legend": {
                             "alignAsTable": true,
                             "avg": true,
                             "current": true,
                             "max": true,
                             "min": true,
-                            "rightSide": true,
+                            "rightSide": false,
                             "show": true,
                             "sideWidth": null,
                             "total": false,
@@ -95,7 +94,7 @@ data:
                         "timeShift": null,
                         "title": "Volume Space Usage",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -150,11 +149,7 @@ data:
 
                         },
                         "id": 3,
-                        "interval": "1m",
-                        "legend": {
-                            "alignAsTable": true,
-                            "rightSide": true
-                        },
+                        "interval": null,
                         "links": [
 
                         ],
@@ -202,9 +197,6 @@ data:
                         ],
                         "thresholds": "80, 90",
                         "title": "Volume Space Usage",
-                        "tooltip": {
-                            "shared": false
-                        },
                         "type": "singlestat",
                         "valueFontSize": "80%",
                         "valueMaps": [
@@ -243,14 +235,13 @@ data:
 
                         },
                         "id": 4,
-                        "interval": "1m",
                         "legend": {
                             "alignAsTable": true,
                             "avg": true,
                             "current": true,
                             "max": true,
                             "min": true,
-                            "rightSide": true,
+                            "rightSide": false,
                             "show": true,
                             "sideWidth": null,
                             "total": false,
@@ -297,7 +288,7 @@ data:
                         "timeShift": null,
                         "title": "Volume inodes Usage",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -352,11 +343,7 @@ data:
 
                         },
                         "id": 5,
-                        "interval": "1m",
-                        "legend": {
-                            "alignAsTable": true,
-                            "rightSide": true
-                        },
+                        "interval": null,
                         "links": [
 
                         ],
@@ -404,9 +391,6 @@ data:
                         ],
                         "thresholds": "80, 90",
                         "title": "Volume inodes Usage",
-                        "tooltip": {
-                            "shared": false
-                        },
                         "type": "singlestat",
                         "valueFontSize": "80%",
                         "valueMaps": [
@@ -437,11 +421,12 @@ data:
             "list": [
                 {
                     "current": {
+                        "selected": true,
                         "text": "default",
                         "value": "default"
                     },
                     "hide": 0,
-                    "label": "Data Source",
+                    "label": "Data source",
                     "name": "datasource",
                     "options": [
 
@@ -571,6 +556,6 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 9.5.3
+    app.kubernetes.io/version: 10.3.3
   name: grafana-dashboard-persistentvolumesusage
   namespace: monitoring

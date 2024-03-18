@@ -49,11 +49,7 @@ data:
 
                         },
                         "id": 2,
-                        "interval": "1m",
-                        "legend": {
-                            "alignAsTable": true,
-                            "rightSide": true
-                        },
+                        "interval": null,
                         "links": [
 
                         ],
@@ -101,9 +97,6 @@ data:
                         ],
                         "thresholds": "",
                         "title": "Up",
-                        "tooltip": {
-                            "shared": false
-                        },
                         "type": "singlestat",
                         "valueFontSize": "80%",
                         "valueMaps": [
@@ -129,7 +122,6 @@ data:
 
                         },
                         "id": 3,
-                        "interval": "1m",
                         "legend": {
                             "alignAsTable": true,
                             "avg": false,
@@ -197,7 +189,7 @@ data:
                         "timeShift": null,
                         "title": "Scheduling Rate",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -244,7 +236,6 @@ data:
 
                         },
                         "id": 4,
-                        "interval": "1m",
                         "legend": {
                             "alignAsTable": true,
                             "avg": false,
@@ -312,7 +303,7 @@ data:
                         "timeShift": null,
                         "title": "Scheduling latency 99th Quantile",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -372,14 +363,13 @@ data:
 
                         },
                         "id": 5,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
+                            "alignAsTable": false,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
+                            "rightSide": false,
                             "show": true,
                             "sideWidth": null,
                             "total": false,
@@ -440,7 +430,7 @@ data:
                         "timeShift": null,
                         "title": "Kube API Request Rate",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -487,14 +477,13 @@ data:
 
                         },
                         "id": 6,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
+                            "alignAsTable": false,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
+                            "rightSide": false,
                             "show": true,
                             "sideWidth": null,
                             "total": false,
@@ -534,7 +523,7 @@ data:
                         "timeShift": null,
                         "title": "Post Request Latency 99th Quantile",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -594,7 +583,6 @@ data:
 
                         },
                         "id": 7,
-                        "interval": "1m",
                         "legend": {
                             "alignAsTable": true,
                             "avg": false,
@@ -641,7 +629,7 @@ data:
                         "timeShift": null,
                         "title": "Get Request Latency 99th Quantile",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -701,14 +689,13 @@ data:
 
                         },
                         "id": 8,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
+                            "alignAsTable": false,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
+                            "rightSide": false,
                             "show": true,
                             "sideWidth": null,
                             "total": false,
@@ -748,7 +735,7 @@ data:
                         "timeShift": null,
                         "title": "Memory",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -795,14 +782,13 @@ data:
 
                         },
                         "id": 9,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
+                            "alignAsTable": false,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
+                            "rightSide": false,
                             "show": true,
                             "sideWidth": null,
                             "total": false,
@@ -842,7 +828,7 @@ data:
                         "timeShift": null,
                         "title": "CPU usage",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -889,14 +875,13 @@ data:
 
                         },
                         "id": 10,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
+                            "alignAsTable": false,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
+                            "rightSide": false,
                             "show": true,
                             "sideWidth": null,
                             "total": false,
@@ -936,7 +921,7 @@ data:
                         "timeShift": null,
                         "title": "Goroutines",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -988,11 +973,12 @@ data:
             "list": [
                 {
                     "current": {
+                        "selected": true,
                         "text": "default",
                         "value": "default"
                     },
                     "hide": 0,
-                    "label": "Data Source",
+                    "label": "Data source",
                     "name": "datasource",
                     "options": [
 
@@ -1096,6 +1082,6 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 9.5.3
+    app.kubernetes.io/version: 10.3.3
   name: grafana-dashboard-scheduler
   namespace: monitoring

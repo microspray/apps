@@ -31,14 +31,11 @@ data:
                         "fill": 1,
                         "format": "percentunit",
                         "id": 1,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -65,7 +62,6 @@ data:
                                 "expr": "cluster:node_cpu:ratio_rate5m",
                                 "format": "time_series",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "refId": "A"
                             }
                         ],
@@ -74,7 +70,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Utilisation",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -118,14 +114,11 @@ data:
                         "fill": 1,
                         "format": "percentunit",
                         "id": 2,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -152,7 +145,6 @@ data:
                                 "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"cpu\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"cpu\"})",
                                 "format": "time_series",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "refId": "A"
                             }
                         ],
@@ -161,7 +153,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Requests Commitment",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -205,14 +197,11 @@ data:
                         "fill": 1,
                         "format": "percentunit",
                         "id": 3,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -239,7 +228,6 @@ data:
                                 "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"cpu\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"cpu\"})",
                                 "format": "time_series",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "refId": "A"
                             }
                         ],
@@ -248,7 +236,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Limits Commitment",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -292,14 +280,11 @@ data:
                         "fill": 1,
                         "format": "percentunit",
                         "id": 4,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -326,7 +311,6 @@ data:
                                 "expr": "1 - sum(:node_memory_MemAvailable_bytes:sum) / sum(node_memory_MemTotal_bytes{job=\"node-exporter\"})",
                                 "format": "time_series",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "refId": "A"
                             }
                         ],
@@ -335,7 +319,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Utilisation",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -379,14 +363,11 @@ data:
                         "fill": 1,
                         "format": "percentunit",
                         "id": 5,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -413,7 +394,6 @@ data:
                                 "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"memory\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"memory\"})",
                                 "format": "time_series",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "refId": "A"
                             }
                         ],
@@ -422,7 +402,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Requests Commitment",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -466,14 +446,11 @@ data:
                         "fill": 1,
                         "format": "percentunit",
                         "id": 6,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -500,7 +477,6 @@ data:
                                 "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"memory\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"memory\"})",
                                 "format": "time_series",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "refId": "A"
                             }
                         ],
@@ -509,7 +485,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Limits Commitment",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -564,14 +540,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 0,
                         "id": 7,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -597,7 +570,6 @@ data:
                             {
                                 "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate) by (cluster)",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}",
                                 "legendLink": null
                             }
@@ -609,7 +581,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Usage",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -664,14 +636,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "id": 8,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -835,7 +804,6 @@ data:
                                 "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate) by (cluster)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "A"
                             },
@@ -843,7 +811,6 @@ data:
                                 "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"cpu\"}) by (cluster)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "B"
                             },
@@ -851,7 +818,6 @@ data:
                                 "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate) by (cluster) / sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"cpu\"}) by (cluster)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "C"
                             },
@@ -859,7 +825,6 @@ data:
                                 "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"cpu\"}) by (cluster)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "D"
                             },
@@ -867,7 +832,6 @@ data:
                                 "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate) by (cluster) / sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"cpu\"}) by (cluster)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "E"
                             }
@@ -879,7 +843,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Quota",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -935,14 +899,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 0,
                         "id": 9,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -968,7 +929,6 @@ data:
                             {
                                 "expr": "sum(container_memory_rss{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\"}) by (cluster)",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{cluster}}",
                                 "legendLink": null
                             }
@@ -980,7 +940,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Usage (w/o cache)",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -1035,14 +995,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "id": 10,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -1206,7 +1163,6 @@ data:
                                 "expr": "sum(container_memory_rss{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\"}) by (cluster)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "A"
                             },
@@ -1214,7 +1170,6 @@ data:
                                 "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"memory\"}) by (cluster)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "B"
                             },
@@ -1222,7 +1177,6 @@ data:
                                 "expr": "sum(container_memory_rss{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\"}) by (cluster) / sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"memory\"}) by (cluster)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "C"
                             },
@@ -1230,7 +1184,6 @@ data:
                                 "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"memory\"}) by (cluster)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "D"
                             },
@@ -1238,7 +1191,6 @@ data:
                                 "expr": "sum(container_memory_rss{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\"}) by (cluster) / sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"memory\"}) by (cluster)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "E"
                             }
@@ -1250,7 +1202,7 @@ data:
                         "timeShift": null,
                         "title": "Requests by Cluster",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -1306,7 +1258,7 @@ data:
                         "value": "default"
                     },
                     "hide": 0,
-                    "label": "Data Source",
+                    "label": "Data source",
                     "name": "datasource",
                     "options": [
 
@@ -1358,6 +1310,6 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 9.5.3
+    app.kubernetes.io/version: 10.3.3
   name: grafana-dashboard-k8s-resources-multicluster
   namespace: monitoring
