@@ -31,14 +31,11 @@ data:
                         "fill": 1,
                         "format": "percentunit",
                         "id": 1,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -65,7 +62,6 @@ data:
                                 "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{cluster=\"$cluster\", namespace=\"$namespace\"}) / sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", resource=\"cpu\"})",
                                 "format": "time_series",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "refId": "A"
                             }
                         ],
@@ -74,7 +70,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Utilisation (from requests)",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -118,14 +114,11 @@ data:
                         "fill": 1,
                         "format": "percentunit",
                         "id": 2,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -152,7 +145,6 @@ data:
                                 "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{cluster=\"$cluster\", namespace=\"$namespace\"}) / sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", resource=\"cpu\"})",
                                 "format": "time_series",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "refId": "A"
                             }
                         ],
@@ -161,7 +153,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Utilisation (from limits)",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -205,14 +197,11 @@ data:
                         "fill": 1,
                         "format": "percentunit",
                         "id": 3,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -239,7 +228,6 @@ data:
                                 "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\", image!=\"\"}) / sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", resource=\"memory\"})",
                                 "format": "time_series",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "refId": "A"
                             }
                         ],
@@ -248,7 +236,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Utilisation (from requests)",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -292,14 +280,11 @@ data:
                         "fill": 1,
                         "format": "percentunit",
                         "id": 4,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -326,7 +311,6 @@ data:
                                 "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\", image!=\"\"}) / sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", resource=\"memory\"})",
                                 "format": "time_series",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "refId": "A"
                             }
                         ],
@@ -335,7 +319,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Utilisation (from limits)",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -390,14 +374,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 5,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -444,21 +425,18 @@ data:
                             {
                                 "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod)",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{pod}}",
                                 "legendLink": null
                             },
                             {
                                 "expr": "scalar(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=\"requests.cpu\"})",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "quota - requests",
                                 "legendLink": null
                             },
                             {
                                 "expr": "scalar(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=\"limits.cpu\"})",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "quota - limits",
                                 "legendLink": null
                             }
@@ -470,7 +448,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Usage",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -525,14 +503,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "id": 6,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -696,7 +671,6 @@ data:
                                 "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "A"
                             },
@@ -704,7 +678,6 @@ data:
                                 "expr": "sum(cluster:namespace:pod_cpu:active:kube_pod_container_resource_requests{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "B"
                             },
@@ -712,7 +685,6 @@ data:
                                 "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod) / sum(cluster:namespace:pod_cpu:active:kube_pod_container_resource_requests{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "C"
                             },
@@ -720,7 +692,6 @@ data:
                                 "expr": "sum(cluster:namespace:pod_cpu:active:kube_pod_container_resource_limits{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "D"
                             },
@@ -728,7 +699,6 @@ data:
                                 "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod) / sum(cluster:namespace:pod_cpu:active:kube_pod_container_resource_limits{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "E"
                             }
@@ -740,7 +710,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Quota",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -796,14 +766,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 7,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -850,21 +817,18 @@ data:
                             {
                                 "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", container!=\"\", image!=\"\"}) by (pod)",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{pod}}",
                                 "legendLink": null
                             },
                             {
                                 "expr": "scalar(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=\"requests.memory\"})",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "quota - requests",
                                 "legendLink": null
                             },
                             {
                                 "expr": "scalar(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=\"limits.memory\"})",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "quota - limits",
                                 "legendLink": null
                             }
@@ -876,7 +840,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Usage (w/o cache)",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -931,14 +895,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "id": 8,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -1159,7 +1120,6 @@ data:
                                 "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\", image!=\"\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "A"
                             },
@@ -1167,7 +1127,6 @@ data:
                                 "expr": "sum(cluster:namespace:pod_memory:active:kube_pod_container_resource_requests{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "B"
                             },
@@ -1175,7 +1134,6 @@ data:
                                 "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\", image!=\"\"}) by (pod) / sum(cluster:namespace:pod_memory:active:kube_pod_container_resource_requests{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "C"
                             },
@@ -1183,7 +1141,6 @@ data:
                                 "expr": "sum(cluster:namespace:pod_memory:active:kube_pod_container_resource_limits{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "D"
                             },
@@ -1191,7 +1148,6 @@ data:
                                 "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\", image!=\"\"}) by (pod) / sum(cluster:namespace:pod_memory:active:kube_pod_container_resource_limits{cluster=\"$cluster\", namespace=\"$namespace\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "E"
                             },
@@ -1199,7 +1155,6 @@ data:
                                 "expr": "sum(container_memory_rss{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "F"
                             },
@@ -1207,7 +1162,6 @@ data:
                                 "expr": "sum(container_memory_cache{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "G"
                             },
@@ -1215,7 +1169,6 @@ data:
                                 "expr": "sum(container_memory_swap{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\"}) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "H"
                             }
@@ -1227,7 +1180,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Quota",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -1283,14 +1236,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "id": 9,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -1473,7 +1423,6 @@ data:
                                 "expr": "sum(irate(container_network_receive_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "A"
                             },
@@ -1481,7 +1430,6 @@ data:
                                 "expr": "sum(irate(container_network_transmit_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "B"
                             },
@@ -1489,7 +1437,6 @@ data:
                                 "expr": "sum(irate(container_network_receive_packets_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "C"
                             },
@@ -1497,7 +1444,6 @@ data:
                                 "expr": "sum(irate(container_network_transmit_packets_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "D"
                             },
@@ -1505,7 +1451,6 @@ data:
                                 "expr": "sum(irate(container_network_receive_packets_dropped_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "E"
                             },
@@ -1513,7 +1458,6 @@ data:
                                 "expr": "sum(irate(container_network_transmit_packets_dropped_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "F"
                             }
@@ -1525,7 +1469,7 @@ data:
                         "timeShift": null,
                         "title": "Current Network Usage",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -1581,14 +1525,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 10,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -1614,7 +1555,6 @@ data:
                             {
                                 "expr": "sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{pod}}",
                                 "legendLink": null
                             }
@@ -1626,7 +1566,7 @@ data:
                         "timeShift": null,
                         "title": "Receive Bandwidth",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -1669,14 +1609,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 11,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -1702,7 +1639,6 @@ data:
                             {
                                 "expr": "sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{pod}}",
                                 "legendLink": null
                             }
@@ -1714,7 +1650,7 @@ data:
                         "timeShift": null,
                         "title": "Transmit Bandwidth",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -1769,14 +1705,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 12,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -1802,7 +1735,6 @@ data:
                             {
                                 "expr": "sum(irate(container_network_receive_packets_total{cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{pod}}",
                                 "legendLink": null
                             }
@@ -1814,7 +1746,7 @@ data:
                         "timeShift": null,
                         "title": "Rate of Received Packets",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -1857,14 +1789,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 13,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -1890,7 +1819,6 @@ data:
                             {
                                 "expr": "sum(irate(container_network_transmit_packets_total{cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{pod}}",
                                 "legendLink": null
                             }
@@ -1902,7 +1830,7 @@ data:
                         "timeShift": null,
                         "title": "Rate of Transmitted Packets",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -1957,14 +1885,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 14,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -1990,7 +1915,6 @@ data:
                             {
                                 "expr": "sum(irate(container_network_receive_packets_dropped_total{cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{pod}}",
                                 "legendLink": null
                             }
@@ -2002,7 +1926,7 @@ data:
                         "timeShift": null,
                         "title": "Rate of Received Packets Dropped",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -2045,14 +1969,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 15,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -2078,7 +1999,6 @@ data:
                             {
                                 "expr": "sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])) by (pod)",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{pod}}",
                                 "legendLink": null
                             }
@@ -2090,7 +2010,7 @@ data:
                         "timeShift": null,
                         "title": "Rate of Transmitted Packets Dropped",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -2146,14 +2066,11 @@ data:
                         "decimals": -1,
                         "fill": 10,
                         "id": 16,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -2179,7 +2096,6 @@ data:
                             {
                                 "expr": "ceil(sum by(pod) (rate(container_fs_reads_total{container!=\"\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval]) + rate(container_fs_writes_total{container!=\"\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval])))",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{pod}}",
                                 "legendLink": null
                             }
@@ -2191,7 +2107,7 @@ data:
                         "timeShift": null,
                         "title": "IOPS(Reads+Writes)",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -2234,14 +2150,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 17,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -2267,7 +2180,6 @@ data:
                             {
                                 "expr": "sum by(pod) (rate(container_fs_reads_bytes_total{container!=\"\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval]) + rate(container_fs_writes_bytes_total{container!=\"\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval]))",
                                 "format": "time_series",
-                                "intervalFactor": 2,
                                 "legendFormat": "{{pod}}",
                                 "legendLink": null
                             }
@@ -2279,7 +2191,7 @@ data:
                         "timeShift": null,
                         "title": "ThroughPut(Read+Write)",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -2334,14 +2246,11 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "id": 18,
-                        "interval": "1m",
                         "legend": {
-                            "alignAsTable": true,
                             "avg": false,
                             "current": false,
                             "max": false,
                             "min": false,
-                            "rightSide": true,
                             "show": true,
                             "total": false,
                             "values": false
@@ -2381,7 +2290,7 @@ data:
 
                                 ],
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
-                                "decimals": -1,
+                                "decimals": 3,
                                 "link": false,
                                 "linkTargetBlank": false,
                                 "linkTooltip": "Drill down",
@@ -2391,7 +2300,7 @@ data:
 
                                 ],
                                 "type": "number",
-                                "unit": "short"
+                                "unit": "iops"
                             },
                             {
                                 "alias": "IOPS(Writes)",
@@ -2400,7 +2309,7 @@ data:
 
                                 ],
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
-                                "decimals": -1,
+                                "decimals": 3,
                                 "link": false,
                                 "linkTargetBlank": false,
                                 "linkTooltip": "Drill down",
@@ -2410,7 +2319,7 @@ data:
 
                                 ],
                                 "type": "number",
-                                "unit": "short"
+                                "unit": "iops"
                             },
                             {
                                 "alias": "IOPS(Reads + Writes)",
@@ -2419,7 +2328,7 @@ data:
 
                                 ],
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
-                                "decimals": -1,
+                                "decimals": 3,
                                 "link": false,
                                 "linkTargetBlank": false,
                                 "linkTooltip": "Drill down",
@@ -2429,7 +2338,7 @@ data:
 
                                 ],
                                 "type": "number",
-                                "unit": "short"
+                                "unit": "iops"
                             },
                             {
                                 "alias": "Throughput(Read)",
@@ -2528,7 +2437,6 @@ data:
                                 "expr": "sum by(pod) (rate(container_fs_reads_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval]))",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "A"
                             },
@@ -2536,7 +2444,6 @@ data:
                                 "expr": "sum by(pod) (rate(container_fs_writes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval]))",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "B"
                             },
@@ -2544,7 +2451,6 @@ data:
                                 "expr": "sum by(pod) (rate(container_fs_reads_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval]) + rate(container_fs_writes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval]))",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "C"
                             },
@@ -2552,7 +2458,6 @@ data:
                                 "expr": "sum by(pod) (rate(container_fs_reads_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval]))",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "D"
                             },
@@ -2560,7 +2465,6 @@ data:
                                 "expr": "sum by(pod) (rate(container_fs_writes_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval]))",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "E"
                             },
@@ -2568,7 +2472,6 @@ data:
                                 "expr": "sum by(pod) (rate(container_fs_reads_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval]) + rate(container_fs_writes_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace=\"$namespace\"}[$__rate_interval]))",
                                 "format": "table",
                                 "instant": true,
-                                "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "F"
                             }
@@ -2580,7 +2483,7 @@ data:
                         "timeShift": null,
                         "title": "Current Storage IO",
                         "tooltip": {
-                            "shared": false,
+                            "shared": true,
                             "sort": 2,
                             "value_type": "individual"
                         },
@@ -2636,7 +2539,7 @@ data:
                         "value": "default"
                     },
                     "hide": 0,
-                    "label": "Data Source",
+                    "label": "Data source",
                     "name": "datasource",
                     "options": [
 
@@ -2742,6 +2645,6 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 9.5.3
+    app.kubernetes.io/version: 10.3.3
   name: grafana-dashboard-k8s-resources-namespace
   namespace: monitoring
