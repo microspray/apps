@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: gitlab-runner
+
+resources:
+- manifests/upstream
+patches:
+  - target:
+      kind: Secret
+      # name: gitlab-runner
+      labelSelector: heritage=Helm
+    patch: |
+      $patch: delete
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: generated-secret
+secretGenerator:
+  - name: gitlab-runner
+    literals:
+      - runner-token="theTOKEN"
+configMapGenerator:
+- behavior: merge
+  files:
+  - manifests/configs/config.template.toml
+  name: gitlab-runner
+  namespace: gitlab-runner
+  options:
+    disableNameSuffixHash: true
