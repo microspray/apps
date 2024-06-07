@@ -90,7 +90,7 @@ data:
     MAX_REGISTER_ATTEMPTS=30
 
     # Reset/unset the not needed flags when an authentication token
-    RUN_UNTAGGED="--run-untagged=true"
+    RUN_UNTAGGED=""
     ACCESS_LEVEL=""
 
     for i in $(seq 1 "${MAX_REGISTER_ATTEMPTS}"); do

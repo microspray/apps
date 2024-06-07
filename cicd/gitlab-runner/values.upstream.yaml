@@ -49,7 +49,7 @@ imagePullPolicy: IfNotPresent
 ## The GitLab Server URL (with protocol) that want to register the runner against
 ## ref: https://docs.gitlab.com/runner/commands/index.html#gitlab-runner-register
 ##
-# gitlabUrl: http://gitlab.your-domain.com/
+# gitlabUrl: https://gitlab.your-domain.com/
 
 ## DEPRECATED: The Registration Token for adding new Runners to the GitLab Server.
 ##
@@ -101,7 +101,7 @@ shutdown_timeout: 0
 ## Defines in seconds how often to check GitLab for new builds
 ## ref: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section
 ##
-checkInterval: 30
+checkInterval: 3
 
 ## Configure GitLab Runner's logging level. Available values are: debug, info, warn, error, fatal, panic
 ## ref: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section

@@ -122,7 +122,7 @@ data:
     MAX_REGISTER_ATTEMPTS=30
 
     # Reset/unset the not needed flags when an authentication token
-    RUN_UNTAGGED="--run-untagged=true"
+    RUN_UNTAGGED=""
     ACCESS_LEVEL=""
 
     for i in $(seq 1 "${MAX_REGISTER_ATTEMPTS}"); do
@@ -250,7 +250,7 @@ spec:
         release: "cluster"
         heritage: "Helm"
       annotations:
-        checksum/configmap: cd95f06e423ac080e2bb7f359acbe63deff2b2379b0cc353bed41d8273da18e1
+        checksum/configmap: 047695a50de234e182c6571426f7f3fc96f8e63d4c7c3c321db71506cf00a4cf
         checksum/secrets: ff7a0cb8e86361819c41f2527905dc7c0cd198e014c0cb36a91ea72876ff06fa
         prometheus.io/scrape: 'true'
         prometheus.io/port: "9252"
@@ -283,9 +283,9 @@ spec:
         - name: RUNNER_EXECUTOR
           value: "kubernetes"
         - name: REGISTER_LOCKED
-          value: "false"
+          value: "true"
         - name: RUNNER_TAG_LIST
-          value: "failfast-ci,kubernetes"
+          value: ""
         livenessProbe:
           exec:
             command: ["/bin/bash", "/configmaps/check-live"]
