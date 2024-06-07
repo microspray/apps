@@ -74,19 +74,3 @@ spec:
         - name: failfast-config
           configMap:
             name: failfast-ci
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    k8s-app: failfast-ci
-  name: failfast-ci
-spec:
-  ports:
-  - name: failfast-ci
-    port: 5000
-    protocol: TCP
-    targetPort: 5000
-  selector:
-    k8s-app: failfast-ci
-  type: ClusterIP
