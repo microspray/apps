@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gitlab-runner
+    chart: gitlab-runner-0.65.0
+    heritage: Helm
+    release: cluster
+  name: gitlab-runner
+  namespace: gitlab-runner
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: gitlab-runner
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: cd95f06e423ac080e2bb7f359acbe63deff2b2379b0cc353bed41d8273da18e1
+        checksum/secrets: ff7a0cb8e86361819c41f2527905dc7c0cd198e014c0cb36a91ea72876ff06fa
+        prometheus.io/port: "9252"
+        prometheus.io/scrape: "true"
+      labels:
+        app: gitlab-runner
+        chart: gitlab-runner-0.65.0
+        heritage: Helm
+        release: cluster
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/tini
+        - --
+        - /bin/bash
+        - /configmaps/entrypoint
+        env:
+        - name: CI_SERVER_URL
+          value: https://gitlab.com
+        - name: RUNNER_EXECUTOR
+          value: kubernetes
+        - name: REGISTER_LOCKED
+          value: "false"
+        - name: RUNNER_TAG_LIST
+          value: failfast-ci,kubernetes
+        image: registry.gitlab.com/gitlab-org/gitlab-runner:alpine
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /entrypoint
+              - unregister
+              - --all-runners
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - /configmaps/check-live
+          failureThreshold: 3
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        name: gitlab-runner
+        ports:
+        - containerPort: 9252
+          name: metrics
+        readinessProbe:
+          exec:
+            command:
+            - /usr/bin/pgrep
+            - gitlab.*runner
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+        volumeMounts:
+        - mountPath: /secrets
+          name: projected-secrets
+        - mountPath: /home/gitlab-runner/.gitlab-runner
+          name: etc-gitlab-runner
+        - mountPath: /configmaps
+          name: configmaps
+      securityContext:
+        fsGroup: 65533
+        runAsUser: 100
+      serviceAccountName: gitlab-runner
+      terminationGracePeriodSeconds: 300
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: runner-secrets
+      - emptyDir:
+          medium: Memory
+        name: etc-gitlab-runner
+      - name: projected-secrets
+        projected:
+          sources:
+          - secret:
+              items:
+              - key: runner-registration-token
+                path: runner-registration-token
+              - key: runner-token
+                path: runner-token
+              name: gitlab-runner
+      - configMap:
+          name: gitlab-runner
+        name: configmaps
