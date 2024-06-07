@@ -7,6 +7,7 @@ resources:
 - manifests/ff-api.yaml
 - manifests/ff-worker.yaml
 - manifests/redis.yaml
+- manifests/ff-ci.svc.yaml
 
 configMapGenerator:
 - envs:
@@ -30,6 +31,5 @@ images:
   newTag: latest
 
 labels:
-- includeSelectors: false
-  pairs:
+- pairs:
     app.kubernetes.io/part-of: failfast-ci
