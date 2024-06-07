@@ -6,7 +6,6 @@ metadata:
     nginx.ingress.kubernetes.io/auth-signin: https://oauth2-proxy.microspray.io/oauth2/start?rd=https%3A%2F%2F$host$escaped_request_uri
     nginx.ingress.kubernetes.io/auth-url: https://oauth2-proxy.microspray.io/oauth2/auth
   labels:
-    app.kubernetes.io/component: monitoring
     app.kubernetes.io/part-of: pyrra
   name: pyrra
   namespace: monitoring

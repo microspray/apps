@@ -41,7 +41,7 @@ spec:
             secretKeyRef:
               key: password
               name: grafana.microsdev-grafana.pg.creds
-        image: grafana/grafana:9.1.0
+        image: grafana/grafana:11.0.0
         name: grafana
         ports:
         - containerPort: 3000
