@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/part-of: failfast-ci
+  name: failfast-ci
+  namespace: failfast-ci
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ffci
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ffci
+    spec:
+      containers:
+      - command:
+        - gunicorn
+        - hub2labhook.api.wsgi:app
+        - -b
+        - :5000
+        - --timeout
+        - "121"
+        - -w
+        - "4"
+        - --reload
+        - -c
+        - conf/gunicorn.py
+        env:
+        - name: K8S_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: FFCI_CONF_FILE
+          value: /etc/failfast-ci/failfast-ci.yaml
+        - name: GITHUB_INTEGRATION_PEM
+          valueFrom:
+            secretKeyRef:
+              key: integration_pem
+              name: failfast-ci-9h48tb25cd
+        envFrom:
+        - configMapRef:
+            name: failfast-ci-envs-mfc7d8h98b
+        - secretRef:
+            name: ffci-env-4c54gb9gb7
+        image: img.conny.dev/oss/ffci:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /version
+            port: 5000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 30
+        name: failfast-ci
+        ports:
+        - containerPort: 5000
+          name: failfast-ci
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 1Gi
+        volumeMounts:
+        - mountPath: /etc/failfast-ci
+          name: failfast-config
+      volumes:
+      - configMap:
+          name: failfast-ci-c5bbk2tg9t
+        name: failfast-config

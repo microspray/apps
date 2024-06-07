@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: failfast-ci
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: failfast-ci.microspray.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: failfast-ci
+            port:
+              number: 5000
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - 'ffci.microspray.io'
+    secretName: ffci-certs

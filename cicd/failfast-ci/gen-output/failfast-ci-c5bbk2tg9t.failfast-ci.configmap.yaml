@@ -1,0 +1,53 @@
+apiVersion: v1
+data:
+  failfast-ci.yaml: |
+    failfast:
+      authorized_groups: [COLLABORATOR, MEMBER, OWNER]
+      authorized_users: []
+      build:
+        on-branches: [master, main, production]
+        on-comments: [/retest, /test]
+        on-labels: [ok-to-test, lgtm]
+        on-pullrequests: ['*']
+        on-labels-exclusive:
+          ok-to-test: [lgtm]
+          lgtm: [ok-to-test]
+        on-comments: [/retest, /test]
+        on-labels: [ok-to-test]
+        on-pullrequests: ['*']
+      debug: false
+      env: production
+      # Ingress url to the failfast api
+      failfast_url: https://failfast-ci.microspray.io
+      enable_linter: false
+
+    github:
+      context-status: 'ffci'
+      context: FFCI
+      integration_id: 103188
+
+    gitlab:
+      enable_container_registry: false
+      enable_issues: false
+      enable_jobs: true
+      enable_merge_requests: false
+      enable_shared_runners: false
+      enable_snippets: false
+      enable_wiki: false
+      gitlab_url: https://gitlab.com
+      # Default group on gitlab
+      namespace: failfast-ci
+      webhook_url: "https://failfast-ci.microspray.io/api/v1/gitlab_event"
+      privacy: private
+      repo: null
+      # Gitlab robot user to add as owner
+      robot-user: falifastci-bot
+      runner_tags:
+        - failfast-ci
+      timeout: 30
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/part-of: failfast-ci
+  name: failfast-ci-c5bbk2tg9t
+  namespace: failfast-ci

@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- failfast-ci-9h48tb25cd.failfast-ci.secret.yaml
+- failfast-ci-c5bbk2tg9t.failfast-ci.configmap.yaml
+- failfast-ci-envs-mfc7d8h98b.failfast-ci.configmap.yaml
+- failfast-ci-worker.failfast-ci.deployment.yaml
+- failfast-ci.failfast-ci.deployment.yaml
+- failfast-ci.failfast-ci.ingress.yaml
+- failfast-ci.failfast-ci.service.yaml
+- failfast-redis.failfast-ci.service.yaml
+- ffci-env-4c54gb9gb7.failfast-ci.secret.yaml
+- redis.failfast-ci.deployment.yaml
