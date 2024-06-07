@@ -1,0 +1,12 @@
+concurrent = 30
+check_interval = 3
+log_level = "info"
+listen_address = ':9252'
+
+[[runners]]
+  environment = ["container=docker"]
+[runners.kubernetes]
+    image = "ubuntu:22.04"
+    namespace = "gitlab-runner"
+    pull_policy = "always"
+    privileged = false
