@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/part-of: failfast-ci
+    k8s-app: failfast-redis
+  name: redis
+  namespace: failfast-ci
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: failfast-redis
+  template:
+    metadata:
+      labels:
+        k8s-app: failfast-redis
+    spec:
+      containers:
+      - image: redis:6
+        name: redis
+        ports:
+        - containerPort: 6379
+          name: redis
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+      - emptyDir: {}
+        name: data

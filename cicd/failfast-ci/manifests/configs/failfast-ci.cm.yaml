@@ -1,0 +1,40 @@
+failfast:
+  enable_linter: false
+  authorized_groups: [COLLABORATOR,MEMBER, OWNER]
+  authorized_users: []
+  build:
+    rebase: true
+    on-branches: [master]
+    on-comments: [/retest, /test]
+    on-labels: [ok-to-test, lgtm]
+    on-pullrequests: ['*']
+    on-labels-exclusive:
+      ok-to-test: [lgtm]
+      lgtm: [ok-to-test]
+  debug: false
+  env: development
+  failfast_url:
+    https://v4-failfast-ci.k8s.kubespray.com
+github:
+  context-status: "kubespray-ci"
+  context: Kubespray CI
+  integration_id: '743'
+  secret_token: k8s-kubespray
+
+gitlab:
+  enable_container_registry: true
+  enable_issues: false
+  enable_jobs: true
+  enable_merge_requests: false
+  enable_shared_runners: false
+  enable_snippets: false
+  enable_wiki: false
+  gitlab_url: https://gitlab.com
+  namespace: failfast-ci
+  privacy: internal
+  repo: null
+  robot-user: falifastci-bot
+  runner_tags:
+    - failfast-ci
+  secret_token: "glpat--Bf7fRavEKhq_BmAHBa3"
+  timeout: 30

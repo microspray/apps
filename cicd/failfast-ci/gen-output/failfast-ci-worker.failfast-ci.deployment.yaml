@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/part-of: failfast-ci
+    k8s-app: failfast-ci-worker
+  name: failfast-ci-worker
+  namespace: failfast-ci
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ffci-worker
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: ffci-worker
+    spec:
+      containers:
+      - command:
+        - celery
+        - -A
+        - hub2labhook.jobs.runner
+        - worker
+        - -l
+        - debug
+        env:
+        - name: K8S_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: GITHUB_INTEGRATION_PEM
+          valueFrom:
+            secretKeyRef:
+              key: integration_pem
+              name: failfast-ci-9h48tb25cd
+        - name: FFCI_CONF_FILE
+          value: /etc/failfast-ci/failfast-ci.yaml
+        envFrom:
+        - configMapRef:
+            name: failfast-ci-envs-mfc7d8h98b
+        - secretRef:
+            name: ffci-env-4c54gb9gb7
+        image: img.conny.dev/oss/ffci:latest
+        imagePullPolicy: Always
+        name: failfast-ci-worker
+        volumeMounts:
+        - mountPath: /etc/failfast-ci
+          name: failfast-config
+      volumes:
+      - configMap:
+          name: failfast-ci-c5bbk2tg9t
+        name: failfast-config

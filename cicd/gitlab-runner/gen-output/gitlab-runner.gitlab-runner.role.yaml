@@ -1,0 +1,43 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: gitlab-runner
+    chart: gitlab-runner-0.65.0
+    heritage: Helm
+    release: cluster
+  name: gitlab-runner
+  namespace: gitlab-runner
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - events
+  - pods
+  - pods/attach
+  - pods/exec
+  - secrets
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - patch
+  - update
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - pods/exec
+  verbs:
+  - create
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - pods/log
+  verbs:
+  - get
