@@ -2,10 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: grafana
 
-commonLabels:
-  app.kubernetes.io/part-of: grafana
-  app.kubernetes.io/component: grafana
 
+#- manifests/grafana.ns.yaml
 resources:
 - manifests/grafana-dashboardDefinitions.yaml
 - manifests/grafana-deployment.yaml
@@ -13,7 +11,6 @@ resources:
 - manifests/grafana-serviceAccount.yaml
 - manifests/grafana-serviceMonitor.yaml
 - manifests/grafana.ingress.yaml
-#- manifests/grafana.ns.yaml
 - manifests/grafana-db.yaml
 
 configMapGenerator:
@@ -29,5 +26,10 @@ secretGenerator:
   name: grafana-datasources
   type: Opaque
 images:
-  - name: grafana/grafana
-    newTag: 9.1.0
+- name: grafana/grafana
+  newTag: 11.0.0
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/part-of: grafana
