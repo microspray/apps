@@ -7,7 +7,17 @@ resources:
 - cilium-config-agent.kube-network.role.yaml
 - cilium-config-agent.kube-network.rolebinding.yaml
 - cilium-config.kube-network.configmap.yaml
+- cilium-envoy-config-secrets.kube-network.role.yaml
+- cilium-envoy-config-secrets.kube-network.rolebinding.yaml
+- cilium-envoy-config.kube-network.configmap.yaml
+- cilium-envoy.kube-network.daemonset.yaml
+- cilium-envoy.kube-network.service.yaml
+- cilium-envoy.kube-network.serviceaccount.yaml
+- cilium-gateway-secrets.kube-network.role.yaml
+- cilium-gateway-secrets.kube-network.rolebinding.yaml
 - cilium-node-init.kube-network.daemonset.yaml
+- cilium-operator-gateway-secrets.kube-network.role.yaml
+- cilium-operator-gateway-secrets.kube-network.rolebinding.yaml
 - cilium-operator..clusterrole.yaml
 - cilium-operator..clusterrolebinding.yaml
 - cilium-operator.kube-network.deployment.yaml
@@ -18,9 +28,11 @@ resources:
 - cilium..clusterrolebinding.yaml
 - cilium.kube-network.daemonset.yaml
 - cilium.kube-network.serviceaccount.yaml
-- hubble-ca-secret.kube-network.secret.yaml
+- hubble-dashboard.kube-network.configmap.yaml
+- hubble-dns-namespace.kube-network.configmap.yaml
 - hubble-l7-http-metrics-by-workload.kube-network.configmap.yaml
 - hubble-metrics.kube-network.service.yaml
+- hubble-network-overview-namespace.kube-network.configmap.yaml
 - hubble-peer.kube-network.service.yaml
 - hubble-relay-client-certs.kube-network.secret.yaml
 - hubble-relay-config.kube-network.configmap.yaml
@@ -37,3 +49,4 @@ resources:
 - hubble-ui.kube-network.service.yaml
 - hubble-ui.kube-network.serviceaccount.yaml
 - hubble.kube-network.servicemonitor.yaml
+- kube-network..namespace.yaml
