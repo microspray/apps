@@ -21,10 +21,8 @@ secretGenerator:
     literals:
       - runner-token="theTOKEN"
 configMapGenerator:
-- behavior: merge
-  files:
+- files:
   - manifests/configs/config.template.toml
   name: gitlab-runner
   namespace: gitlab-runner
-  options:
-    disableNameSuffixHash: true
+  behavior: merge
