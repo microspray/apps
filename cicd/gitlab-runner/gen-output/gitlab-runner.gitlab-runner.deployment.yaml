@@ -44,13 +44,6 @@ spec:
           value: ""
         image: registry.gitlab.com/gitlab-org/gitlab-runner:alpine
         imagePullPolicy: IfNotPresent
-        lifecycle:
-          preStop:
-            exec:
-              command:
-              - /entrypoint
-              - unregister
-              - --all-runners
         livenessProbe:
           exec:
             command:

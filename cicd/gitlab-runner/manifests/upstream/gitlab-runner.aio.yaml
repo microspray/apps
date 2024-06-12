@@ -272,10 +272,7 @@ spec:
           privileged: false
           readOnlyRootFilesystem: false
           runAsNonRoot: true
-        lifecycle:
-          preStop:
-            exec:
-              command: ["/entrypoint", "unregister", "--all-runners"]
+        
         command: ["/usr/bin/dumb-init", "--", "/bin/bash", "/configmaps/entrypoint"]
         env:        
         - name: CI_SERVER_URL
