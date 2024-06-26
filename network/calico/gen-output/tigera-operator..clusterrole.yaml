@@ -1,0 +1,256 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tigera-operator
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  - pods
+  - podtemplates
+  - services
+  - endpoints
+  - events
+  - configmaps
+  - secrets
+  - serviceaccounts
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - delete
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - resourcequotas
+  verbs:
+  - list
+  - get
+  - watch
+- apiGroups:
+  - ""
+  resourceNames:
+  - calico-critical-pods
+  - tigera-critical-pods
+  resources:
+  - resourcequotas
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - delete
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - patch
+  - list
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterroles
+  - clusterrolebindings
+  - rolebindings
+  - roles
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - delete
+  - watch
+  - bind
+  - escalate
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - daemonsets
+  - statefulsets
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - delete
+  - watch
+- apiGroups:
+  - apps
+  resourceNames:
+  - tigera-operator
+  resources:
+  - deployments/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - operator.tigera.io
+  resources:
+  - apiservers/finalizers
+  - installations
+  - installations/status
+  - installations/finalizers
+  - tigerastatuses
+  - tigerastatuses/status
+  - tigerastatuses/finalizers
+  - apiservers
+  - apiservers/status
+  - imagesets
+  verbs:
+  - get
+  - list
+  - update
+  - patch
+  - watch
+- apiGroups:
+  - operator.tigera.io
+  resources:
+  - tigerastatuses
+  verbs:
+  - create
+  - delete
+- apiGroups:
+  - operator.tigera.io
+  resources:
+  - installations
+  - apiservers
+  verbs:
+  - delete
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - networkpolicies
+  verbs:
+  - create
+  - update
+  - delete
+  - get
+  - list
+  - watch
+- apiGroups:
+  - crd.projectcalico.org
+  resources:
+  - felixconfigurations
+  - ippools
+  verbs:
+  - create
+  - patch
+  - list
+  - get
+  - watch
+- apiGroups:
+  - crd.projectcalico.org
+  resources:
+  - kubecontrollersconfigurations
+  - bgpconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - projectcalico.org
+  resources:
+  - ippools
+  verbs:
+  - create
+  - update
+  - delete
+  - patch
+  - get
+  - list
+  - watch
+- apiGroups:
+  - projectcalico.org
+  resources:
+  - ipamconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - scheduling.k8s.io
+  resources:
+  - priorityclasses
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - delete
+  - watch
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - delete
+  - watch
+- apiGroups:
+  - apiregistration.k8s.io
+  resources:
+  - apiservices
+  verbs:
+  - list
+  - watch
+  - create
+  - update
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - delete
+  - watch
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - csidrivers
+  verbs:
+  - list
+  - watch
+  - update
+  - get
+  - create
+  - delete
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - policy
+  resourceNames:
+  - tigera-operator
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - delete

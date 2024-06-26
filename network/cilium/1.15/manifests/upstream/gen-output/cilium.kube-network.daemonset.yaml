@@ -45,19 +45,12 @@ spec:
               fieldPath: metadata.namespace
         - name: CILIUM_CLUSTERMESH_CONFIG
           value: /var/lib/cilium/clustermesh/
-        - name: CILIUM_CNI_CHAINING_MODE
+        - name: GOMEMLIMIT
           valueFrom:
-            configMapKeyRef:
-              key: cni-chaining-mode
-              name: cilium-config
-              optional: true
-        - name: CILIUM_CUSTOM_CNI_CONF
-          valueFrom:
-            configMapKeyRef:
-              key: custom-cni-conf
-              name: cilium-config
-              optional: true
-        image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+            resourceFieldRef:
+              divisor: "1"
+              resource: limits.memory
+        image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
         imagePullPolicy: IfNotPresent
         lifecycle:
           postStart:
@@ -66,7 +59,25 @@ spec:
               - bash
               - -c
               - |
-                /cni-install.sh --enable-debug=false --cni-exclusive=true --log-file=/var/run/cilium/cilium-cni.log
+                set -o errexit
+                set -o pipefail
+                set -o nounset
+
+                # When running in AWS ENI mode, it's likely that 'aws-node' has
+                # had a chance to install SNAT iptables rules. These can result
+                # in dropped traffic, so we should attempt to remove them.
+                # We do it using a 'postStart' hook since this may need to run
+                # for nodes which might have already been init'ed but may still
+                # have dangling rules. This is safe because there are no
+                # dependencies on anything that is part of the startup script
+                # itself, and can be safely run multiple times per node (e.g. in
+                # case of a restart).
+                if [[ "$(iptables-save | grep -E -c 'AWS-SNAT-CHAIN|AWS-CONNMARK-CHAIN')" != "0" ]];
+                then
+                    echo 'Deleting iptables rules created by the AWS CNI VPC plugin'
+                    iptables-save | grep -E -v 'AWS-SNAT-CHAIN|AWS-CONNMARK-CHAIN' | iptables-restore
+                fi
+                echo 'Done!'
           preStop:
             exec:
               command:
@@ -93,10 +104,6 @@ spec:
         - containerPort: 9962
           hostPort: 9962
           name: prometheus
-          protocol: TCP
-        - containerPort: 9964
-          hostPort: 9964
-          name: envoy-metrics
           protocol: TCP
         - containerPort: 9965
           hostPort: 9965
@@ -127,10 +134,14 @@ spec:
             path: /healthz
             port: 9879
             scheme: HTTP
+          initialDelaySeconds: 5
           periodSeconds: 2
           successThreshold: 1
         terminationMessagePolicy: FallbackToLogsOnError
         volumeMounts:
+        - mountPath: /var/run/cilium/envoy/sockets
+          name: envoy-sockets
+          readOnly: false
         - mountPath: /sys/fs/bpf
           mountPropagation: Bidirectional
           name: bpf-maps
@@ -156,12 +167,12 @@ spec:
           for i in {1..5}; do \
             [ -S /var/run/cilium/monitor1_2.sock ] && break || sleep 10;\
             done; \
-          cilium monitor
+          cilium-dbg monitor
         command:
         - /bin/bash
         - -c
         - --
-        image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+        image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
         imagePullPolicy: IfNotPresent
         name: cilium-monitor
         terminationMessagePolicy: FallbackToLogsOnError
@@ -172,7 +183,7 @@ spec:
       hostNetwork: true
       initContainers:
       - command:
-        - cilium
+        - cilium-dbg
         - build-config
         env:
         - name: K8S_NODE_NAME
@@ -185,7 +196,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-        image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+        image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
         imagePullPolicy: IfNotPresent
         name: config
         terminationMessagePolicy: FallbackToLogsOnError
@@ -204,7 +215,7 @@ spec:
           value: /run/cilium/cgroupv2
         - name: BIN_PATH
           value: /opt/cni/bin
-        image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+        image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
         imagePullPolicy: IfNotPresent
         name: mount-cgroup
         securityContext:
@@ -225,7 +236,7 @@ spec:
         env:
         - name: BIN_PATH
           value: /opt/cni/bin
-        image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+        image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
         imagePullPolicy: IfNotPresent
         name: apply-sysctl-overwrites
         securityContext:
@@ -244,7 +255,7 @@ spec:
             echo "Waiting on node-init to run...";
             sleep 1;
           done
-        image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+        image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
         imagePullPolicy: IfNotPresent
         name: wait-for-node-init
         terminationMessagePolicy: FallbackToLogsOnError
@@ -266,13 +277,15 @@ spec:
               key: clean-cilium-bpf-state
               name: cilium-config
               optional: true
-        image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+        - name: WRITE_CNI_CONF_WHEN_READY
+          valueFrom:
+            configMapKeyRef:
+              key: write-cni-conf-when-ready
+              name: cilium-config
+              optional: true
+        image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
         imagePullPolicy: IfNotPresent
         name: clean-cilium-state
-        resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
         securityContext:
           privileged: true
         terminationMessagePolicy: FallbackToLogsOnError
@@ -286,7 +299,7 @@ spec:
           name: cilium-run
       - command:
         - /install-plugin.sh
-        image: quay.io/cilium/cilium:v1.13.2@sha256:85708b11d45647c35b9288e0de0706d24a5ce8a378166cadc700f756cc1a38d6
+        image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
         imagePullPolicy: IfNotPresent
         name: install-cni-binaries
         resources:
@@ -297,6 +310,7 @@ spec:
           capabilities:
             drop:
             - ALL
+          privileged: true
         terminationMessagePolicy: FallbackToLogsOnError
         volumeMounts:
         - mountPath: /host/opt/cni/bin
@@ -345,26 +359,42 @@ spec:
           type: FileOrCreate
         name: xtables-lock
       - hostPath:
+          path: /var/run/cilium/envoy/sockets
+          type: DirectoryOrCreate
+        name: envoy-sockets
+      - hostPath:
           path: /tmp/cilium-bootstrap.d
           type: DirectoryOrCreate
         name: cilium-bootstrap-file-dir
       - name: clustermesh-secrets
-        secret:
+        projected:
           defaultMode: 256
-          optional: true
-          secretName: cilium-clustermesh
+          sources:
+          - secret:
+              name: cilium-clustermesh
+              optional: true
+          - secret:
+              items:
+              - key: tls.key
+                path: common-etcd-client.key
+              - key: tls.crt
+                path: common-etcd-client.crt
+              - key: ca.crt
+                path: common-etcd-client-ca.crt
+              name: clustermesh-apiserver-remote-cert
+              optional: true
       - name: hubble-tls
         projected:
           defaultMode: 256
           sources:
           - secret:
               items:
-              - key: ca.crt
-                path: client-ca.crt
               - key: tls.crt
                 path: server.crt
               - key: tls.key
                 path: server.key
+              - key: ca.crt
+                path: client-ca.crt
               name: hubble-server-certs
               optional: true
   updateStrategy:

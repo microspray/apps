@@ -38,10 +38,15 @@ spec:
             echo "Addressing:"
             ip -4 a
             ip -6 a
+
+
             mkdir -p "/tmp/cilium-bootstrap.d"
             date > "/tmp/cilium-bootstrap.d/cilium-bootstrap-time"
+
+
+
             echo "Node initialization complete"
-        image: quay.io/cilium/startup-script:d69851597ea019af980891a4628fb36b7880ec26
+        image: quay.io/cilium/startup-script:19fb149fb3d5c7a37d3edfaf10a2be3ab7386661@sha256:820155cb3b7f00c8d61c1cffa68c44440906cb046bdbad8ff544f5deb1103456
         imagePullPolicy: IfNotPresent
         lifecycle: null
         name: node-init

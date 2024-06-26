@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: tigera-operator
+  name: tigera-operator
+  namespace: tigera-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: tigera-operator
+  template:
+    metadata:
+      labels:
+        k8s-app: tigera-operator
+        name: tigera-operator
+    spec:
+      containers:
+      - command:
+        - operator
+        env:
+        - name: WATCH_NAMESPACE
+          value: ""
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: OPERATOR_NAME
+          value: tigera-operator
+        - name: TIGERA_OPERATOR_INIT_IMAGE_VERSION
+          value: v1.34.0
+        envFrom:
+        - configMapRef:
+            name: kubernetes-services-endpoint
+            optional: true
+        image: quay.io/tigera/operator:v1.34.0
+        imagePullPolicy: IfNotPresent
+        name: tigera-operator
+        volumeMounts:
+        - mountPath: /var/lib/calico
+          name: var-lib-calico
+          readOnly: true
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      serviceAccountName: tigera-operator
+      terminationGracePeriodSeconds: 60
+      tolerations:
+      - effect: NoExecute
+        operator: Exists
+      - effect: NoSchedule
+        operator: Exists
+      volumes:
+      - hostPath:
+          path: /var/lib/calico
+        name: var-lib-calico
