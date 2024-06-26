@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: calico
+resources:
+- manifests/upstream
+patches:
+  - target:
+      kind: Installation
+      name: default
+    patch: |-
+      - op: replace
+        path: /spec/calicoNetwork
+        value:
+          ipPools:
+          - blockSize: 26
+            cidr: 10.11.0.0/16
+            encapsulation: None
+            name: default-ipv4-ippool
+            natOutgoing: Enabled
+            nodeSelector: all()
+            allowedUses:
+              - Workload
+              - Tunnel

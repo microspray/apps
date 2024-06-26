@@ -1,0 +1,17 @@
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+  namespace: calico
+spec:
+  calicoNetwork:
+    ipPools:
+    - allowedUses:
+      - Workload
+      - Tunnel
+      blockSize: 26
+      cidr: 10.11.0.0/16
+      encapsulation: None
+      name: default-ipv4-ippool
+      natOutgoing: Enabled
+      nodeSelector: all()
