@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- kubevirt-cluster-critical..priorityclass.yaml
+- kubevirt-operator-rolebinding.kubevirt.rolebinding.yaml
+- kubevirt-operator..clusterrole.yaml
+- kubevirt-operator..clusterrolebinding.yaml
+- kubevirt-operator.kubevirt.role.yaml
+- kubevirt-operator.kubevirt.serviceaccount.yaml
+- kubevirt..namespace.yaml
+- kubevirt.io:operator..clusterrole.yaml
+- kubevirt.kubevirt.kubevirt.yaml
+- kubevirts.kubevirt.io..customresourcedefinition.yaml
+- virt-operator.kubevirt.deployment.yaml
