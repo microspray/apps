@@ -20,7 +20,7 @@ spec:
       - env:
         - name: CONFIG_MAP_NAME
           value: postgres-operator
-        image: registry.opensource.zalan.do/acid/postgres-operator:v1.10.0
+        image: ghcr.io/zalando/postgres-operator:v1.13.0
         imagePullPolicy: IfNotPresent
         name: postgres-operator
         resources:

@@ -22,7 +22,7 @@ configuration:
     secret_name_template: "{username}.{cluster}.pg.creds"
   logical_backup:
     logical_backup_provider: "s3"
-    logical_backup_s3_retention_time: "1 months"
+    logical_backup_s3_retention_time: "3 months"
     logical_backup_s3_bucket: "pg-micros-backups"
     # logical_backup_s3_endpoint: "https://s3.microspray.io"
     logical_backup_s3_access_key_id: "AKIAXLVDVKLQWUNCZTNS"

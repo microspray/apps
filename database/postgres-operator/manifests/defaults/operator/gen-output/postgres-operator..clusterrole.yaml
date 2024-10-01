@@ -74,6 +74,7 @@ rules:
   - delete
   - get
   - update
+  - patch
 - apiGroups:
   - ""
   resources:
@@ -138,6 +139,7 @@ rules:
   - get
   - list
   - patch
+  - update
 - apiGroups:
   - batch
   resources:
