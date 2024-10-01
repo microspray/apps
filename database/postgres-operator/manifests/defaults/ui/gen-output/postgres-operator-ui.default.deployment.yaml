@@ -53,14 +53,14 @@ spec:
               "limit_iops": 16000,
               "limit_throughput": 1000,
               "postgresql_versions": [
+                "16",
                 "15",
                 "14",
                 "13",
-                "12",
-                "11"
+                "12"
               ]
             }
-        image: registry.opensource.zalan.do/acid/postgres-operator-ui:v1.10.0
+        image: ghcr.io/zalando/postgres-operator-ui:v1.13.0
         name: service
         ports:
         - containerPort: 8081

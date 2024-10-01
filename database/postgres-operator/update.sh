@@ -1,7 +1,7 @@
 #!/bin/bash
 REPO=postgres-operator
 GITHUB_ORG=zalando
-VERSION=1.10.0
+VERSION=1.13.0
 V=v
 rm -rf manifests/defaults/operator
 rm -rf manifests/defaults/ui

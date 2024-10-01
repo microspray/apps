@@ -10,13 +10,13 @@ configuration:
     connection_pooler_default_cpu_request: 500m
     connection_pooler_default_memory_limit: 100Mi
     connection_pooler_default_memory_request: 100Mi
-    connection_pooler_image: registry.opensource.zalan.do/acid/pgbouncer:master-27
+    connection_pooler_image: registry.opensource.zalan.do/acid/pgbouncer:master-32
     connection_pooler_mode: transaction
     connection_pooler_number_of_instances: 2
   debug:
     debug_logging: true
     enable_database_access: true
-  docker_image: ghcr.io/zalando/spilo-15:3.0-p1
+  docker_image: ghcr.io/zalando/spilo-16:3.3-p1
   enable_pgversion_env_var: true
   enable_spilo_wal_path_compat: false
   enable_team_id_clustername_prefix: false
@@ -33,14 +33,22 @@ configuration:
     delete_annotation_date_key: acid.zalan.do/delete-date
     delete_annotation_name_key: acid.zalan.do/delete-clustername
     enable_cross_namespace_secret: true
+    enable_finalizers: false
     enable_init_containers: true
+    enable_owner_references: false
+    enable_persistent_volume_claim_deletion: true
     enable_pod_antiaffinity: true
     enable_pod_disruption_budget: true
     enable_readiness_probe: false
+    enable_secrets_deletion: true
     enable_sidecars: true
     master_pod_move_timeout: 20m
     oauth_token_secret_name: postgresql-operator
+    pdb_master_label_selector: true
     pdb_name_format: postgres-{cluster}-pdb
+    persistent_volume_claim_retention_policy:
+      when_deleted: retain
+      when_scaled: retain
     pod_antiaffinity_preferred_during_scheduling: false
     pod_antiaffinity_topology_key: kubernetes.io/hostname
     pod_environment_configmap: pg-env
@@ -70,19 +78,19 @@ configuration:
     cluster_history_entries: 1000
     ring_log_lines: 100
   logical_backup:
-    logical_backup_docker_image: registry.opensource.zalan.do/acid/logical-backup:v1.10.0
+    logical_backup_docker_image: ghcr.io/zalando/postgres-operator/logical-backup:v1.13.0
     logical_backup_job_prefix: logical-backup-
     logical_backup_provider: s3
     logical_backup_s3_access_key_id: AKIAXLVDVKLQWUNCZTNS
     logical_backup_s3_bucket: pg-micros-backups
-    logical_backup_s3_retention_time: 1 months
+    logical_backup_s3_retention_time: 3 months
     logical_backup_s3_secret_access_key: D7KOlKUaESzH7+k4HzAyCOjd4wH2d3RLNc1j0U3U
     logical_backup_s3_sse: ""
     logical_backup_schedule: 0 0 * * *
   major_version_upgrade:
-    major_version_upgrade_mode: "off"
-    minimal_major_version: "11"
-    target_major_version: "15"
+    major_version_upgrade_mode: manual
+    minimal_major_version: "12"
+    target_major_version: "16"
   max_instances: -1
   min_instances: -1
   patroni:
