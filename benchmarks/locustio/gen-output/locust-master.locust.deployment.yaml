@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: locust
+    app.kubernetes.io/version: 2.15.1
+    component: master
+    helm.sh/chart: locust-0.31.5
+    load_test: example
+  name: locust-master
+  namespace: locust
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: myrelease
+      app.kubernetes.io/name: locust
+      component: master
+      load_test: example
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config-config: b67d8d79c71d14901ed9d39bfec8cf14345729e3af7a812367fa00d57b9e2f58
+        checksum/config-locust-lib: 307cbe83c4de0c5994c8fe948ecff921ecc1388977badf757036bfc72a79d642
+        checksum/config-locust-locustfile: b217c3655ec472dcab585ed316a4becc8466eedec0e63e2d51b0f83483647bf9
+        checksum/config-secret: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+      labels:
+        app.kubernetes.io/instance: myrelease
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: locust
+        app.kubernetes.io/version: 2.15.1
+        component: master
+        helm.sh/chart: locust-0.31.5
+        load_test: example
+    spec:
+      containers:
+      - args:
+        - --master
+        command:
+        - sh
+        - /config/docker-entrypoint.sh
+        env:
+        - name: LOCUST_HOST
+          value: https://www.google.com
+        - name: LOCUST_LOGLEVEL
+          value: INFO
+        - name: LOCUST_LOCUSTFILE
+          value: /mnt/locust/main.py
+        image: locustio/locust:2.15.1
+        imagePullPolicy: IfNotPresent
+        name: locust
+        ports:
+        - containerPort: 8089
+          name: loc-master-web
+          protocol: TCP
+        - containerPort: 5557
+          name: loc-master-p1
+          protocol: TCP
+        - containerPort: 5558
+          name: loc-master-p2
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /
+            port: 8089
+          initialDelaySeconds: 5
+          periodSeconds: 30
+          timeoutSeconds: 30
+        resources: {}
+        securityContext: {}
+        volumeMounts:
+        - mountPath: /mnt/locust
+          name: locustfile
+        - mountPath: /mnt/locust/lib
+          name: lib
+        - mountPath: /config
+          name: config
+      restartPolicy: Always
+      securityContext: {}
+      serviceAccountName: locust-master
+      volumes:
+      - configMap:
+          name: example-lib
+        name: lib
+      - configMap:
+          name: example-locustfile
+        name: locustfile
+      - configMap:
+          name: locust-config
+        name: config

@@ -1,0 +1,38 @@
+RELEASENAME="a4myrelease4a"
+REPONAME=deliveryhero
+REPOURL="https://charts.deliveryhero.io/"
+
+NAME=locust
+NAMESPACE=locust
+
+# CHART=$(REPONAME)/$(NAME)
+CHART=locust-chart
+
+all: template
+
+create-namespace:
+	kubectl create namespace $(NAMESPACE)
+
+kustomization.yaml:
+	kustomize init .
+	kustomize edit add resource  manifests/upstream
+	kustomize edit set namespace $(NAMESPACE)
+update:
+	helm repo add $(REPONAME) $(REPOURL)
+	helm repo update
+
+deploy:
+	kustomize build . | kubectl apply -f -
+
+manifests/upstream/kustomization.yaml:
+	mkdir -p manifests/upstream
+	cd manifests/upstream && \
+	kustomize init . && \
+	kustomize edit add resource $(NAME).aio.yaml
+	cd -
+
+template: manifests/upstream/kustomization.yaml kustomization.yaml
+	helm template $(RELEASENAME) $(CHART) \
+	-f values.yaml --namespace $(NAMESPACE) > manifests/upstream/$(NAME).aio.yaml
+	@sed -i".bu" "s/$(RELEASENAME)-//g" manifests/upstream/$(NAME).aio.yaml
+	@rm -rf manifests/upstream/*.bu

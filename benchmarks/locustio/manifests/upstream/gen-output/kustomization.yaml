@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- example-lib..configmap.yaml
+- example-locustfile..configmap.yaml
+- locust-config..configmap.yaml
+- locust-master..deployment.yaml
+- locust-master..serviceaccount.yaml
+- locust-worker..deployment.yaml
+- locust-worker..serviceaccount.yaml
+- locust..service.yaml

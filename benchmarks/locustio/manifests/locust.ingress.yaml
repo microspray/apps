@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-signin: https://oauth2-proxy.a1.micros.dev/oauth2/start?rd=https%3A%2F%2F$host$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-url: https://oauth2-proxy.a1.micros.dev/oauth2/auth
+  name: locust
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: locust.a1.micros.dev
+    http:
+      paths:
+      - backend:
+          service:
+            name: locust
+            port:
+              number: 8089
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - locust.a1.micros.dev
+    secretName: locust-certs
