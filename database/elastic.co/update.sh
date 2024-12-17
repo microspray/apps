@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=2.11.1
+VERSION=2.15.0
 rm -rf manifests/upstream
 mkdir -p manifests/upstream
 curl -L https://download.elastic.co/downloads/eck/$VERSION/crds.yaml > manifests/upstream/crds.yaml
