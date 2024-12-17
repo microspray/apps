@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app.kubernetes.io/version: 2.11.1
+    app.kubernetes.io/version: 2.15.0
     control-plane: elastic-operator
   name: elastic-operator
   namespace: elastic-system
@@ -15,11 +15,12 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 052ce1ebc5f534ea096535035722ec268fcdc842b4dd6f2ac502dff91510aaff
+        checksum/config: e1a8870d4023bdf0027e095325daeb40329247ba28b6adf3a4f88e962d8a3746
         co.elastic.logs/raw: '[{"type":"container","json.keys_under_root":true,"paths":["/var/log/containers/*${data.kubernetes.container.id}.log"],"processors":[{"convert":{"mode":"rename","ignore_missing":true,"fields":[{"from":"error","to":"_error"}]}},{"convert":{"mode":"rename","ignore_missing":true,"fields":[{"from":"_error","to":"error.message"}]}},{"convert":{"mode":"rename","ignore_missing":true,"fields":[{"from":"source","to":"_source"}]}},{"convert":{"mode":"rename","ignore_missing":true,"fields":[{"from":"_source","to":"event.source"}]}}]}]'
       labels:
         control-plane: elastic-operator
     spec:
+      automountServiceAccountToken: true
       containers:
       - args:
         - manager
@@ -35,7 +36,7 @@ spec:
               fieldPath: status.podIP
         - name: WEBHOOK_SECRET
           value: elastic-webhook-server-cert
-        image: docker.elastic.co/eck/eck-operator:2.11.1
+        image: docker.elastic.co/eck/eck-operator:2.15.0
         imagePullPolicy: IfNotPresent
         name: manager
         ports:

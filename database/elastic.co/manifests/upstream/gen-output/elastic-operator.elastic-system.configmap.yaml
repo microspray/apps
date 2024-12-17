@@ -27,7 +27,7 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    app.kubernetes.io/version: 2.11.1
+    app.kubernetes.io/version: 2.15.0
     control-plane: elastic-operator
   name: elastic-operator
   namespace: elastic-system
