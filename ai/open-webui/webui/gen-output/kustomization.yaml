@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- open-webui-cc7mch2g6h.open-webui.configmap.yaml
+- open-webui-cff7d92694.open-webui.secret.yaml
+- open-webui.open-webui.deployment.yaml
+- open-webui.open-webui.ingress.yaml
+- open-webui.open-webui.persistentvolumeclaim.yaml
+- open-webui.open-webui.postgresql.yaml
+- open-webui.open-webui.service.yaml

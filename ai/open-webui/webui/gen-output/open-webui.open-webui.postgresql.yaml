@@ -1,0 +1,58 @@
+apiVersion: acid.zalan.do/v1
+kind: postgresql
+metadata:
+  annotations:
+    acid.zalan.do/controller: infra
+    linkerd.io/inject: disabled
+  labels:
+    app.kubernetes.io/component: open-webui
+    app.kubernetes.io/part-of: open-webui
+    cluster: open-webui
+  name: open-webui
+  namespace: open-webui
+spec:
+  additionalVolumes:
+  - mountPath: /opt/empty
+    name: empty
+    targetContainers:
+    - all
+    volumeSource:
+      emptyDir: {}
+  allowedSourceRanges:
+  - 127.0.0.1/32
+  - 10.233.0.0/16
+  - 192.168.1.0/24
+  databases:
+    openwebui: openwebui
+  enableConnectionPooler: true
+  enableLogicalBackup: true
+  enableMasterLoadBalancer: false
+  enableReplicaConnectionPooler: false
+  enableReplicaLoadBalancer: false
+  enableShmVolume: true
+  numberOfInstances: 2
+  postgresql:
+    parameters:
+      log_statement: all
+      max_connections: "150"
+      shared_buffers: 1024MB
+    version: "16"
+  preparedDatabases:
+    openwebui:
+      schemas:
+        public: {}
+  resources:
+    limits:
+      cpu: 8000m
+      memory: 8000Mi
+    requests:
+      cpu: 400m
+      memory: 4000Mi
+  teamId: spray
+  users:
+    grafana:
+    - superuser
+    - createdb
+  volume:
+    size: 50Gi
+    storageClass: local

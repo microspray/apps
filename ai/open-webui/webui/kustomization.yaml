@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- manifests/webui-deployment.yaml
+- manifests/webui-ingress.yaml
+- manifests/webui-pvc.yaml
+- manifests/webui-service.yaml
+- manifests/db.yaml
+
+namespace: open-webui
+configMapGenerator:
+- envs:
+  - manifests/configs/env.conf
+  name: open-webui
+secretGenerator:
+- envs:
+  - manifests/secrets/env.secret.conf
+  name: open-webui
+  type: Opaque
+
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/component: open-webui
+    app.kubernetes.io/part-of: open-webui
