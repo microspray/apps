@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
+    helm.sh/hook-weight: "1"
+  labels:
+    app.kubernetes.io/component: gpu-operator
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: gpu-operator
+    app.kubernetes.io/version: v24.9.2
+    helm.sh/chart: gpu-operator-v24.9.2
+  name: gpu-operator-upgrade-crd
+  namespace: gpu-operator
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: gpu-operator
+        app.kubernetes.io/instance: myrelease
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: gpu-operator
+        app.kubernetes.io/version: v24.9.2
+        helm.sh/chart: gpu-operator-v24.9.2
+      name: gpu-operator-upgrade-crd
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - |
+          kubectl apply -f /opt/gpu-operator/nvidia.com_clusterpolicies.yaml; kubectl apply -f /opt/gpu-operator/nvidia.com_nvidiadrivers.yaml; kubectl apply -f /opt/gpu-operator/nfd-api-crds.yaml;
+        image: nvcr.io/nvidia/gpu-operator:v24.9.2
+        imagePullPolicy: IfNotPresent
+        name: upgrade-crd
+      restartPolicy: OnFailure
+      serviceAccountName: gpu-operator-upgrade-crd-hook-sa
+      tolerations:
+      - effect: NoSchedule
+        key: group
+        operator: Equal
+        value: gpu
+      - effect: NoSchedule
+        key: nvidia.com/gpu
+        operator: Exists
+        value: ""

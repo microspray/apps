@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: node-feature-discovery
+    app.kubernetes.io/version: v0.16.6
+    helm.sh/chart: node-feature-discovery-0.16.6
+    role: worker
+  name: node-feature-discovery-worker
+  namespace: gpu-operator
+spec:
+  revisionHistoryLimit: null
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: myrelease
+      app.kubernetes.io/name: node-feature-discovery
+      role: worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: myrelease
+        app.kubernetes.io/name: node-feature-discovery
+        role: worker
+    spec:
+      containers:
+      - args:
+        - -feature-gates=NodeFeatureAPI=true
+        - -feature-gates=NodeFeatureGroupAPI=false
+        - -metrics=8081
+        - -grpc-health=8082
+        command:
+        - nfd-worker
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
+        image: registry.k8s.io/nfd/node-feature-discovery:v0.16.6
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          grpc:
+            port: 8082
+          initialDelaySeconds: 10
+        name: worker
+        ports:
+        - containerPort: 8081
+          name: metrics
+        - containerPort: 8082
+          name: health
+        readinessProbe:
+          failureThreshold: 10
+          grpc:
+            port: 8082
+          initialDelaySeconds: 5
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 5m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+        volumeMounts:
+        - mountPath: /host-boot
+          name: host-boot
+          readOnly: true
+        - mountPath: /host-etc/os-release
+          name: host-os-release
+          readOnly: true
+        - mountPath: /host-sys
+          name: host-sys
+          readOnly: true
+        - mountPath: /host-usr/lib
+          name: host-usr-lib
+          readOnly: true
+        - mountPath: /host-lib
+          name: host-lib
+          readOnly: true
+        - mountPath: /host-proc/swaps
+          name: host-proc-swaps
+          readOnly: true
+        - mountPath: /etc/kubernetes/node-feature-discovery/source.d/
+          name: source-d
+          readOnly: true
+        - mountPath: /etc/kubernetes/node-feature-discovery/features.d/
+          name: features-d
+          readOnly: true
+        - mountPath: /etc/kubernetes/node-feature-discovery
+          name: nfd-worker-conf
+          readOnly: true
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: false
+      priorityClassName: system-node-critical
+      securityContext: {}
+      serviceAccountName: node-feature-discovery
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Equal
+        value: ""
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Equal
+        value: ""
+      - effect: NoSchedule
+        key: nvidia.com/gpu
+        operator: Exists
+      - effect: NoSchedule
+        key: group
+        operator: Equal
+        value: gpu
+      volumes:
+      - hostPath:
+          path: /boot
+        name: host-boot
+      - hostPath:
+          path: /etc/os-release
+        name: host-os-release
+      - hostPath:
+          path: /sys
+        name: host-sys
+      - hostPath:
+          path: /usr/lib
+        name: host-usr-lib
+      - hostPath:
+          path: /lib
+        name: host-lib
+      - hostPath:
+          path: /proc/swaps
+        name: host-proc-swaps
+      - hostPath:
+          path: /etc/kubernetes/node-feature-discovery/source.d/
+        name: source-d
+      - hostPath:
+          path: /etc/kubernetes/node-feature-discovery/features.d/
+        name: features-d
+      - configMap:
+          items:
+          - key: nfd-worker.conf
+            path: nfd-worker.conf
+          name: node-feature-discovery-worker-conf
+        name: nfd-worker-conf
