@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../cpu
+namespace: ollama
+nameSuffix: -gpu
+patches:
+  - patch: |
+      - op: add
+        path: /spec/template/spec/tolerations
+        value:
+          - key: "nvidia.com/gpu"
+            operator: Exists
+            effect: NoSchedule
+          - effect: NoSchedule
+            key: group
+            operator: Equal
+            value: gpu
+      - op: replace
+        path: /spec/template/spec/containers/0/env
+        value:
+          - name: PATH
+            value: /usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits
+        value:
+          nvidia.com/gpu: 1
+    target:
+      kind: Deployment
+      name: ollama

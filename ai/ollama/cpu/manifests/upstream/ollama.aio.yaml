@@ -1,0 +1,153 @@
+---
+# Source: ollama/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ollama
+  namespace: ollama
+  labels:
+    helm.sh/chart: ollama-1.5.0
+    app.kubernetes.io/name: ollama
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/version: "0.5.9"
+    app.kubernetes.io/managed-by: Helm
+automountServiceAccountToken: true
+---
+# Source: ollama/templates/pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    helm.sh/chart: ollama-1.5.0
+    app.kubernetes.io/name: ollama
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/version: "0.5.9"
+    app.kubernetes.io/managed-by: Helm
+  name: ollama
+  namespace: ollama
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: "local"
+  resources:
+    requests:
+      storage: "30Gi"
+---
+# Source: ollama/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama
+  namespace: ollama
+  labels:
+    helm.sh/chart: ollama-1.5.0
+    app.kubernetes.io/name: ollama
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/version: "0.5.9"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 11434
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: ollama
+    app.kubernetes.io/instance: myrelease
+---
+# Source: ollama/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+  namespace: ollama
+  labels:
+    helm.sh/chart: ollama-1.5.0
+    app.kubernetes.io/name: ollama
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/version: "0.5.9"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  strategy: 
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ollama
+      app.kubernetes.io/instance: myrelease
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: ollama-1.5.0
+        app.kubernetes.io/name: ollama
+        app.kubernetes.io/instance: myrelease
+        app.kubernetes.io/version: "0.5.9"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: ollama
+      securityContext:
+        {}
+      containers:
+        - name: ollama
+          securityContext:
+            {}
+          image: "ollama/ollama:latest"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 11434
+              protocol: TCP
+          env:
+          envFrom:
+          args:
+          resources:
+            limits: {}
+            requests: {}
+          volumeMounts:
+            - name: ollama-data
+              mountPath: /root/.ollama
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 6
+      volumes:
+        - name: ollama-data
+          persistentVolumeClaim:
+            claimName: ollama
+---
+# Source: ollama/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "ollama-test-connection"
+  namespace: ollama
+  labels:
+    helm.sh/chart: ollama-1.5.0
+    app.kubernetes.io/name: ollama
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/version: "0.5.9"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['ollama:11434']
+  restartPolicy: Never
