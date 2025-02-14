@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ollama
+    app.kubernetes.io/version: 0.5.9
+    helm.sh/chart: ollama-1.5.0
+  name: ollama-gpu
+  namespace: ollama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: myrelease
+      app.kubernetes.io/name: ollama
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: myrelease
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: ollama
+        app.kubernetes.io/version: 0.5.9
+        helm.sh/chart: ollama-1.5.0
+    spec:
+      containers:
+      - args: null
+        env:
+        - name: PATH
+          value: /usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        envFrom: null
+        image: ollama/ollama:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 6
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: ollama
+        ports:
+        - containerPort: 11434
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 6
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 3
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+          requests: {}
+        securityContext: {}
+        volumeMounts:
+        - mountPath: /root/.ollama
+          name: ollama-data
+      securityContext: {}
+      serviceAccountName: ollama-gpu
+      tolerations:
+      - effect: NoSchedule
+        key: nvidia.com/gpu
+        operator: Exists
+      - effect: NoSchedule
+        key: group
+        operator: Equal
+        value: gpu
+      volumes:
+      - name: ollama-data
+        persistentVolumeClaim:
+          claimName: ollama-gpu

@@ -1,0 +1,24 @@
+apiVersion: v1
+data:
+  CONTENT_EXTRACTION_ENGINE: Tika
+  DATABASE_HOST: openwebui.pg-infra.svc.cluster.local
+  DATABASE_NAME: openwebui
+  DATABASE_SECRET: openwebui.openweb-ui.pg.creds
+  ENABLE_ADMIN_CHAT_ACCESS: "False"
+  ENABLE_OPENAI_API: "True"
+  ENABLE_WEBSOCKET_SUPPORT: "True"
+  ENV: prod
+  K8S_FLAG: "True"
+  OLLAMA_BASE_URLS: ollama-gpu.ollama.svc.cluster.local:11434
+  TIKA_SERVER_URL: http://open-webui-tika:9998
+  VECTOR_DB: qdrant
+  WEBSOCKET_MANAGER: redis
+  WEBSOCKET_REDIS_URL: redis://open-webui-redis.open-webui.svc.cluster.local:6379/0
+  WEBUI_URL: https://webui.microspray.io
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: open-webui
+    app.kubernetes.io/part-of: open-webui
+  name: open-webui-cc7mch2g6h
+  namespace: open-webui

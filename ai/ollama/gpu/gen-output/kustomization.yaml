@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ollama-gpu.ollama.deployment.yaml
+- ollama-gpu.ollama.persistentvolumeclaim.yaml
+- ollama-gpu.ollama.service.yaml
+- ollama-gpu.ollama.serviceaccount.yaml

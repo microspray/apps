@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: open-webui
+  namespace: open-webui
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: webui.microspray.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: open-webui
+            port:
+              number: 8080
+  tls:
+    - hosts:
+      - "webui.microspray.io"
+      secretName: tls

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: open-webui
+    app.kubernetes.io/component: open-webui
+    app.kubernetes.io/part-of: open-webui
+  name: open-webui
+  namespace: open-webui
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClass: local
