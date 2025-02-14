@@ -42,7 +42,7 @@ spec:
         - configMapRef:
             name: open-webui
         - secretRef:
-            secretName: open-webui
+            name: open-webui
         tty: true
         volumeMounts:
         - name: webui-volume
