@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: qdrant
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: qdrant
+    app.kubernetes.io/version: v1.13.4
+    helm.sh/chart: qdrant-1.13.4
+  name: qdrant
+  namespace: qdrant
+spec:
+  ports:
+  - name: http
+    port: 6333
+    protocol: TCP
+    targetPort: 6333
+  - name: grpc
+    port: 6334
+    protocol: TCP
+    targetPort: 6334
+  - name: p2p
+    port: 6335
+    protocol: TCP
+    targetPort: 6335
+  selector:
+    app: qdrant
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/name: qdrant
+  type: ClusterIP

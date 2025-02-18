@@ -1,0 +1,155 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: qdrant
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: qdrant
+    app.kubernetes.io/version: v1.13.4
+    helm.sh/chart: qdrant-1.13.4
+  name: qdrant
+  namespace: qdrant
+spec:
+  podManagementPolicy: Parallel
+  replicas: 3
+  selector:
+    matchLabels:
+      app: qdrant
+      app.kubernetes.io/instance: myrelease
+      app.kubernetes.io/name: qdrant
+  serviceName: qdrant-headless
+  template:
+    metadata:
+      annotations:
+        checksum/config: ee3734113ab08462210b234b39143ce06b0d4ad196093a107d6ee6f5bd2b4908
+      labels:
+        app: qdrant
+        app.kubernetes.io/instance: myrelease
+        app.kubernetes.io/name: qdrant
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - qdrant
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - myrelease
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - args:
+        - ./config/initialize.sh
+        command:
+        - /bin/bash
+        - -c
+        env:
+        - name: QDRANT_INIT_FILE_PATH
+          value: /qdrant/init/.qdrant-initialized
+        envFrom:
+        - configMapRef:
+            name: qdrant-env-k5t7d2679k
+        - secretRef:
+            name: qdrant-env-6hf94fd4km
+        image: docker.io/qdrant/qdrant:v1.13.4
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - sleep
+              - "3"
+        name: qdrant
+        ports:
+        - containerPort: 6333
+          name: http
+          protocol: TCP
+        - containerPort: 6334
+          name: grpc
+          protocol: TCP
+        - containerPort: 6335
+          name: p2p
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 6
+          httpGet:
+            path: /readyz
+            port: 6333
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsGroup: 2000
+          runAsNonRoot: true
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /qdrant/storage
+          name: qdrant-storage
+        - mountPath: /qdrant/config/initialize.sh
+          name: qdrant-config
+          subPath: initialize.sh
+        - mountPath: /qdrant/config/production.yaml
+          name: qdrant-config
+          subPath: production.yaml
+        - mountPath: /qdrant/snapshots
+          name: qdrant-snapshots
+        - mountPath: /qdrant/init
+          name: qdrant-init
+      initContainers:
+      - command:
+        - chown
+        - -R
+        - 1000:3000
+        - /qdrant/storage
+        - /qdrant/snapshots
+        image: docker.io/qdrant/qdrant:v1.13.4
+        name: ensure-dir-ownership
+        volumeMounts:
+        - mountPath: /qdrant/storage
+          name: qdrant-storage
+        - mountPath: /qdrant/snapshots
+          name: qdrant-snapshots
+      securityContext:
+        fsGroup: 3000
+        fsGroupChangePolicy: Always
+      serviceAccountName: qdrant
+      volumes:
+      - configMap:
+          defaultMode: 493
+          name: qdrant-config-hg5kt9k6bt
+        name: qdrant-config
+      - emptyDir: {}
+        name: qdrant-init
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        app: qdrant
+      name: qdrant-storage
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi
+      storageClassName: local-retain
+  - metadata:
+      labels:
+        app: qdrant
+      name: qdrant-snapshots
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi
+      storageClassName: local

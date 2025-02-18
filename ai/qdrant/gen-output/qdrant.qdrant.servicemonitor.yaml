@@ -1,0 +1,29 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: qdrant
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: qdrant
+    app.kubernetes.io/version: v1.13.4
+    helm.sh/chart: qdrant-1.13.4
+  name: qdrant
+  namespace: qdrant
+spec:
+  endpoints:
+  - honorLabels: true
+    interval: 30s
+    path: /metrics
+    port: http
+    scheme: http
+    scrapeTimeout: 10s
+  selector:
+    matchLabels:
+      app: qdrant
+      app.kubernetes.io/component: cluster-discovery
+      app.kubernetes.io/instance: myrelease
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: qdrant
+      app.kubernetes.io/version: v1.13.4
+      helm.sh/chart: qdrant-1.13.4
