@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    helm.sh/hook: test
+  labels:
+    app: qdrant
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: qdrant
+    app.kubernetes.io/version: v1.13.4
+    helm.sh/chart: qdrant-1.13.4
+  name: qdrant-test-db-interaction
+  namespace: qdrant
+spec:
+  containers:
+  - args:
+    - bash
+    - /app/entrypoint.sh
+    image: registry.suse.com/bci/bci-base:latest
+    name: test-script
+    volumeMounts:
+    - mountPath: /app
+      name: test-script
+  restartPolicy: Never
+  serviceAccountName: qdrant
+  volumes:
+  - configMap:
+      name: qdrant-test-db-interaction
+    name: test-script

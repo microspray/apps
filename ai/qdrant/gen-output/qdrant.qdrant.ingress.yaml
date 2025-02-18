@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    app: qdrant
+    app.kubernetes.io/instance: myrelease
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: qdrant
+    app.kubernetes.io/version: v1.13.4
+    helm.sh/chart: qdrant-1.13.4
+  name: qdrant
+  namespace: qdrant
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: qdrant.micros.dev
+    http:
+      paths:
+      - backend:
+          service:
+            name: qdrant
+            port:
+              number: 6333
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - qdrant.micros.dev
+    secretName: qdrant-tls
