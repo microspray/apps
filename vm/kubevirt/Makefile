@@ -1,4 +1,4 @@
-RELEASE=v1.2.2
+RELEASE=v1.4.0
 
 update:
 	rm -rf manifests/upstream
