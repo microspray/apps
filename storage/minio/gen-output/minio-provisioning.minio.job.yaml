@@ -1,0 +1,196 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+  labels:
+    app.kubernetes.io/component: minio-provisioning
+    app.kubernetes.io/instance: minio
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/version: 2024.9.22
+    helm.sh/chart: minio-14.7.13
+  name: minio-provisioning
+  namespace: minio
+spec:
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: minio-provisioning
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 2024.9.22
+        helm.sh/chart: minio-14.7.13
+    spec:
+      containers:
+      - command:
+        - /bin/bash
+        - -c
+        - |-
+          set -e;
+          echo "Start Minio provisioning";
+
+          function attachPolicy() {
+            local tmp=$(mc admin $1 info provisioning $2 | sed -n -e 's/^Policy.*: \(.*\)$/\1/p');
+            IFS=',' read -r -a CURRENT_POLICIES <<< "$tmp";
+            if [[ ! "${CURRENT_POLICIES[*]}" =~ "$3" ]]; then
+              mc admin policy attach provisioning $3 --$1=$2;
+            fi;
+          };
+
+          function detachDanglingPolicies() {
+            local tmp=$(mc admin $1 info provisioning $2 | sed -n -e 's/^Policy.*: \(.*\)$/\1/p');
+            IFS=',' read -r -a CURRENT_POLICIES <<< "$tmp";
+            IFS=',' read -r -a DESIRED_POLICIES <<< "$3";
+            for current in "${CURRENT_POLICIES[@]}"; do
+              if [[ ! "${DESIRED_POLICIES[*]}" =~ "${current}" ]]; then
+                mc admin policy detach provisioning $current --$1=$2;
+              fi;
+            done;
+          }
+
+          function addUsersFromFile() {
+            local username=$(grep -oP '^username=\K.+' $1);
+            local password=$(grep -oP '^password=\K.+' $1);
+            local disabled=$(grep -oP '^disabled=\K.+' $1);
+            local policies_list=$(grep -oP '^policies=\K.+' $1);
+            local set_policies=$(grep -oP '^setPolicies=\K.+' $1);
+
+            mc admin user add provisioning "${username}" "${password}";
+
+            IFS=',' read -r -a POLICIES <<< "${policies_list}";
+            for policy in "${POLICIES[@]}"; do
+              attachPolicy user "${username}" "${policy}";
+            done;
+            if [ "${set_policies}" == "true" ]; then
+              detachDanglingPolicies user "${username}" "${policies_list}";
+            fi;
+
+            local user_status="enable";
+            if [[ "${disabled}" != "" && "${disabled,,}" == "true" ]]; then
+              user_status="disable";
+            fi;
+
+            mc admin user "${user_status}" provisioning "${username}";
+          };
+          mc alias set provisioning $MINIO_SCHEME://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD;
+
+          mc admin service restart provisioning --wait --json;
+
+          # Adding a sleep to ensure that the check below does not cause
+          # a race condition. We check for the MinIO port because the
+          # "mc admin service restart --wait" command is not working as expected
+          sleep 5;
+          echo "Waiting for Minio to be available after restart";
+          wait-for-port \
+            --host=minio \
+            --state=inuse \
+            --timeout=120 \
+            9000;
+          echo "Minio is available. Executing provisioning commands";
+
+          echo "End Minio provisioning";
+        env:
+        - name: MINIO_SCHEME
+          value: http
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              key: root-user
+              name: minio-root-creds
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: root-password
+              name: minio-root-creds
+        envFrom: null
+        image: docker.io/bitnami/minio:2024.9.22-debian-12-r0
+        imagePullPolicy: IfNotPresent
+        name: minio
+        resources:
+          limits:
+            cpu: 150m
+            ephemeral-storage: 2Gi
+            memory: 192Mi
+          requests:
+            cpu: 100m
+            ephemeral-storage: 50Mi
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsGroup: 1001
+          runAsNonRoot: true
+          runAsUser: 1001
+          seLinuxOptions: {}
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /.mc
+          name: empty-dir
+          subPath: app-mc-dir
+        - mountPath: /opt/bitnami/minio/tmp
+          name: empty-dir
+          subPath: app-tmp-dir
+        - mountPath: /tmp
+          name: empty-dir
+          subPath: tmp-dir
+        - mountPath: /etc/ilm
+          name: minio-provisioning
+      initContainers:
+      - command:
+        - /bin/bash
+        - -c
+        - |-
+          set -e;
+          echo "Waiting for Minio";
+          wait-for-port \
+            --host=minio \
+            --state=inuse \
+            --timeout=120 \
+            9000;
+          echo "Minio is available";
+        image: docker.io/bitnami/minio:2024.9.22-debian-12-r0
+        imagePullPolicy: IfNotPresent
+        name: wait-for-available-minio
+        resources:
+          limits:
+            cpu: 150m
+            ephemeral-storage: 2Gi
+            memory: 192Mi
+          requests:
+            cpu: 100m
+            ephemeral-storage: 50Mi
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsGroup: 1001
+          runAsNonRoot: true
+          runAsUser: 1001
+          seLinuxOptions: {}
+          seccompProfile:
+            type: RuntimeDefault
+      restartPolicy: OnFailure
+      securityContext:
+        fsGroup: 1001
+        fsGroupChangePolicy: Always
+        supplementalGroups: []
+        sysctls: []
+      serviceAccountName: minio
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - emptyDir: {}
+        name: empty-dir
+      - configMap:
+          name: minio-provisioning
+        name: minio-provisioning

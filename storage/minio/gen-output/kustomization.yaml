@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- minio-headless.minio.service.yaml
+- minio-provisioning.minio.configmap.yaml
+- minio-provisioning.minio.job.yaml
+- minio-root-creds.minio.secret.yaml
+- minio.minio.ingress.yaml
+- minio.minio.poddisruptionbudget.yaml
+- minio.minio.service.yaml
+- minio.minio.serviceaccount.yaml
+- minio.minio.servicemonitor.yaml
+- minio.minio.statefulset.yaml

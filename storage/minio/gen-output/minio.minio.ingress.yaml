@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    app.kubernetes.io/instance: minio
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/version: 2024.9.22
+    helm.sh/chart: minio-14.7.13
+  name: minio
+  namespace: minio
+spec:
+  rules:
+  - host: minio.kubespray.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: minio
+            port:
+              name: minio-console
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - minio.kubespray.com
+    secretName: minio.kubespray.com-tls

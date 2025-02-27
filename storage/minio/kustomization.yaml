@@ -1,0 +1,64 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: minio
+resources:
+- root-creds.secret.yaml
+helmCharts:
+- name: minio
+  releaseName: minio
+  namespace: minio
+  version: 14.7.13
+  repo: oci://registry-1.docker.io/bitnamicharts
+  includeCRDs: false
+  valuesInline:
+    auth:
+      existingSecret: minio-root-creds
+      rootUserSecretKey: root-user
+      rootPasswordSecretKey: root-password
+    automountServiceAccountToken: true
+    global:
+      defaultStorageClass: local
+    persistence:
+      size: 400Gi
+    fullnameOverride: minio
+    kubeVersion: "1.31"
+    mode: distributed
+    ingress:
+      enabled: true
+      hostname: minio.kubespray.com
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        # nginx.ingress.kubernetes.io/auth-signin:  'https://oauth2-proxy.kubespray.com/oauth2/start?rd=https%3A%2F%2F$host$escaped_request_uri'
+        # nginx.ingress.kubernetes.io/auth-url: 'http://oauth2-proxy.dex.svc.cluster.local/oauth2/auth'
+      tls: true
+    networkPolicy:
+      enabled: false
+    statefulset:
+      replicaCount: 4
+      drivesPerNode: 1
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    # Configure Minio to recognize service accounts tokens as JWT (OIDC-like) tokens
+    extraVolumes:
+    - name: kube-root-ca
+      configMap:
+        name: kube-root-ca.crt
+    extraVolumeMounts:
+    - name: kube-root-ca
+      mountPath: /certs/CAs/
+    extraEnvVars:
+    - name: MINIO_UPDATE
+      value: "off"
+    provisioning:
+      networkPolicy:
+        enabled: false
+      enabled: true
+      # buckets:
+      # - name: runner-cache
+      #   withLock: false
+      #   lifecycle:
+      #   - id: expire-cache
+      #     expiry:
+      #       days: 7
