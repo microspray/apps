@@ -3,6 +3,19 @@ data:
   k8s-resources-workloads-namespace.json: |-
     {
         "editable": false,
+        "links": [
+            {
+                "asDropdown": true,
+                "includeVars": true,
+                "keepTime": true,
+                "tags": [
+                    "kubernetes-mixin"
+                ],
+                "targetBlank": false,
+                "title": "Kubernetes",
+                "type": "dashboards"
+            }
+        ],
         "panels": [
             {
                 "datasource": {
@@ -92,7 +105,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -107,7 +120,7 @@ data:
                             "type": "prometheus",
                             "uid": "${datasource}"
                         },
-                        "expr": "scalar(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=\"requests.cpu\"})",
+                        "expr": "scalar(max(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=~\"requests.cpu|cpu\"}))",
                         "legendFormat": "quota - requests"
                     },
                     {
@@ -115,7 +128,7 @@ data:
                             "type": "prometheus",
                             "uid": "${datasource}"
                         },
-                        "expr": "scalar(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=\"limits.cpu\"})",
+                        "expr": "scalar(max(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=~\"limits.cpu\"}))",
                         "legendFormat": "quota - limits"
                     }
                 ],
@@ -179,7 +192,7 @@ data:
                     "y": 7
                 },
                 "id": 2,
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -387,7 +400,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -402,7 +415,7 @@ data:
                             "type": "prometheus",
                             "uid": "${datasource}"
                         },
-                        "expr": "scalar(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=\"requests.memory\"})",
+                        "expr": "scalar(max(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=~\"requests.memory|memory\"}))",
                         "legendFormat": "quota - requests"
                     },
                     {
@@ -410,7 +423,7 @@ data:
                             "type": "prometheus",
                             "uid": "${datasource}"
                         },
-                        "expr": "scalar(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=\"limits.memory\"})",
+                        "expr": "scalar(max(kube_resourcequota{cluster=\"$cluster\", namespace=\"$namespace\", type=\"hard\",resource=~\"limits.memory\"}))",
                         "legendFormat": "quota - limits"
                     }
                 ],
@@ -477,7 +490,7 @@ data:
                     "y": 21
                 },
                 "id": 4,
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -653,7 +666,7 @@ data:
                     "y": 28
                 },
                 "id": 5,
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -797,7 +810,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -848,7 +861,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -899,7 +912,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -950,7 +963,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -1001,7 +1014,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -1052,7 +1065,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -1103,7 +1116,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -1154,7 +1167,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -1245,6 +1258,6 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 11.0.0
+    app.kubernetes.io/version: 11.5.2
   name: grafana-dashboard-k8s-resources-workloads-namespace
   namespace: monitoring

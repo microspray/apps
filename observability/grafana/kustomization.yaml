@@ -27,7 +27,7 @@ secretGenerator:
   type: Opaque
 images:
 - name: grafana/grafana
-  newTag: 11.0.0
+  newTag: 11.5.2
 labels:
 - includeSelectors: true
   pairs:

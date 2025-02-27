@@ -3,6 +3,19 @@ data:
   k8s-resources-workload.json: |-
     {
         "editable": false,
+        "links": [
+            {
+                "asDropdown": true,
+                "includeVars": true,
+                "keepTime": true,
+                "tags": [
+                    "kubernetes-mixin"
+                ],
+                "targetBlank": false,
+                "title": "Kubernetes",
+                "type": "dashboards"
+            }
+        ],
         "panels": [
             {
                 "datasource": {
@@ -40,7 +53,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -99,7 +112,7 @@ data:
                     "y": 7
                 },
                 "id": 2,
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -230,7 +243,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -292,7 +305,7 @@ data:
                     "y": 21
                 },
                 "id": 4,
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -443,7 +456,7 @@ data:
                     "y": 28
                 },
                 "id": 5,
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -587,7 +600,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -638,7 +651,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -689,7 +702,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -740,7 +753,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -791,7 +804,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -842,7 +855,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -893,7 +906,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -944,7 +957,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -1048,6 +1061,6 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 11.0.0
+    app.kubernetes.io/version: 11.5.2
   name: grafana-dashboard-k8s-resources-workload
   namespace: monitoring

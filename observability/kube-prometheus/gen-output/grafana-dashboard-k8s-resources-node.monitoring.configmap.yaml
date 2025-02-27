@@ -3,6 +3,19 @@ data:
   k8s-resources-node.json: |-
     {
         "editable": false,
+        "links": [
+            {
+                "asDropdown": true,
+                "includeVars": true,
+                "keepTime": true,
+                "tags": [
+                    "kubernetes-mixin"
+                ],
+                "targetBlank": false,
+                "title": "Kubernetes",
+                "type": "dashboards"
+            }
+        ],
         "panels": [
             {
                 "datasource": {
@@ -84,14 +97,14 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
                             "type": "prometheus",
                             "uid": "${datasource}"
                         },
-                        "expr": "sum(kube_node_status_capacity{cluster=\"$cluster\", node=~\"$node\", resource=\"cpu\"})",
+                        "expr": "sum(kube_node_status_capacity{cluster=\"$cluster\", job=\"kube-state-metrics\", node=~\"$node\", resource=\"cpu\"})",
                         "legendFormat": "max capacity"
                     },
                     {
@@ -151,7 +164,7 @@ data:
                     "y": 6
                 },
                 "id": 2,
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -313,14 +326,14 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
                             "type": "prometheus",
                             "uid": "${datasource}"
                         },
-                        "expr": "sum(kube_node_status_capacity{cluster=\"$cluster\", node=~\"$node\", resource=\"memory\"})",
+                        "expr": "sum(kube_node_status_capacity{cluster=\"$cluster\", job=\"kube-state-metrics\", node=~\"$node\", resource=\"memory\"})",
                         "legendFormat": "max capacity"
                     },
                     {
@@ -329,6 +342,109 @@ data:
                             "uid": "${datasource}"
                         },
                         "expr": "sum(node_namespace_pod_container:container_memory_working_set_bytes{cluster=\"$cluster\", node=~\"$node\", container!=\"\"}) by (pod)",
+                        "legendFormat": "{{pod}}"
+                    }
+                ],
+                "title": "Memory Usage (w/cache)",
+                "type": "timeseries"
+            },
+            {
+                "datasource": {
+                    "type": "datasource",
+                    "uid": "-- Mixed --"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "custom": {
+                            "fillOpacity": 10,
+                            "showPoints": "never",
+                            "spanNulls": true,
+                            "stacking": {
+                                "mode": "normal"
+                            }
+                        },
+                        "unit": "bytes"
+                    },
+                    "overrides": [
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "max capacity"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "red",
+                                        "mode": "fixed"
+                                    }
+                                },
+                                {
+                                    "id": "custom.stacking",
+                                    "value": {
+                                        "mode": "none"
+                                    }
+                                },
+                                {
+                                    "id": "custom.hideFrom",
+                                    "value": {
+                                        "legend": false,
+                                        "tooltip": true,
+                                        "viz": false
+                                    }
+                                },
+                                {
+                                    "id": "custom.lineStyle",
+                                    "value": {
+                                        "dash": [
+                                            10,
+                                            10
+                                        ],
+                                        "fill": "dash"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "gridPos": {
+                    "h": 6,
+                    "w": 24,
+                    "x": 0,
+                    "y": 18
+                },
+                "id": 4,
+                "interval": "1m",
+                "options": {
+                    "legend": {
+                        "asTable": true,
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "displayMode": "table",
+                        "placement": "right",
+                        "showLegend": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "pluginVersion": "v11.4.0",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "prometheus",
+                            "uid": "${datasource}"
+                        },
+                        "expr": "sum(kube_node_status_capacity{cluster=\"$cluster\", job=\"kube-state-metrics\", node=~\"$node\", resource=\"memory\"})",
+                        "legendFormat": "max capacity"
+                    },
+                    {
+                        "datasource": {
+                            "type": "prometheus",
+                            "uid": "${datasource}"
+                        },
+                        "expr": "sum(node_namespace_pod_container:container_memory_rss{cluster=\"$cluster\", node=~\"$node\", container!=\"\"}) by (pod)",
                         "legendFormat": "{{pod}}"
                     }
                 ],
@@ -380,10 +496,10 @@ data:
                     "h": 6,
                     "w": 24,
                     "x": 0,
-                    "y": 18
+                    "y": 24
                 },
-                "id": 4,
-                "pluginVersion": "v11.0.0",
+                "id": 5,
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -560,6 +676,6 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 11.0.0
+    app.kubernetes.io/version: 11.5.2
   name: grafana-dashboard-k8s-resources-node
   namespace: monitoring
