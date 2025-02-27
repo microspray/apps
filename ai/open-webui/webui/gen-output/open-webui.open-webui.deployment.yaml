@@ -38,7 +38,7 @@ spec:
         - configMapRef:
             name: open-webui-cc7mch2g6h
         - secretRef:
-            secretName: open-webui
+            name: open-webui-cff7d92694
         image: ghcr.io/open-webui/open-webui:main
         name: open-webui
         ports:

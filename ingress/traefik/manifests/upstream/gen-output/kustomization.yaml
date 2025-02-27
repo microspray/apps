@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- traefik-dashboard.traefik.ingressroute.yaml
+- traefik-traefik..clusterrole.yaml
+- traefik-traefik..clusterrolebinding.yaml
+- traefik..ingressclass.yaml
+- traefik.traefik.deployment.yaml
+- traefik.traefik.service.yaml
+- traefik.traefik.serviceaccount.yaml
