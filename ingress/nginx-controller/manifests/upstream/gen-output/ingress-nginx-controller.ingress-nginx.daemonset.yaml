@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.5.1
-    helm.sh/chart: ingress-nginx-4.4.0
+    app.kubernetes.io/version: 1.12.0
+    helm.sh/chart: ingress-nginx-4.12.0
   name: ingress-nginx-controller
   namespace: ingress-nginx
 spec:
@@ -24,7 +24,11 @@ spec:
       labels:
         app.kubernetes.io/component: controller
         app.kubernetes.io/instance: cluster
+        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: ingress-nginx
+        app.kubernetes.io/part-of: ingress-nginx
+        app.kubernetes.io/version: 1.12.0
+        helm.sh/chart: ingress-nginx-4.12.0
     spec:
       containers:
       - args:
@@ -38,6 +42,7 @@ spec:
         - --validating-webhook=:8443
         - --validating-webhook-certificate=/usr/local/certificates/cert
         - --validating-webhook-key=/usr/local/certificates/key
+        - --enable-metrics=true
         env:
         - name: POD_NAME
           valueFrom:
@@ -49,7 +54,7 @@ spec:
               fieldPath: metadata.namespace
         - name: LD_PRELOAD
           value: /usr/local/lib/libmimalloc.so
-        image: registry.k8s.io/ingress-nginx/controller:v1.5.1@sha256:4ba73c697770664c1e00e9f968de14e08f606ff961c76e5d7033a4a9c593c629
+        image: registry.k8s.io/ingress-nginx/controller:v1.12.0@sha256:e6b8de175acda6ca913891f0f727bca4527e797d52688cbe9fec9040d6f6b6fa
         imagePullPolicy: IfNotPresent
         lifecycle:
           preStop:
@@ -94,21 +99,26 @@ spec:
           timeoutSeconds: 1
         resources:
           requests:
-            cpu: 100m
-            memory: 90Mi
+            cpu: 2000m
+            memory: 1000Mi
         securityContext:
-          allowPrivilegeEscalation: true
+          allowPrivilegeEscalation: false
           capabilities:
             add:
             - NET_BIND_SERVICE
             drop:
             - ALL
+          readOnlyRootFilesystem: false
+          runAsGroup: 82
+          runAsNonRoot: true
           runAsUser: 101
+          seccompProfile:
+            type: RuntimeDefault
         volumeMounts:
         - mountPath: /usr/local/certificates/
           name: webhook-cert
           readOnly: true
-      dnsPolicy: ClusterFirst
+      dnsPolicy: Default
       nodeSelector:
         kubernetes.io/os: linux
         node-role.kubernetes.io/loadbalancer: nginx

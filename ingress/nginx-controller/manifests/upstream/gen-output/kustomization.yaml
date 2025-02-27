@@ -12,11 +12,11 @@ resources:
 - ingress-nginx-backend.ingress-nginx.serviceaccount.yaml
 - ingress-nginx-controller-admission.ingress-nginx.service.yaml
 - ingress-nginx-controller-metrics.ingress-nginx.service.yaml
-- ingress-nginx-controller..prometheusrule.yaml
-- ingress-nginx-controller..servicemonitor.yaml
 - ingress-nginx-controller.ingress-nginx.configmap.yaml
 - ingress-nginx-controller.ingress-nginx.daemonset.yaml
+- ingress-nginx-controller.ingress-nginx.prometheusrule.yaml
 - ingress-nginx-controller.ingress-nginx.service.yaml
+- ingress-nginx-controller.ingress-nginx.servicemonitor.yaml
 - ingress-nginx-defaultbackend.ingress-nginx.deployment.yaml
 - ingress-nginx-defaultbackend.ingress-nginx.service.yaml
 - ingress-nginx..clusterrole.yaml
