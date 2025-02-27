@@ -1,10 +1,8 @@
 apiVersion: acid.zalan.do/v1
 configuration:
   aws_or_gcp:
-    aws_region: eu-west-1
+    aws_region: eu-central-1
     enable_ebs_gp3_migration: false
-    log_s3_bucket: pg-micros-backups
-    wal_s3_bucket: pg-micros-backups
   connection_pooler:
     connection_pooler_default_cpu_limit: "1"
     connection_pooler_default_cpu_request: 500m
@@ -16,7 +14,7 @@ configuration:
   debug:
     debug_logging: true
     enable_database_access: true
-  docker_image: ghcr.io/zalando/spilo-16:3.3-p1
+  docker_image: ghcr.io/zalando/spilo-17:4.0-p2
   enable_pgversion_env_var: true
   enable_spilo_wal_path_compat: false
   enable_team_id_clustername_prefix: false
@@ -78,19 +76,16 @@ configuration:
     cluster_history_entries: 1000
     ring_log_lines: 100
   logical_backup:
-    logical_backup_docker_image: ghcr.io/zalando/postgres-operator/logical-backup:v1.13.0
+    logical_backup_docker_image: ghcr.io/zalando/postgres-operator/logical-backup:v1.14.0
     logical_backup_job_prefix: logical-backup-
     logical_backup_provider: s3
-    logical_backup_s3_access_key_id: AKIAXLVDVKLQWUNCZTNS
-    logical_backup_s3_bucket: pg-micros-backups
-    logical_backup_s3_retention_time: 3 months
-    logical_backup_s3_secret_access_key: D7KOlKUaESzH7+k4HzAyCOjd4wH2d3RLNc1j0U3U
-    logical_backup_s3_sse: ""
-    logical_backup_schedule: 0 0 * * *
+    logical_backup_s3_bucket: my-bucket-url
+    logical_backup_s3_sse: AES256
+    logical_backup_schedule: 30 00 * * *
   major_version_upgrade:
     major_version_upgrade_mode: manual
-    minimal_major_version: "12"
-    target_major_version: "16"
+    minimal_major_version: "13"
+    target_major_version: "17"
   max_instances: -1
   min_instances: -1
   patroni:

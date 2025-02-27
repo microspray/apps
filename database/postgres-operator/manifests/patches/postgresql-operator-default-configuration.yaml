@@ -20,16 +20,18 @@ configuration:
       linkerd.io/inject: disabled
     enable_pod_antiaffinity: true
     secret_name_template: "{username}.{cluster}.pg.creds"
-  logical_backup:
-    logical_backup_provider: "s3"
-    logical_backup_s3_retention_time: "3 months"
-    logical_backup_s3_bucket: "pg-micros-backups"
-    # logical_backup_s3_endpoint: "https://s3.microspray.io"
-    logical_backup_s3_access_key_id: "AKIAXLVDVKLQWUNCZTNS"
-    logical_backup_s3_secret_access_key: "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"
-    logical_backup_s3_sse: ""
-    logical_backup_schedule: "0 0 * * *"
-  aws_or_gcp:
-    log_s3_bucket: "pg-micros-backups"
-    wal_s3_bucket: "pg-micros-backups"
-    aws_region: "eu-west-1"
+## Configure backups in the overlays:
+
+  # logical_backup:
+  #   logical_backup_provider: "s3"
+  #   logical_backup_s3_retention_time: "3 months"
+  #   logical_backup_s3_bucket: "pg-micros-backups"
+  #   # logical_backup_s3_endpoint: "https://s3.microspray.io"
+  #   # logical_backup_s3_access_key_id: ""
+  #   # logical_backup_s3_secret_access_key: ""
+  #   logical_backup_s3_sse: ""
+  #   logical_backup_schedule: "0 0 * * *"
+  # aws_or_gcp:
+  #   log_s3_bucket: "pg-micros-backups"
+  #   wal_s3_bucket: "pg-micros-backups"
+  #   aws_region: "eu-west-1"
