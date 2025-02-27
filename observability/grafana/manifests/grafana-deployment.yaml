@@ -151,6 +151,27 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/workload-total
           name: grafana-dashboard-workload-total
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-multicluster
+          name: grafana-dashboard-k8s-resources-multicluster
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-windows-cluster
+          name: grafana-dashboard-k8s-resources-windows-cluster
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-windows-namespace
+          name: grafana-dashboard-k8s-resources-windows-namespace
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-windows-pod
+          name: grafana-dashboard-k8s-resources-windows-pod
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-windows-cluster-rsrc-use
+          name: grafana-dashboard-k8s-windows-cluster-rsrc-use
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-windows-node-rsrc-use
+          name: grafana-dashboard-k8s-windows-node-rsrc-use
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/nodes-aix
+          name: grafana-dashboard-nodes-aix
+          readOnly: false
         - mountPath: /etc/grafana
           name: grafana-config
           readOnly: false
@@ -251,3 +272,21 @@ spec:
       - configMap:
           name: grafana-dashboard-workload-total
         name: grafana-dashboard-workload-total
+      - configMap:
+          name: grafana-dashboard-k8s-resources-multicluster
+        name: grafana-dashboard-k8s-resources-multicluster
+      - configMap:
+          name: grafana-dashboard-k8s-resources-windows-cluster
+        name: grafana-dashboard-k8s-resources-windows-cluster
+      - configMap:
+          name: grafana-dashboard-k8s-resources-windows-namespace
+        name: grafana-dashboard-k8s-resources-windows-namespace
+      - configMap:
+          name: grafana-dashboard-k8s-resources-windows-pod
+        name: grafana-dashboard-k8s-resources-windows-pod
+      - configMap:
+          name: grafana-dashboard-k8s-windows-cluster-rsrc-use
+        name: grafana-dashboard-k8s-windows-cluster-rsrc-use
+      - configMap:
+          name: grafana-dashboard-k8s-windows-node-rsrc-use
+        name: grafana-dashboard-k8s-windows-node-rsrc-use

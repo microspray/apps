@@ -3,6 +3,19 @@ data:
   k8s-resources-multicluster.json: |-
     {
         "editable": false,
+        "links": [
+            {
+                "asDropdown": true,
+                "includeVars": true,
+                "keepTime": true,
+                "tags": [
+                    "kubernetes-mixin"
+                ],
+                "targetBlank": false,
+                "title": "Kubernetes",
+                "type": "dashboards"
+            }
+        ],
         "panels": [
             {
                 "datasource": {
@@ -25,14 +38,14 @@ data:
                 "options": {
                     "colorMode": "none"
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
                             "type": "prometheus",
                             "uid": "${datasource}"
                         },
-                        "expr": "cluster:node_cpu:ratio_rate5m",
+                        "expr": "sum(cluster:node_cpu:ratio_rate5m) / count(cluster:node_cpu:ratio_rate5m)",
                         "instant": true
                     }
                 ],
@@ -60,7 +73,7 @@ data:
                 "options": {
                     "colorMode": "none"
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -95,7 +108,7 @@ data:
                 "options": {
                     "colorMode": "none"
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -130,7 +143,7 @@ data:
                 "options": {
                     "colorMode": "none"
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -165,7 +178,7 @@ data:
                 "options": {
                     "colorMode": "none"
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -200,7 +213,7 @@ data:
                 "options": {
                     "colorMode": "none"
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -245,7 +258,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -304,7 +317,7 @@ data:
                     "y": 2
                 },
                 "id": 8,
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -430,7 +443,7 @@ data:
                         "mode": "single"
                     }
                 },
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -492,7 +505,7 @@ data:
                     "y": 4
                 },
                 "id": 10,
-                "pluginVersion": "v11.0.0",
+                "pluginVersion": "v11.4.0",
                 "targets": [
                     {
                         "datasource": {
@@ -623,6 +636,6 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 11.0.0
+    app.kubernetes.io/version: 11.5.2
   name: grafana-dashboard-k8s-resources-multicluster
   namespace: monitoring
