@@ -39,7 +39,7 @@ manifests/upstream/kustomization.yaml: values.yaml  template
 
 template:
 	mkdir -p manifests/upstream
-	helm template --kube-version=1.25 -a 'networking.k8s.io/v1/Ingress' $(RELEASENAME) $(CHART) -a monitoring.coreos.com/v1 \
+	helm template --kube-version=1.31 -a 'networking.k8s.io/v1/Ingress' $(RELEASENAME) $(CHART) -a monitoring.coreos.com/v1 \
 	-f values.yaml --namespace $(NAMESPACE) > manifests/upstream/$(NAME).aio.yaml
 	@sed -i".bu" "s/$(RELEASENAME)-//g" manifests/upstream/$(NAME).aio.yaml
 	@rm -rf manifests/upstream/*.bu

@@ -11,11 +11,12 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.5.1
-    helm.sh/chart: ingress-nginx-4.4.0
+    app.kubernetes.io/version: 1.12.0
+    helm.sh/chart: ingress-nginx-4.12.0
   name: ingress-nginx-defaultbackend
   namespace: ingress-nginx
 spec:
+  minReadySeconds: 0
   replicas: 1
   revisionHistoryLimit: 10
   selector:
@@ -32,7 +33,11 @@ spec:
       labels:
         app.kubernetes.io/component: default-backend
         app.kubernetes.io/instance: cluster
+        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: ingress-nginx
+        app.kubernetes.io/part-of: ingress-nginx
+        app.kubernetes.io/version: 1.12.0
+        helm.sh/chart: ingress-nginx-4.12.0
     spec:
       containers:
       - image: registry.k8s.io/defaultbackend-amd64:1.5
@@ -68,8 +73,11 @@ spec:
             drop:
             - ALL
           readOnlyRootFilesystem: true
+          runAsGroup: 65534
           runAsNonRoot: true
           runAsUser: 65534
+          seccompProfile:
+            type: RuntimeDefault
       nodeSelector:
         kubernetes.io/os: linux
       serviceAccountName: ingress-nginx-backend
