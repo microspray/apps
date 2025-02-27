@@ -11,8 +11,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.5.1
-    helm.sh/chart: ingress-nginx-4.4.0
+    app.kubernetes.io/version: 1.12.0
+    helm.sh/chart: ingress-nginx-4.12.0
   name: ingress-nginx-controller
   namespace: ingress-nginx
 spec:
@@ -31,8 +31,8 @@ spec:
       annotations:
         description: ssl certificate(s) will expire in less then a week
         summary: renew expiring certificates to avoid downtime
-      expr: (avg(nginx_ingress_controller_ssl_expire_time_seconds) by (host) - time())
-        < 604800
+      expr: (avg(nginx_ingress_controller_ssl_expire_time_seconds{host!="_"}) by (host)
+        - time()) < 604800
       for: 1s
       labels:
         severity: critical
