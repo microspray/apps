@@ -21,7 +21,7 @@ spec:
       - env:
         - name: POSTGRES_OPERATOR_CONFIGURATION_OBJECT
           value: postgresql-operator-default-configuration
-        image: ghcr.io/zalando/postgres-operator:v1.13.0
+        image: ghcr.io/zalando/postgres-operator:v1.14.0
         imagePullPolicy: IfNotPresent
         name: postgres-operator
         resources:
