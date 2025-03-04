@@ -37,7 +37,7 @@ RUN apk add --no-cache git-crypt make gettext bash git libc6-compat
 
 COPY --from=download /downloads/kubectl /usr/local/bin/kubectl
 COPY --from=download /downloads/kustomize /usr/local/bin/kustomize
-COPY --from=download /usr/bin/git-crypt	 /usr/local/bin/git-crypt
+
 COPY --from=download /downloads/kubectl-hns /usr/local/bin/kubectl-hns
 COPY --from=download /downloads/gh /usr/local/bin/gh
 COPY --from=download /downloads/kubeconform /usr/local/bin/kubeconform

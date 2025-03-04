@@ -4,17 +4,19 @@ kind: Kustomization
 namespace: argocd
 
 resources:
+- https://raw.githubusercontent.com/argoproj/argo-cd/v2.14.3/manifests/install.yaml
 - manifests/argocd.ingress.yaml
-- manifests/defaults
 - manifests/servicemonitors.yaml
 - manifests/sa.yaml
+
+
 patches:
-- path: manifests/patches/argocd-server.deploy.yaml
-  target:
-    group: apps
-    kind: Deployment
-    name: argocd-server
-    version: v1
+# - path: manifests/patches/argocd-server.deploy.yaml
+#   target:
+#     group: apps
+#     kind: Deployment
+#     name: argocd-server
+#     version: v1
 - path: manifests/patches/argocd-repo-server.deploy.yaml
   target:
     group: apps
@@ -25,7 +27,16 @@ patches:
 
 
 configMapGenerator:
+- files:
+  - plugin.yaml=manifests/configs/gitcrypt.plugin.yaml
+  name: argocd-kustomize-gcrypt-plugin
+  behavior: create
+  options:
+    disableNameSuffixHash: true
+
 - behavior: merge
+  envs:
+    - manifests/configs/argocd-cm.env.conf
   files:
   - configManagementPlugins=manifests/configs/plugins.yaml
   - manifests/configs/oidc.config
@@ -34,13 +45,6 @@ configMapGenerator:
   - resource.customizations.health.cert-manager.io_Certificate=manifests/configs/health/certificate.lua
   - repositories=manifests/configs/repositories.yaml
   - repository.credentials=manifests/configs/repo-credentials.yaml
-  literals:
-  - resource.customizations.useOpenLibs.networking.k8s.io_Ingress=true
-  - resource.customizations.useOpenLibs.argoproj.io_Application=true
-  - resource.customizations.useOpenLibs.cert-manager.io_Certificate=true
-  - url=https://argocd.microspray.io
-  - application.instanceLabelKey=argocd.argoproj.io/instance
-  - statusbadge.enabled='true'
   name: argocd-cm
 - behavior: merge
   files:

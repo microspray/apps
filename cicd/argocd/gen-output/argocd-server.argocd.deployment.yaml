@@ -8,7 +8,6 @@ metadata:
   name: argocd-server
   namespace: argocd
 spec:
-  replicas: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: argocd-server
@@ -24,22 +23,23 @@ spec:
               labelSelector:
                 matchLabels:
                   app.kubernetes.io/name: argocd-server
-              topologyKey: failure-domain.beta.kubernetes.io/zone
+              topologyKey: kubernetes.io/hostname
             weight: 100
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                app.kubernetes.io/name: argocd-server
-            topologyKey: kubernetes.io/hostname
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/part-of: argocd
+              topologyKey: kubernetes.io/hostname
+            weight: 5
       containers:
-      - command:
-        - argocd-server
-        - --insecure
-        - --redis
-        - argocd-redis-ha-haproxy:6379
+      - args:
+        - /usr/local/bin/argocd-server
         env:
-        - name: ARGOCD_API_SERVER_REPLICAS
-          value: "2"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: auth
+              name: argocd-redis
         - name: ARGOCD_SERVER_INSECURE
           valueFrom:
             configMapKeyRef:
@@ -214,10 +214,34 @@ spec:
               key: server.http.cookie.maxnumber
               name: argocd-cmd-params-cm
               optional: true
+        - name: ARGOCD_SERVER_LISTEN_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: server.listen.address
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_SERVER_METRICS_LISTEN_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: server.metrics.listen.address
+              name: argocd-cmd-params-cm
+              optional: true
         - name: ARGOCD_SERVER_OTLP_ADDRESS
           valueFrom:
             configMapKeyRef:
               key: otlp.address
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_SERVER_OTLP_INSECURE
+          valueFrom:
+            configMapKeyRef:
+              key: otlp.insecure
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_SERVER_OTLP_HEADERS
+          valueFrom:
+            configMapKeyRef:
+              key: otlp.headers
               name: argocd-cmd-params-cm
               optional: true
         - name: ARGOCD_APPLICATION_NAMESPACES
@@ -226,7 +250,67 @@ spec:
               key: application.namespaces
               name: argocd-cmd-params-cm
               optional: true
-        image: quay.io/argoproj/argocd:v2.5.5
+        - name: ARGOCD_SERVER_ENABLE_PROXY_EXTENSION
+          valueFrom:
+            configMapKeyRef:
+              key: server.enable.proxy.extension
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_K8SCLIENT_RETRY_MAX
+          valueFrom:
+            configMapKeyRef:
+              key: server.k8sclient.retry.max
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_K8SCLIENT_RETRY_BASE_BACKOFF
+          valueFrom:
+            configMapKeyRef:
+              key: server.k8sclient.retry.base.backoff
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_API_CONTENT_TYPES
+          valueFrom:
+            configMapKeyRef:
+              key: server.api.content.types
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_SERVER_WEBHOOK_PARALLELISM_LIMIT
+          valueFrom:
+            configMapKeyRef:
+              key: server.webhook.parallelism.limit
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_APPLICATIONSET_CONTROLLER_ENABLE_NEW_GIT_FILE_GLOBBING
+          valueFrom:
+            configMapKeyRef:
+              key: applicationsetcontroller.enable.new.git.file.globbing
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_APPLICATIONSET_CONTROLLER_SCM_ROOT_CA_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: applicationsetcontroller.scm.root.ca.path
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_APPLICATIONSET_CONTROLLER_ALLOWED_SCM_PROVIDERS
+          valueFrom:
+            configMapKeyRef:
+              key: applicationsetcontroller.allowed.scm.providers
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_APPLICATIONSET_CONTROLLER_ENABLE_SCM_PROVIDERS
+          valueFrom:
+            configMapKeyRef:
+              key: applicationsetcontroller.enable.scm.providers
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_HYDRATOR_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              key: hydrator.enabled
+              name: argocd-cmd-params-cm
+              optional: true
+        image: quay.io/argoproj/argocd:v2.14.3
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -234,6 +318,7 @@ spec:
             port: 8080
           initialDelaySeconds: 3
           periodSeconds: 30
+          timeoutSeconds: 5
         name: argocd-server
         ports:
         - containerPort: 8080
@@ -254,8 +339,6 @@ spec:
           seccompProfile:
             type: RuntimeDefault
         volumeMounts:
-        - mountPath: /etc/git-crypt
-          name: git-crypt-dev-key
         - mountPath: /app/config/ssh
           name: ssh-known-hosts
         - mountPath: /app/config/tls
@@ -268,11 +351,12 @@ spec:
           name: plugins-home
         - mountPath: /tmp
           name: tmp
+        - mountPath: /home/argocd/params
+          name: argocd-cmd-params-cm
+      nodeSelector:
+        kubernetes.io/os: linux
       serviceAccountName: argocd-server
       volumes:
-      - name: git-crypt-dev-key
-        secret:
-          secretName: git-crypt-dev-key
       - emptyDir: {}
         name: plugins-home
       - emptyDir: {}
@@ -303,3 +387,10 @@ spec:
             path: ca.crt
           optional: true
           secretName: argocd-dex-server-tls
+      - configMap:
+          items:
+          - key: server.profile.enabled
+            path: profiler.enabled
+          name: argocd-cmd-params-cm
+          optional: true
+        name: argocd-cmd-params-cm

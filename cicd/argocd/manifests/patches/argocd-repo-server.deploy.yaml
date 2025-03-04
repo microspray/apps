@@ -9,9 +9,45 @@
     name: "git-crypt-dev-key"
     secret:
       secretName: "git-crypt-dev-key"
+- op: add
+  path: /spec/template/spec/volumes/0
+  value:
+    name: "argocd-kustomize-gcrypt-plugin"
+    configMap:
+      name: "argocd-kustomize-gcrypt-plugin"
+
+- op: add
+  path: /spec/template/spec/volumes/0
+  value:
+    name: cmp-tmp
+    emptyDir: {}
 - op: replace
   path: /spec/template/spec/automountServiceAccountToken
   value: true
 - op: add
   path: /spec/template/spec/serviceAccountName
   value: argocd-server
+- op: add
+  path: /spec/template/spec/containers/1
+  value:
+    name: kustomize-gcrypt
+    command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
+    image: quay.io/ant31/argocd-plugin:latest # This can be off-the-shelf or custom-built image
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 999
+    volumeMounts:
+      - mountPath: /var/run/argocd
+        name: var-files
+      - mountPath: /home/argocd/cmp-server/plugins
+        name: plugins
+      # Remove this volumeMount if you've chosen to bake the config file into the sidecar image.
+      - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+        subPath: plugin.yaml
+        name: argocd-kustomize-gcrypt-plugin
+      # Starting with v2.4, do NOT mount the same tmp volume as the repo-server container. The filesystem separation helps
+      # mitigate path traversal attacks.
+      - mountPath: /tmp
+        name: cmp-tmp
+      - name: "git-crypt-dev-key"
+        mountPath: "/etc/git-crypt"

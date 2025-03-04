@@ -84,6 +84,7 @@ data:
   resource.customizations.useOpenLibs.networking.k8s.io_Ingress: "true"
   statusbadge.enabled: "true"
   url: https://argocd.microspray.io
+  users.anonymous.enabled: "false"
 kind: ConfigMap
 metadata:
   labels:

@@ -30,13 +30,25 @@ spec:
         - /shared/argocd-dex
         - rundex
         env:
+        - name: ARGOCD_DEX_SERVER_LOGFORMAT
+          valueFrom:
+            configMapKeyRef:
+              key: dexserver.log.format
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_DEX_SERVER_LOGLEVEL
+          valueFrom:
+            configMapKeyRef:
+              key: dexserver.log.level
+              name: argocd-cmd-params-cm
+              optional: true
         - name: ARGOCD_DEX_SERVER_DISABLE_TLS
           valueFrom:
             configMapKeyRef:
               key: dexserver.disable.tls
               name: argocd-cmd-params-cm
               optional: true
-        image: ghcr.io/dexidp/dex:v2.35.3
+        image: ghcr.io/dexidp/dex:v2.41.1
         imagePullPolicy: Always
         name: dex
         ports:
@@ -61,11 +73,11 @@ spec:
           name: argocd-dex-server-tls
       initContainers:
       - command:
-        - cp
+        - /bin/cp
         - -n
         - /usr/local/bin/argocd
         - /shared/argocd-dex
-        image: quay.io/argoproj/argocd:v2.5.5
+        image: quay.io/argoproj/argocd:v2.14.3
         imagePullPolicy: Always
         name: copyutil
         securityContext:
@@ -82,6 +94,8 @@ spec:
           name: static-files
         - mountPath: /tmp
           name: dexconfig
+      nodeSelector:
+        kubernetes.io/os: linux
       serviceAccountName: argocd-dex-server
       volumes:
       - emptyDir: {}
