@@ -293,3 +293,6 @@ spec:
       - configMap:
           name: grafana-dashboard-k8s-windows-node-rsrc-use
         name: grafana-dashboard-k8s-windows-node-rsrc-use
+      - configMap:
+          name: grafana-dashboard-nodes-aix
+        name: grafana-dashboard-nodes-aix
