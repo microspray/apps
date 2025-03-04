@@ -1,0 +1,24 @@
+apiVersion: v1
+data:
+  plugin.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: kustomize-gcrypt
+    spec:
+      preserveFileMode: true
+      init:
+        command: ["sh", "-c"]
+        args:
+          - |
+            git crypt unlock /etc/git-crypt/gitcrypt.key || true
+      generate:
+        command:
+          - "kustomize"
+        args:
+          - "build"
+          - "--enable-helm"
+kind: ConfigMap
+metadata:
+  name: argocd-kustomize-gcrypt-plugin
+  namespace: argocd

@@ -26,7 +26,6 @@ RUN apt-get update && \
 
 COPY --from=download /usr/local/bin/kubectl /usr/local/bin/kubectl
 COPY --from=download /usr/local/bin/kustomize /usr/local/bin/kustomize
-COPY --from=download /usr/bin/git-crypt	 /usr/local/bin/git-crypt
 COPY --from=download /usr/local/bin/kubectl-hns /usr/local/bin/kubectl-hns
 COPY --from=download /usr/local/bin/gh /usr/local/bin/gh
 COPY --from=download /usr/local/bin/kubeconform /usr/local/bin/kubeconform
@@ -38,4 +37,4 @@ ENV KREW_ROOT=/root/.krew
 ENV PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # Switch back to non-root user
-USER 1000
+USER 999

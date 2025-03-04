@@ -3,8 +3,7 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/backend-protocol: HTTP2
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
   name: argocd-server-http-ingress
   namespace: argocd
 spec:
@@ -17,7 +16,7 @@ spec:
           service:
             name: argocd-server
             port:
-              number: 80
+              number: 443
         path: /
         pathType: Prefix
   tls:
