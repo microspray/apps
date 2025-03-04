@@ -11,7 +11,8 @@ data:
         command: ["sh", "-c"]
         args:
           - |
-            git crypt unlock /etc/git-crypt/gitcrypt.key || true
+            git reset --hard HEAD && \
+             git-crypt unlock /etc/git-crypt/gitcrypt.key
       generate:
         command:
           - "kustomize"
