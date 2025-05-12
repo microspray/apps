@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    app.kubernetes.io/instance: litellm
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litellm
+    app.kubernetes.io/version: v1.67.4-stable
+    helm.sh/chart: litellm-helm-0.1.668
+  name: litellm
+  namespace: litellm
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: litellm.micros.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: litellm
+            port:
+              number: 4000
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - litellm.micros.io
+    secretName: litellm-certs

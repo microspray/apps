@@ -1,0 +1,63 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: litellm
+  labels:
+   cluster: pg-infra
+  annotations:
+    acid.zalan.do/controller: "infra"
+    linkerd.io/inject: disabled
+    acid.zalan.do/controller: "infra"
+    "acid.zalan.do/delete-clustername": "litellm"
+    "acid.zalan.do/delete-date": "2025-05-02"
+  namespace: pg-infra
+spec:
+  teamId: "spray"
+  numberOfInstances: 2
+  users:  # Application/Robot users
+    litellm.litellm:
+    - superuser
+    - createdb
+  enableMasterLoadBalancer: false
+  enableReplicaLoadBalancer: false
+  enableConnectionPooler: true
+  enableReplicaConnectionPooler: false
+
+  allowedSourceRanges:  # load balancers' source ranges for both master and replica services
+  - 127.0.0.1/32
+  - 10.233.0.0/16
+  - 192.168.1.0/24
+  databases:
+    litellm: litellm.litellm
+  preparedDatabases:
+    litellm:
+      schemas:
+        public: {}
+
+  postgresql:
+    version: "16"
+    parameters:  # Expert section
+      shared_buffers: "1024MB"
+      max_connections: "150"
+      log_statement: "all"
+  volume:
+    size: 50Gi
+    storageClass: local
+  additionalVolumes:
+    - name: empty
+      mountPath: /opt/empty
+      targetContainers:
+        - all
+      volumeSource:
+        emptyDir: {}
+
+  enableShmVolume: true
+  resources:
+    requests:
+      cpu: 400m
+      memory: 4000Mi
+    limits:
+      cpu: 8000m
+      memory: 8000Mi
+  enableLogicalBackup: true
+ # logicalBackupSchedule: "1 1 * * *"

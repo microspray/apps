@@ -1,0 +1,75 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: litellm
+resources: []
+  # - manifests/db.yaml
+configMapGenerator:
+- envs:
+  - manifests/configs/env.conf
+  name: litellm-env
+secretGenerator:
+- envs:
+  - manifests/secrets/env.secret.conf
+  name: litellm-env
+  type: Opaque
+
+  # options:
+  #   disableNameSuffixHash: true
+
+helmCharts:
+- name: litellm-helm
+  releaseName: litellm
+  namespace: litellm
+  version: 0.1.668
+  repo: oci://ghcr.io/berriai/
+  valuesInline:
+    replicaCount: 1
+    environmentSecrets:
+      - litellm-env
+    environmentConfigMaps:
+      - litellm-env
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        # nginx.ingress.kubernetes.io/auth-signin:  'https://oauth2-proxy.kubespray.com/oauth2/start?rd=https%3A%2F%2F$host$escaped_request_uri'
+        # nginx.ingress.kubernetes.io/auth-url: 'http://oauth2-proxy.dex.svc.cluster.local/oauth2/auth'
+      hosts:
+        - host: litellm.micros.io
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: litellm-certs
+          hosts:
+            - litellm.micros.io
+    proxy_config:
+      model_list:
+        - model_name: fake-openai-endpoint
+          litellm_params:
+            model: openai/fake
+            api_key: fake-key
+            api_base: https://exampleopenaiendpoint-production.up.railway.app/
+      general_settings:
+        master_key: os.environ/PROXY_MASTER_KEY
+
+    db:
+      useExisting: true
+      deployStandalone: false
+      database: litellm
+      endpoint: litellm.pg-infra.svc.cluster.local
+      secret:
+        name: litellm.litellm.litellm.pg.creds
+        usernameKey: username
+        passwordKey: password
+    redis:
+      enabled: true
+      architecture: standalone
+patches:
+  - target:
+      kind: StatefulSet
+      name: litellm-redis-master
+    patch: |
+      - op: add
+        path: /spec/volumeClaimTemplates/0/spec/storageClassName
+        value: local

@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  config.yaml: |
+    general_settings:
+      master_key: os.environ/PROXY_MASTER_KEY
+    model_list:
+    - litellm_params:
+        api_base: https://exampleopenaiendpoint-production.up.railway.app/
+        api_key: fake-key
+        model: openai/fake
+      model_name: fake-openai-endpoint
+kind: ConfigMap
+metadata:
+  name: litellm-config
+  namespace: litellm

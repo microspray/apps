@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    checksum/config: a39eb26604080c598e9317a4df8b66891d410605be561704ff2ba727acd47c04
+  name: litellm-migrations
+  namespace: litellm
+spec:
+  backoffLimit: 4
+  template:
+    metadata:
+      annotations: null
+    spec:
+      containers:
+      - command:
+        - python
+        - litellm/proxy/prisma_migration.py
+        env:
+        - name: DATABASE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: litellm.litellm.litellm.pg.creds
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: litellm.litellm.litellm.pg.creds
+        - name: DATABASE_HOST
+          value: litellm.pg-infra.svc.cluster.local
+        - name: DATABASE_NAME
+          value: litellm
+        - name: DATABASE_URL
+          value: postgresql://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST)/$(DATABASE_NAME)
+        - name: DISABLE_SCHEMA_UPDATE
+          value: "false"
+        image: ghcr.io/berriai/litellm-database:main-v1.67.4-stable
+        imagePullPolicy: Always
+        name: prisma-migrations
+        securityContext: {}
+        workingDir: /app
+      restartPolicy: OnFailure
+      serviceAccountName: default
+  ttlSecondsAfterFinished: 120
