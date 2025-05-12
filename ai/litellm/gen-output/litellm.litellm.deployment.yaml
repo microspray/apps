@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: litellm
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litellm
+    app.kubernetes.io/version: v1.67.4-stable
+    helm.sh/chart: litellm-helm-0.1.668
+  name: litellm
+  namespace: litellm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: litellm
+      app.kubernetes.io/name: litellm
+  template:
+    metadata:
+      annotations:
+        checksum/config: 58d30b2ed19d7977f02aa15e1670309e7d3ff8b8ab45fcfda4d3e0b3c7cba9e3
+      labels:
+        app.kubernetes.io/instance: litellm
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: litellm
+        app.kubernetes.io/version: v1.67.4-stable
+        helm.sh/chart: litellm-helm-0.1.668
+    spec:
+      containers:
+      - args:
+        - --config
+        - /etc/litellm/config.yaml
+        env:
+        - name: HOST
+          value: 0.0.0.0
+        - name: PORT
+          value: "4000"
+        - name: DATABASE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: litellm.litellm.litellm.pg.creds
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: litellm.litellm.litellm.pg.creds
+        - name: DATABASE_HOST
+          value: litellm.pg-infra.svc.cluster.local
+        - name: DATABASE_NAME
+          value: litellm
+        - name: DATABASE_URL
+          value: postgresql://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST)/$(DATABASE_NAME)
+        - name: PROXY_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              key: masterkey
+              name: litellm-masterkey
+        - name: REDIS_HOST
+          value: litellm-redis-master
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: redis-password
+              name: litellm-redis
+        envFrom:
+        - secretRef:
+            name: litellm-env-cff7d92694
+        - configMapRef:
+            name: litellm-env-cd5g2m57h4
+        image: ghcr.io/berriai/litellm-database:main-v1.67.4-stable
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /health/liveliness
+            port: http
+        name: litellm
+        ports:
+        - containerPort: 4000
+          name: http
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /health/readiness
+            port: http
+        resources: {}
+        securityContext: {}
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /health/readiness
+            port: http
+          periodSeconds: 10
+        volumeMounts:
+        - mountPath: /etc/litellm/
+          name: litellm-config
+      securityContext: {}
+      serviceAccountName: default
+      volumes:
+      - configMap:
+          items:
+          - key: config.yaml
+            path: config.yaml
+          name: litellm-config
+        name: litellm-config

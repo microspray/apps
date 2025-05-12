@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- litellm-config.litellm.configmap.yaml
+- litellm-env-cd5g2m57h4.litellm.configmap.yaml
+- litellm-env-cff7d92694.litellm.secret.yaml
+- litellm-env-test.litellm.pod.yaml
+- litellm-masterkey.litellm.secret.yaml
+- litellm-migrations.litellm.job.yaml
+- litellm-redis-configuration.litellm.configmap.yaml
+- litellm-redis-headless.litellm.service.yaml
+- litellm-redis-health.litellm.configmap.yaml
+- litellm-redis-master.litellm.poddisruptionbudget.yaml
+- litellm-redis-master.litellm.service.yaml
+- litellm-redis-master.litellm.serviceaccount.yaml
+- litellm-redis-master.litellm.statefulset.yaml
+- litellm-redis-scripts.litellm.configmap.yaml
+- litellm-redis.litellm.networkpolicy.yaml
+- litellm-redis.litellm.secret.yaml
+- litellm-test-connection.litellm.pod.yaml
+- litellm.litellm.deployment.yaml
+- litellm.litellm.ingress.yaml
+- litellm.litellm.service.yaml

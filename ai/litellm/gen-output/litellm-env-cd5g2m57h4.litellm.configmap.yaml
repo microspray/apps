@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  ENV: prod
+  STORE_MODEL_IN_DB: "True"
+kind: ConfigMap
+metadata:
+  name: litellm-env-cd5g2m57h4
+  namespace: litellm

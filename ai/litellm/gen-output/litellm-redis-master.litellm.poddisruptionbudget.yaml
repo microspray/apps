@@ -1,0 +1,19 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app.kubernetes.io/component: master
+    app.kubernetes.io/instance: litellm
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/version: 7.4.3
+    helm.sh/chart: redis-20.13.2
+  name: litellm-redis-master
+  namespace: litellm
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: master
+      app.kubernetes.io/instance: litellm
+      app.kubernetes.io/name: redis
