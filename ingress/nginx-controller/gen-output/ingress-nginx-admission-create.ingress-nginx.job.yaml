@@ -13,8 +13,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.12.0
-    helm.sh/chart: ingress-nginx-4.12.0
+    app.kubernetes.io/version: 1.12.2
+    helm.sh/chart: ingress-nginx-4.12.2
   name: ingress-nginx-admission-create
   namespace: ingress-nginx
 spec:
@@ -30,8 +30,8 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: ingress-nginx
         app.kubernetes.io/part-of: ingress-nginx
-        app.kubernetes.io/version: 1.12.0
-        helm.sh/chart: ingress-nginx-4.12.0
+        app.kubernetes.io/version: 1.12.2
+        helm.sh/chart: ingress-nginx-4.12.2
       name: ingress-nginx-admission-create
     spec:
       containers:
@@ -45,7 +45,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.5.0@sha256:aaafd456bda110628b2d4ca6296f38731a3aaf0bf7581efae824a41c770a8fc4
+        image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.5.3@sha256:2cf4ebfa82a37c357455458f6dfc334aea1392d508270b2517795a9933a02524
         imagePullPolicy: IfNotPresent
         name: create
         securityContext:
