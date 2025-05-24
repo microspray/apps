@@ -20,9 +20,13 @@ helmCharts:
 - name: litellm-helm
   releaseName: litellm
   namespace: litellm
-  version: 0.1.668
+  version: 0.1.680
   repo: oci://ghcr.io/berriai/
   valuesInline:
+
+    masterkeySecretName: "litellm-env"
+    masterkeySecretKey: "LITELLM_MASTER_KEY"
+
     replicaCount: 1
     environmentSecrets:
       - litellm-env
@@ -44,14 +48,30 @@ helmCharts:
           hosts:
             - litellm.micros.io
     proxy_config:
+
       model_list:
         - model_name: fake-openai-endpoint
           litellm_params:
             model: openai/fake
             api_key: fake-key
-            api_base: https://exampleopenaiendpoint-production.up.railway.app/
+            api_base: https://exampleopenaiendpoint-production.up.lza.ai
       general_settings:
-        master_key: os.environ/PROXY_MASTER_KEY
+
+        store_model_in_db: true
+        store_prompts_in_spend_logs: false
+
+      litellm_settings:
+        # Logging/Callback settings
+        success_callback: ["langfuse"]  # list of success callbacks
+        # failure_callback: ["sentry"]  # list of failure callbacks
+        request_timeout: 6000
+        # callbacks: ["otel"]  # list of callbacks - runs on success and failure
+        # service_callbacks: ["datadog", "prometheus"]  # logs redis, postgres failures on datadog, prometheus
+        turn_off_message_logging: true
+        redact_user_api_key_info: false
+        langfuse_default_tags: ["cache_hit", "cache_key", "proxy_base_url", "user_api_key_alias", "user_api_key_user_email", "user_api_key_team_alias", "semantic-similarity"]
+        # cache: true
+
 
     db:
       useExisting: true
@@ -73,3 +93,7 @@ patches:
       - op: add
         path: /spec/volumeClaimTemplates/0/spec/storageClassName
         value: local
+
+# images:
+#   - name: ghcr.io/berriai/litellm-database
+#     newTag: main-v1.69.3-nightly

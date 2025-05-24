@@ -4,7 +4,7 @@ metadata:
   annotations:
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
-    checksum/config: a39eb26604080c598e9317a4df8b66891d410605be561704ff2ba727acd47c04
+    checksum/config: 218221e7a45c749b00c43068099312ed180cc407813f3f16603f9323514d65e0
   name: litellm-migrations
   namespace: litellm
 spec:
@@ -36,7 +36,7 @@ spec:
           value: postgresql://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST)/$(DATABASE_NAME)
         - name: DISABLE_SCHEMA_UPDATE
           value: "false"
-        image: ghcr.io/berriai/litellm-database:main-v1.67.4-stable
+        image: ghcr.io/berriai/litellm-database:main-v1.69.3-nightly
         imagePullPolicy: Always
         name: prisma-migrations
         securityContext: {}

@@ -3,9 +3,25 @@ data:
   config.yaml: |
     general_settings:
       master_key: os.environ/PROXY_MASTER_KEY
+      store_model_in_db: true
+      store_prompts_in_spend_logs: false
+    litellm_settings:
+      langfuse_default_tags:
+      - cache_hit
+      - cache_key
+      - proxy_base_url
+      - user_api_key_alias
+      - user_api_key_user_email
+      - user_api_key_team_alias
+      - semantic-similarity
+      redact_user_api_key_info: false
+      request_timeout: 6000
+      success_callback:
+      - langfuse
+      turn_off_message_logging: true
     model_list:
     - litellm_params:
-        api_base: https://exampleopenaiendpoint-production.up.railway.app/
+        api_base: https://exampleopenaiendpoint-production.up.lza.ai
         api_key: fake-key
         model: openai/fake
       model_name: fake-openai-endpoint

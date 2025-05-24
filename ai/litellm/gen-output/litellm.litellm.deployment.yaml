@@ -5,8 +5,8 @@ metadata:
     app.kubernetes.io/instance: litellm
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: litellm
-    app.kubernetes.io/version: v1.67.4-stable
-    helm.sh/chart: litellm-helm-0.1.668
+    app.kubernetes.io/version: v1.69.3-nightly
+    helm.sh/chart: litellm-helm-0.1.680
   name: litellm
   namespace: litellm
 spec:
@@ -18,13 +18,13 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 58d30b2ed19d7977f02aa15e1670309e7d3ff8b8ab45fcfda4d3e0b3c7cba9e3
+        checksum/config: 86056e9385c1bb0a0c0fd7ca2a1a6c653a228c575b026146f45168da1b55d746
       labels:
         app.kubernetes.io/instance: litellm
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: litellm
-        app.kubernetes.io/version: v1.67.4-stable
-        helm.sh/chart: litellm-helm-0.1.668
+        app.kubernetes.io/version: v1.69.3-nightly
+        helm.sh/chart: litellm-helm-0.1.680
     spec:
       containers:
       - args:
@@ -54,8 +54,8 @@ spec:
         - name: PROXY_MASTER_KEY
           valueFrom:
             secretKeyRef:
-              key: masterkey
-              name: litellm-masterkey
+              key: LITELLM_MASTER_KEY
+              name: litellm-env-b68c6bb7h2
         - name: REDIS_HOST
           value: litellm-redis-master
         - name: REDIS_PORT
@@ -67,10 +67,10 @@ spec:
               name: litellm-redis
         envFrom:
         - secretRef:
-            name: litellm-env-cff7d92694
+            name: litellm-env-b68c6bb7h2
         - configMapRef:
             name: litellm-env-cd5g2m57h4
-        image: ghcr.io/berriai/litellm-database:main-v1.67.4-stable
+        image: ghcr.io/berriai/litellm-database:main-v1.69.3-nightly
         imagePullPolicy: Always
         livenessProbe:
           httpGet:

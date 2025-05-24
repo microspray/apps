@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/instance: litellm
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: litellm
-    app.kubernetes.io/version: v1.67.4-stable
-    helm.sh/chart: litellm-helm-0.1.668
+    app.kubernetes.io/version: v1.69.3-nightly
+    helm.sh/chart: litellm-helm-0.1.680
   name: litellm-env-test
   namespace: litellm
 spec:

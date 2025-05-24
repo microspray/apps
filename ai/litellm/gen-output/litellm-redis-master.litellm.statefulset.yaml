@@ -6,8 +6,8 @@ metadata:
     app.kubernetes.io/instance: litellm
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: redis
-    app.kubernetes.io/version: 7.4.3
-    helm.sh/chart: redis-20.13.2
+    app.kubernetes.io/version: 8.0.1
+    helm.sh/chart: redis-21.1.1
   name: litellm-redis-master
   namespace: litellm
 spec:
@@ -25,14 +25,14 @@ spec:
         checksum/configmap: 2a9ab4a5432825504d910f022638674ce88eaefe9f9f595ad8bc107377d104fb
         checksum/health: aff24913d801436ea469d8d374b2ddb3ec4c43ee7ab24663d5f8ff1a1b6991a9
         checksum/scripts: 0717e77fd3bb941f602860e9be4f2ed87b481cddeadf37be463f8512ecde0c3e
-        checksum/secret: 40d17f8f98fec4e73f176a4dad8b6054e3881de1dd3435ccb4151b5ba8f5263e
+        checksum/secret: fa0204f2765a0cb515ab8023e3aaeac03ab9017d69da72f666983bd2e5ff8409
       labels:
         app.kubernetes.io/component: master
         app.kubernetes.io/instance: litellm
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: redis
-        app.kubernetes.io/version: 7.4.3
-        helm.sh/chart: redis-20.13.2
+        app.kubernetes.io/version: 8.0.1
+        helm.sh/chart: redis-21.1.1
     spec:
       affinity:
         nodeAffinity: null
@@ -50,7 +50,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - args:
-        - -c
+        - -ec
         - /opt/bitnami/scripts/start-scripts/start-master.sh
         command:
         - /bin/bash
@@ -67,13 +67,13 @@ spec:
           value: "no"
         - name: REDIS_PORT
           value: "6379"
-        image: docker.io/bitnami/redis:7.4.3-debian-12-r0
+        image: docker.io/bitnami/redis:8.0.1-debian-12-r1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
             command:
-            - sh
-            - -c
+            - /bin/bash
+            - -ec
             - /health/ping_liveness_local.sh 5
           failureThreshold: 5
           initialDelaySeconds: 20
@@ -87,8 +87,8 @@ spec:
         readinessProbe:
           exec:
             command:
-            - sh
-            - -c
+            - /bin/bash
+            - -ec
             - /health/ping_readiness_local.sh 1
           failureThreshold: 5
           initialDelaySeconds: 20
