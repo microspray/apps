@@ -6,7 +6,7 @@ gen-output:
 
 .PHONY: gen
 gen: clean gen-output
-	kubectl kustomize . | kubectl slice -o gen-output --skip-non-k8s --template "{{.metadata.name}}.{{.metadata.namespace}}.{{.kind | lower}}.yaml"
+	kubectl kustomize --enable-helm . | kubectl slice -o gen-output --skip-non-k8s --template "{{.metadata.name}}.{{.metadata.namespace}}.{{.kind | lower}}.yaml"
 	cd gen-output && kustomize init && kustomize edit add resource "*.yaml"
 
 .PHONY: clean
