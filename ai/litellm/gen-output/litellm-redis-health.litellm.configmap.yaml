@@ -100,7 +100,7 @@ metadata:
     app.kubernetes.io/instance: litellm
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: redis
-    app.kubernetes.io/version: 8.0.1
-    helm.sh/chart: redis-21.1.1
+    app.kubernetes.io/version: 8.0.3
+    helm.sh/chart: redis-21.2.12
   name: litellm-redis-health
   namespace: litellm

@@ -20,7 +20,7 @@ helmCharts:
 - name: litellm-helm
   releaseName: litellm
   namespace: litellm
-  version: 0.1.680
+  version: 0.1.730
   repo: oci://ghcr.io/berriai/
   valuesInline:
 
@@ -96,4 +96,4 @@ patches:
 
 # images:
 #   - name: ghcr.io/berriai/litellm-database
-#     newTag: main-v1.69.3-nightly
+#     newTag: main-v1.74.4-nightly
