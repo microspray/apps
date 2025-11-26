@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- manifests/upstream
+namespace: kube-network
+
+patches:
+- patch: |-
+    - op: replace
+      path: /metadata/annotations
+      value:
+        cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+    - op: replace
+      path: /spec/ingressClassName
+      value: nginx
+    - op: replace
+      path: /spec/rules/0/host
+      value: hubble.$CLUSTER_DOMAIN
+    - op: replace
+      path: /spec/tls
+      value:
+        - hosts:
+            - hubble.$CLUSTER_DOMAIN
+          secretName: hubble-ui-certs
+  target:
+    kind: Ingress
+    name: hubble-ui
