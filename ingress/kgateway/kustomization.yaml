@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kgateway-system
+resources: []
+
+helmCharts:
+- name: kgateway-crds
+  repo: oci://ghcr.io/kgateway-dev/charts
+  releaseName: kgateway-crds
+  namespace: kgateway-system
+  version: v2.1.1
+- name: kgateway
+  repo: oci://ghcr.io/kgateway-dev/charts
+  releaseName: kgateway
+  namespace: kgateway-system
+  version: v2.1.1
+  valuesInline:
+    controller:
+      image:
+        pullPolicy: IfNotPresent
+      replicaCount: 3
+      
