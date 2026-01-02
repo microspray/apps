@@ -25,7 +25,7 @@ spec:
         checksum/configmap: 2a9ab4a5432825504d910f022638674ce88eaefe9f9f595ad8bc107377d104fb
         checksum/health: aff24913d801436ea469d8d374b2ddb3ec4c43ee7ab24663d5f8ff1a1b6991a9
         checksum/scripts: 0717e77fd3bb941f602860e9be4f2ed87b481cddeadf37be463f8512ecde0c3e
-        checksum/secret: a048a18af0b60d60734a37da7c326deb48b6dbe213797f44a2a5e94eebf883d4
+        checksum/secret: 7892d6153771571b9ed2c2e6cfb3fd64396bba0f513d3bd35cf1585af541b0b6
       labels:
         app.kubernetes.io/component: master
         app.kubernetes.io/instance: litellm
