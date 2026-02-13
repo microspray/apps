@@ -7,6 +7,7 @@ resources:
 - cert-manager-cainjector.cert-manager.serviceaccount.yaml
 - cert-manager-cainjector:leaderelection.cert-manager.role.yaml
 - cert-manager-cainjector:leaderelection.cert-manager.rolebinding.yaml
+- cert-manager-cluster-view..clusterrole.yaml
 - cert-manager-controller-approve:cert-manager-io..clusterrole.yaml
 - cert-manager-controller-approve:cert-manager-io..clusterrolebinding.yaml
 - cert-manager-controller-certificates..clusterrole.yaml
@@ -28,10 +29,11 @@ resources:
 - cert-manager-startupapicheck.cert-manager.serviceaccount.yaml
 - cert-manager-startupapicheck:create-cert.cert-manager.role.yaml
 - cert-manager-startupapicheck:create-cert.cert-manager.rolebinding.yaml
+- cert-manager-tokenrequest.cert-manager.role.yaml
+- cert-manager-tokenrequest.cert-manager.rolebinding.yaml
 - cert-manager-view..clusterrole.yaml
 - cert-manager-webhook..mutatingwebhookconfiguration.yaml
 - cert-manager-webhook..validatingwebhookconfiguration.yaml
-- cert-manager-webhook.cert-manager.configmap.yaml
 - cert-manager-webhook.cert-manager.deployment.yaml
 - cert-manager-webhook.cert-manager.service.yaml
 - cert-manager-webhook.cert-manager.serviceaccount.yaml
@@ -40,9 +42,8 @@ resources:
 - cert-manager-webhook:subjectaccessreviews..clusterrole.yaml
 - cert-manager-webhook:subjectaccessreviews..clusterrolebinding.yaml
 - cert-manager.cert-manager.deployment.yaml
-- cert-manager.cert-manager.service.yaml
+- cert-manager.cert-manager.podmonitor.yaml
 - cert-manager.cert-manager.serviceaccount.yaml
-- cert-manager.cert-manager.servicemonitor.yaml
 - cert-manager:leaderelection.cert-manager.role.yaml
 - cert-manager:leaderelection.cert-manager.rolebinding.yaml
 - certificaterequests.cert-manager.io..customresourcedefinition.yaml

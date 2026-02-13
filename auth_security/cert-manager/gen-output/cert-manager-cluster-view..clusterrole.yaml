@@ -2,18 +2,21 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-    app: webhook
-    app.kubernetes.io/component: webhook
+    app: cert-manager
+    app.kubernetes.io/component: controller
     app.kubernetes.io/instance: myrelease
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: webhook
+    app.kubernetes.io/name: cert-manager
     app.kubernetes.io/version: v1.19.3
     helm.sh/chart: cert-manager-v1.19.3
-  name: cert-manager-webhook:subjectaccessreviews
+    rbac.authorization.k8s.io/aggregate-to-cluster-reader: "true"
+  name: cert-manager-cluster-view
 rules:
 - apiGroups:
-  - authorization.k8s.io
+  - cert-manager.io
   resources:
-  - subjectaccessreviews
+  - clusterissuers
   verbs:
-  - create
+  - get
+  - list
+  - watch
