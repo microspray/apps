@@ -37,6 +37,7 @@ spec:
         - --acme-http01-solver-image=quay.io/jetstack/cert-manager-acmesolver:v1.19.3
         - --max-concurrent-challenges=60
         - --dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53
+        - --config=/var/cert-manager/config/config.yaml
         env:
         - name: POD_NAMESPACE
           valueFrom:
@@ -68,6 +69,9 @@ spec:
             drop:
             - ALL
           readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /var/cert-manager/config
+          name: config
       dnsConfig:
         nameservers:
         - 1.1.1.1
@@ -81,3 +85,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       serviceAccountName: cert-manager
+      volumes:
+      - configMap:
+          name: cert-manager-2hmdcfttdd
+        name: config

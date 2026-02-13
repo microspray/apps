@@ -281,7 +281,11 @@ enableCertificateOwnerRef: false
 #        secretName: "cert-manager-metrics-ca"
 #        dnsNames:
 #        - cert-manager-metrics
-config: {}
+# config:
+#  featureGates:
+#     # Disable the use of Exact PathType in Ingress resources, to work around a bug in ingress-nginx
+#     # https://github.com/kubernetes/ingress-nginx/issues/11176
+#     ACMEHTTP01IngressPathTypeExact: false  
 
 # Setting Nameservers for DNS01 Self Check.
 # For more information, see the [cert-manager documentation](https://cert-manager.io/docs/configuration/acme/dns01/#setting-nameservers-for-dns01-self-check).

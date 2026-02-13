@@ -1,0 +1,13 @@
+apiVersion: v1
+data:
+  config.yaml: |+
+    kind: ControllerConfiguration
+    apiVersion: controller.config.cert-manager.io/v1alpha1
+    featureGates:
+      ACMEHTTP01IngressPathTypeExact: false
+
+
+kind: ConfigMap
+metadata:
+  name: cert-manager-2hmdcfttdd
+  namespace: cert-manager

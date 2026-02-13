@@ -1,6 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+- cert-manager-2hmdcfttdd.cert-manager.configmap.yaml
 - cert-manager-cainjector..clusterrole.yaml
 - cert-manager-cainjector..clusterrolebinding.yaml
 - cert-manager-cainjector.cert-manager.deployment.yaml

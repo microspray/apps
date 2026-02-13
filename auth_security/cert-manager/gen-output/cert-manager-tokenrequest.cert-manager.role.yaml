@@ -15,7 +15,7 @@ rules:
 - apiGroups:
   - ""
   resourceNames:
-  - cert-manager
+  - cert-manager-2hmdcfttdd
   resources:
   - serviceaccounts/token
   verbs:
