@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  annotations:
+    deprecated.daemonset.template.generation: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"DaemonSet","metadata":{"annotations":{},"labels":{"addonmanager.kubernetes.io/mode":"Reconcile","k8s-app":"nodelocaldns"},"name":"nodelocaldns","namespace":"kube-system"},"spec":{"selector":{"matchLabels":{"k8s-app":"nodelocaldns"}},"template":{"metadata":{"annotations":{"prometheus.io/port":"9253","prometheus.io/scrape":"true"},"labels":{"k8s-app":"nodelocaldns"}},"spec":{"containers":[{"args":["-localip","169.254.25.10,10.2.0.3","-conf","/etc/coredns/Corefile","-upstreamsvc","coredns","-skipteardown=true","-setupinterface=false","-setupiptables=false"],"image":"k8s.gcr.io/dns/k8s-dns-node-cache:1.17.0","livenessProbe":{"failureThreshold":10,"httpGet":{"path":"/health","port":9254,"scheme":"HTTP"},"successThreshold":1,"timeoutSeconds":5},"name":"node-cache","ports":[{"containerPort":53,"name":"dns","protocol":"UDP"},{"containerPort":53,"name":"dns-tcp","protocol":"TCP"},{"containerPort":9253,"name":"metrics","protocol":"TCP"}],"readinessProbe":{"failureThreshold":10,"httpGet":{"path":"/health","port":9254,"scheme":"HTTP"},"successThreshold":1,"timeoutSeconds":5},"resources":{"limits":{"memory":"170Mi"},"requests":{"cpu":"100m","memory":"70Mi"}},"volumeMounts":[{"mountPath":"/etc/coredns","name":"config-volume"}]}],"dnsPolicy":"Default","priorityClassName":"system-cluster-critical","serviceAccountName":"nodelocaldns","terminationGracePeriodSeconds":0,"tolerations":[{"effect":"NoSchedule","operator":"Exists"},{"effect":"NoExecute","operator":"Exists"}],"volumes":[{"configMap":{"items":[{"key":"Corefile","path":"Corefile"}],"name":"nodelocaldns"},"name":"config-volume"}]}},"updateStrategy":{"rollingUpdate":{"maxUnavailable":"20%"},"type":"RollingUpdate"}}}
+  creationTimestamp: "2021-08-17T21:42:30Z"
+  generation: 1
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+    k8s-app: nodelocaldns
+  name: nodelocaldns
+  namespace: kube-system
+  resourceVersion: "55877118"
+  uid: 7c10d4c2-ca9f-4558-b92f-07d2050a2641
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8s-app: nodelocaldns
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9253"
+        prometheus.io/scrape: "true"
+      creationTimestamp: null
+      labels:
+        k8s-app: nodelocaldns
+    spec:
+      containers:
+      - args:
+        - -localip
+        - 169.254.25.10,10.2.0.3
+        - -conf
+        - /etc/coredns/Corefile
+        - -upstreamsvc
+        - coredns
+        - -skipteardown=true
+        - -setupinterface=false
+        - -setupiptables=false
+        image: k8s.gcr.io/dns/k8s-dns-node-cache:1.17.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /health
+            port: 9254
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: node-cache
+        ports:
+        - containerPort: 53
+          name: dns
+          protocol: UDP
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+        - containerPort: 9253
+          name: metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /health
+            port: 9254
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            memory: 170Mi
+          requests:
+            cpu: 100m
+            memory: 70Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/coredns
+          name: config-volume
+      dnsPolicy: Default
+      priorityClassName: system-cluster-critical
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: nodelocaldns
+      serviceAccountName: nodelocaldns
+      terminationGracePeriodSeconds: 0
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      - effect: NoExecute
+        operator: Exists
+      volumes:
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: Corefile
+            path: Corefile
+          name: nodelocaldns
+        name: config-volume
+  updateStrategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 20%
+    type: RollingUpdate
+status:
+  currentNumberScheduled: 35
+  desiredNumberScheduled: 35
+  numberAvailable: 34
+  numberMisscheduled: 0
+  numberReady: 34
+  numberUnavailable: 1
+  observedGeneration: 1
+  updatedNumberScheduled: 35
