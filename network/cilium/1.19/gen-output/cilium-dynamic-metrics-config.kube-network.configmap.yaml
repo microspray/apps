@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  dynamic-metrics.yaml: ""
+kind: ConfigMap
+metadata:
+  name: cilium-dynamic-metrics-config
+  namespace: kube-network

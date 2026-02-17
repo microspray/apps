@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: cilium-node-init
+    app.kubernetes.io/name: cilium-node-init
+    app.kubernetes.io/part-of: cilium
+  name: cilium-node-init
+  namespace: kube-network
+spec:
+  selector:
+    matchLabels:
+      app: cilium-node-init
+  template:
+    metadata:
+      annotations: null
+      labels:
+        app: cilium-node-init
+        app.kubernetes.io/name: cilium-node-init
+        app.kubernetes.io/part-of: cilium
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - env:
+        - name: STARTUP_SCRIPT
+          value: |
+            #!/bin/bash
+
+            set -o errexit
+            set -o pipefail
+            set -o nounset
+
+            echo "Link information:"
+            ip link
+
+            echo "Routing table:"
+            ip route
+
+            echo "Addressing:"
+            ip -4 a
+            ip -6 a
+
+
+            mkdir -p "/tmp/cilium-bootstrap.d"
+            date > "/tmp/cilium-bootstrap.d/cilium-bootstrap-time"
+
+
+
+            echo "Node initialization complete"
+        image: quay.io/cilium/startup-script:1763560095-8f36c34@sha256:50b9cf9c280096b59b80d2fc8ee6638facef79ac18998a22f0cbc40d5d28c16f
+        imagePullPolicy: IfNotPresent
+        lifecycle: null
+        name: node-init
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add:
+            - SYS_MODULE
+            - NET_ADMIN
+            - SYS_ADMIN
+            - SYS_CHROOT
+            - SYS_PTRACE
+          privileged: false
+          seLinuxOptions:
+            level: s0
+            type: spc_t
+        terminationMessagePolicy: FallbackToLogsOnError
+      hostNetwork: true
+      hostPID: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      priorityClassName: system-node-critical
+      securityContext:
+        appArmorProfile:
+          type: Unconfined
+      tolerations:
+      - operator: Exists
+  updateStrategy:
+    type: RollingUpdate

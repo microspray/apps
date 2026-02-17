@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  endpoint: k8s-api.a1-stg.conny.dev
+  port: "6443"
+kind: ConfigMap
+metadata:
+  name: k8s-cp-service-cbdht89hmd
+  namespace: kube-network
