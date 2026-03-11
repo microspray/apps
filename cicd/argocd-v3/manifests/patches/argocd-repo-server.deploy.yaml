@@ -32,9 +32,6 @@
   path: /spec/template/spec/automountServiceAccountToken
   value: true
 - op: add
-  path: /spec/template/spec/serviceAccountName
-  value: argocd-server
-- op: add
   path: /spec/template/spec/containers/-
   value:
     name: kustomize-gcrypt

@@ -51,9 +51,6 @@ configMapGenerator:
     - manifests/configs/argocd-cm.env
   files:
   - oidc.config=manifests/configs/oidc.config
-  - resource.customizations.health.argoproj.io_Application=manifests/configs/health/application.lua
-  - resource.customizations.health.networking.k8s.io_Ingress=manifests/configs/health/ingress.lua
-  - resource.customizations.health.cert-manager.io_Certificate=manifests/configs/health/certificate.lua
   name: argocd-cm
 - behavior: merge
   files:
