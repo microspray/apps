@@ -39,7 +39,6 @@ resources:
 - argocd-notifications-controller.argocd.rolebinding.yaml
 - argocd-notifications-controller.argocd.serviceaccount.yaml
 - argocd-notifications-secret.argocd.secret.yaml
-- argocd-oidc-secret.argocd.secret.yaml
 - argocd-rbac-cm.argocd.configmap.yaml
 - argocd-redis-ha-announce-0.argocd.service.yaml
 - argocd-redis-ha-announce-1.argocd.service.yaml
