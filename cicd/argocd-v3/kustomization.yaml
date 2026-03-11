@@ -54,8 +54,6 @@ configMapGenerator:
   - resource.customizations.health.argoproj.io_Application=manifests/configs/health/application.lua
   - resource.customizations.health.networking.k8s.io_Ingress=manifests/configs/health/ingress.lua
   - resource.customizations.health.cert-manager.io_Certificate=manifests/configs/health/certificate.lua
-  - repositories=manifests/configs/repositories.yaml
-  - repository.credentials=manifests/configs/repo-credentials.yaml
   name: argocd-cm
 - behavior: merge
   files:
@@ -93,12 +91,26 @@ secretGenerator:
     disableNameSuffixHash: true
   type: Opaque
 
-## Example:
-# - literals:
-#   - url=https://github.com/microspray-io/deployments
-#   name: microspray-deployments
-#   options:
-#     disableNameSuffixHash: true
-#     labels:
-#       argocd.argoproj.io/secret-type: repository
-#   type: Opaque
+- literals:
+  - url=https://github.com/myorg/repo1.git
+  - type=git
+  - project=default
+  - name=micros-infra
+  name: repo-micros-infra
+  options:
+    disableNameSuffixHash: true
+    labels:
+      argocd.argoproj.io/secret-type: repository
+  type: Opaque
+
+- literals:
+  - url=https://github.com/myorg/repo2.git
+  - type=git
+  - project=default
+  - name=micros-deploy
+  name: repo-micros-deploy
+  options:
+    disableNameSuffixHash: true
+    labels:
+      argocd.argoproj.io/secret-type: repository
+  type: Opaque
