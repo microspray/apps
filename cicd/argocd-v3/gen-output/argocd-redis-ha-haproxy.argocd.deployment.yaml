@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/name: argocd-redis-ha-haproxy
+    app.kubernetes.io/part-of: argocd
+  name: argocd-redis-ha-haproxy
+  namespace: argocd
+spec:
+  replicas: 3
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-redis-ha-haproxy
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: cd6508bdf9819601c454d0cc491fb77a209e3a88761d92514d105b6681829953
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9101"
+        prometheus.io/scrape: "true"
+      labels:
+        app.kubernetes.io/name: argocd-redis-ha-haproxy
+      name: argocd-redis-ha-haproxy
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: argocd-redis-ha-haproxy
+            topologyKey: kubernetes.io/hostname
+      automountServiceAccountToken: true
+      containers:
+      - env:
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+              key: auth
+              name: argocd-redis
+        image: public.ecr.aws/docker/library/haproxy:3.0.8-alpine
+        imagePullPolicy: IfNotPresent
+        lifecycle: {}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: probe
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        name: haproxy
+        ports:
+        - containerPort: 8888
+          name: probe
+        - containerPort: 6379
+          name: redis
+        - containerPort: 9101
+          name: metrics-port
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: probe
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /usr/local/etc/haproxy
+          name: data
+        - mountPath: /run/haproxy
+          name: shared-socket
+      initContainers:
+      - command:
+        - argocd
+        - admin
+        - redis-initial-password
+        image: quay.io/argoproj/argocd:v3.3.3
+        imagePullPolicy: IfNotPresent
+        name: secret-init
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+      - args:
+        - /readonly/haproxy_init.sh
+        command:
+        - sh
+        image: public.ecr.aws/docker/library/haproxy:3.0.8-alpine
+        imagePullPolicy: IfNotPresent
+        name: config-init
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /readonly
+          name: config-volume
+          readOnly: true
+        - mountPath: /data
+          name: data
+      securityContext:
+        fsGroup: 99
+        runAsNonRoot: true
+        runAsUser: 99
+      serviceAccountName: argocd-redis-ha-haproxy
+      volumes:
+      - configMap:
+          name: argocd-redis-ha-configmap
+        name: config-volume
+      - emptyDir: {}
+        name: shared-socket
+      - emptyDir: {}
+        name: data

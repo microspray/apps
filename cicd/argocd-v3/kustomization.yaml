@@ -1,0 +1,106 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+resources:
+- manifests/upstream/install.yaml
+- manifests/argocd.ingress.yaml
+- manifests/servicemonitors.yaml
+- manifests/sa.yaml
+
+images:
+- name: quay.io/argoproj/argocd
+  newTag: v3.3.3
+- name: img.conny.dev/oss/argocd-crypt
+  newTag: v3.3.3-1
+        
+patches:
+- path: manifests/patches/argocd-server.deploy.yaml
+  target:
+    group: apps
+    kind: Deployment
+    name: argocd-server
+    version: v1
+- path: manifests/patches/argocd-repo-server.deploy.yaml
+  target:
+    group: apps
+    kind: Deployment
+    name: argocd-repo-server
+    version: v1
+
+
+
+configMapGenerator:
+- files:
+  - plugin.yaml=manifests/configs/gitcrypt.plugin.yaml
+  name: argocd-kustomize-gcrypt-plugin
+  behavior: create
+  options:
+    disableNameSuffixHash: true
+
+- files:
+  - plugin.yaml=manifests/configs/sops.plugin.yaml
+  name: argocd-sops-plugin
+  behavior: create
+  options:
+    disableNameSuffixHash: true
+
+- behavior: merge
+  envs:
+    - manifests/configs/argocd-cm.env
+  files:
+  - oidc.config=manifests/configs/oidc.config
+  - resource.customizations.health.argoproj.io_Application=manifests/configs/health/application.lua
+  - resource.customizations.health.networking.k8s.io_Ingress=manifests/configs/health/ingress.lua
+  - resource.customizations.health.cert-manager.io_Certificate=manifests/configs/health/certificate.lua
+  - repositories=manifests/configs/repositories.yaml
+  - repository.credentials=manifests/configs/repo-credentials.yaml
+  name: argocd-cm
+- behavior: merge
+  files:
+  - manifests/configs/rbac/policy.csv
+  literals:
+  - policy.default=role:readonly
+  name: argocd-rbac-cm
+
+secretGenerator:
+- envs:
+  - manifests/secrets/oidc-client.env
+  name: argocd-oidc-secret
+  options:
+    disableNameSuffixHash: true
+  type: Opaque
+
+- files:
+  - manifests/secrets/gitcrypt.key
+  name: git-crypt-dev-key
+  options:
+    disableNameSuffixHash: true
+  type: Opaque
+
+- envs:
+  - manifests/secrets/repo-creds.env
+  name: repo-creds
+  options:
+    disableNameSuffixHash: true
+    labels:
+      argocd.argoproj.io/secret-type: repo-creds
+  type: Opaque
+
+- envs:
+  - manifests/secrets/aws-kms.env
+  name: aws-kms-credentials
+  options:
+    disableNameSuffixHash: true
+  type: Opaque
+
+## Example:
+# - literals:
+#   - url=https://github.com/microspray-io/deployments
+#   name: microspray-deployments
+#   options:
+#     disableNameSuffixHash: true
+#     labels:
+#       argocd.argoproj.io/secret-type: repository
+#   type: Opaque
