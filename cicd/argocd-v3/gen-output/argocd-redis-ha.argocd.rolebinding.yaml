@@ -3,15 +3,15 @@ kind: RoleBinding
 metadata:
   labels:
     app.kubernetes.io/component: redis
-    app.kubernetes.io/name: argocd-redis
+    app.kubernetes.io/name: argocd-redis-ha
     app.kubernetes.io/part-of: argocd
-  name: argocd-redis
+  name: argocd-redis-ha
   namespace: argocd
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: argocd-redis
+  name: argocd-redis-ha
 subjects:
 - kind: ServiceAccount
-  name: argocd-redis
+  name: argocd-redis-ha
   namespace: argocd

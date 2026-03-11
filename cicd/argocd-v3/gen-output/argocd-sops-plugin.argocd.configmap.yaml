@@ -1,0 +1,18 @@
+apiVersion: v1
+data:
+  plugin.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: sops-kustomize
+    spec:
+      version: v1.0
+      generate:
+        command: ["sh", "-c"]
+        # Instructs kustomize to execute with alpha plugins enabled (needed for ksops/sops integration)
+        args:
+          - "kustomize build --enable-alpha-plugins --enable-helm"
+kind: ConfigMap
+metadata:
+  name: argocd-sops-plugin
+  namespace: argocd

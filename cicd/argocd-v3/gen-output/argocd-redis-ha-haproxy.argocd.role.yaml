@@ -3,11 +3,17 @@ kind: Role
 metadata:
   labels:
     app.kubernetes.io/component: redis
-    app.kubernetes.io/name: argocd-redis
+    app.kubernetes.io/name: argocd-redis-ha
     app.kubernetes.io/part-of: argocd
-  name: argocd-redis
+  name: argocd-redis-ha-haproxy
   namespace: argocd
 rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
 - apiGroups:
   - ""
   resourceNames:
@@ -19,6 +25,6 @@ rules:
 - apiGroups:
   - ""
   resources:
-  - secrets
+  - endpoints
   verbs:
-  - create
+  - get
