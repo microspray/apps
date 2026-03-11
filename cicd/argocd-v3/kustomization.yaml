@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-- https://raw.githubusercontent.com/argoproj/argo-cd/v2.14.3/manifests/install.yaml
+- https://raw.githubusercontent.com/argoproj/argo-cd/v3.3.3/manifests/ha/install.yaml
 - manifests/argocd.ingress.yaml
 - manifests/servicemonitors.yaml
 - manifests/sa.yaml
@@ -38,7 +38,6 @@ configMapGenerator:
   envs:
     - manifests/configs/argocd-cm.env.conf
   files:
-  - configManagementPlugins=manifests/configs/plugins.yaml
   - manifests/configs/oidc.config
   - resource.customizations.health.argoproj.io_Application=manifests/configs/health/application.lua
   - resource.customizations.health.networking.k8s.io_Ingress=manifests/configs/health/ingress.lua
