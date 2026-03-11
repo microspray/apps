@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-- https://raw.githubusercontent.com/argoproj/argo-cd/v3.3.3/manifests/ha/install.yaml
+- manifests/upstream/install.yaml
 - manifests/argocd.ingress.yaml
 - manifests/servicemonitors.yaml
 - manifests/sa.yaml
@@ -80,7 +80,7 @@ secretGenerator:
   type: Opaque
 
 - envs:
-  - manifests/secrets/repo-creds.conf
+  - manifests/secrets/repo-creds.env
   name: repo-creds
   options:
     disableNameSuffixHash: true
