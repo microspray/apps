@@ -50,7 +50,7 @@ configMapGenerator:
   envs:
     - manifests/configs/argocd-cm.env.conf
   files:
-  - manifests/configs/oidc.config
+  - oidc.config=manifests/secrets/oidc.config
   - resource.customizations.health.argoproj.io_Application=manifests/configs/health/application.lua
   - resource.customizations.health.networking.k8s.io_Ingress=manifests/configs/health/ingress.lua
   - resource.customizations.health.cert-manager.io_Certificate=manifests/configs/health/certificate.lua
@@ -65,6 +65,13 @@ configMapGenerator:
   name: argocd-rbac-cm
 
 secretGenerator:
+- envs:
+  - manifests/secrets/oidc-client.env.conf
+  name: argocd-oidc-secret
+  options:
+    disableNameSuffixHash: true
+  type: Opaque
+
 - files:
   - manifests/secrets/gitcrypt.key
   name: git-crypt-dev-key
