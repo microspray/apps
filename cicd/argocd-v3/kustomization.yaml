@@ -12,9 +12,9 @@ resources:
 images:
 - name: quay.io/argoproj/argocd
   newTag: v3.3.3
-- name: quay.io/ant31/argocd-plugin
-  newTag: latest
-
+- name: img.conny.dev/oss/argocd-crypt
+  newTag: v3.3.3-1
+        
 patches:
 - path: manifests/patches/argocd-server.deploy.yaml
   target:
