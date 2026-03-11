@@ -65,12 +65,10 @@ configMapGenerator:
   name: argocd-rbac-cm
 
 secretGenerator:
-- envs:
-  - manifests/secrets/oidc-client.env
-  name: argocd-oidc-secret
-  options:
-    disableNameSuffixHash: true
-  type: Opaque
+- behavior: merge
+  envs:
+    - manifests/secrets/oidc-client.env
+  name: argocd-secret
 
 - files:
   - manifests/secrets/gitcrypt.key
