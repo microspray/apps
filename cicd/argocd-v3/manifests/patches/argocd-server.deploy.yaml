@@ -1,13 +1,13 @@
 - op: add
-  path: /spec/template/spec/containers/0/command/1
+  path: /spec/template/spec/containers/0/command/-
   value: "--insecure"
 - op: add
-  path: /spec/template/spec/containers/0/volumeMounts/0
+  path: /spec/template/spec/containers/0/volumeMounts/-
   value:
     name: "git-crypt-dev-key"
     mountPath: "/etc/git-crypt"
 - op: add
-  path: /spec/template/spec/volumes/0
+  path: /spec/template/spec/volumes/-
   value:
     name: "git-crypt-dev-key"
     secret:

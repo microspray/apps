@@ -11,12 +11,12 @@ resources:
 
 
 patches:
-# - path: manifests/patches/argocd-server.deploy.yaml
-#   target:
-#     group: apps
-#     kind: Deployment
-#     name: argocd-server
-#     version: v1
+- path: manifests/patches/argocd-server.deploy.yaml
+  target:
+    group: apps
+    kind: Deployment
+    name: argocd-server
+    version: v1
 - path: manifests/patches/argocd-repo-server.deploy.yaml
   target:
     group: apps
@@ -30,6 +30,13 @@ configMapGenerator:
 - files:
   - plugin.yaml=manifests/configs/gitcrypt.plugin.yaml
   name: argocd-kustomize-gcrypt-plugin
+  behavior: create
+  options:
+    disableNameSuffixHash: true
+
+- files:
+  - plugin.yaml=manifests/configs/sops.plugin.yaml
+  name: argocd-sops-plugin
   behavior: create
   options:
     disableNameSuffixHash: true
