@@ -9,6 +9,11 @@ resources:
 - manifests/servicemonitors.yaml
 - manifests/sa.yaml
 
+images:
+- name: quay.io/argoproj/argocd
+  newTag: v3.3.3
+- name: quay.io/ant31/argocd-plugin
+  newTag: latest
 
 patches:
 - path: manifests/patches/argocd-server.deploy.yaml
@@ -74,6 +79,13 @@ secretGenerator:
     disableNameSuffixHash: true
     labels:
       argocd.argoproj.io/secret-type: repo-creds
+  type: Opaque
+
+- envs:
+  - manifests/secrets/aws-kms.env.conf
+  name: aws-kms-credentials
+  options:
+    disableNameSuffixHash: true
   type: Opaque
 
 ## Example:
