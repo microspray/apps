@@ -1,0 +1,6 @@
+- type: git
+  url: https://github.com/myorg/repo1.git
+  name: micros-infra
+- type: git
+  url: https://github.com/myorg/repo2.git
+  name: micros-deploy
