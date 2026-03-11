@@ -48,9 +48,9 @@ configMapGenerator:
 
 - behavior: merge
   envs:
-    - manifests/configs/argocd-cm.env.conf
+    - manifests/configs/argocd-cm.env
   files:
-  - oidc.config=manifests/secrets/oidc.config
+  - oidc.config=manifests/configs/oidc.config
   - resource.customizations.health.argoproj.io_Application=manifests/configs/health/application.lua
   - resource.customizations.health.networking.k8s.io_Ingress=manifests/configs/health/ingress.lua
   - resource.customizations.health.cert-manager.io_Certificate=manifests/configs/health/certificate.lua
@@ -66,7 +66,7 @@ configMapGenerator:
 
 secretGenerator:
 - envs:
-  - manifests/secrets/oidc-client.env.conf
+  - manifests/secrets/oidc-client.env
   name: argocd-oidc-secret
   options:
     disableNameSuffixHash: true
@@ -89,7 +89,7 @@ secretGenerator:
   type: Opaque
 
 - envs:
-  - manifests/secrets/aws-kms.env.conf
+  - manifests/secrets/aws-kms.env
   name: aws-kms-credentials
   options:
     disableNameSuffixHash: true
