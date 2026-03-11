@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=v2.5.5
+VERSION=v3.3.3
 
 curl -L  https://raw.githubusercontent.com/argoproj/argo-cd/$VERSION/manifests/ha/install.yaml > manifests/defaults/install.yaml
 
