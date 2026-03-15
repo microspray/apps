@@ -7,9 +7,7 @@ spec:
   init:
     command: ["sh", "-c"]
     args:
-      - |
-        echo "Decrypting SOPS files..."        
-        find . -type f -name "*.yaml" -exec sh -c 'grep -q "sops:" "$1" && sops -d -i "$1" || true' _ {} \;
+      - 'find . -type f -name "*.yaml" -exec grep -l "sops:" {} + | xargs -r -n 1 sops -d -i' 
   generate:
     command:
       - "kustomize"
