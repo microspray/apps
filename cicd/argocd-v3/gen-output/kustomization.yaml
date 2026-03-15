@@ -82,3 +82,5 @@ resources:
 - ci-admin.argocd.serviceaccount.yaml
 - git-crypt-dev-key.argocd.secret.yaml
 - repo-creds.argocd.secret.yaml
+- repo-micros-deploy.argocd.secret.yaml
+- repo-micros-infra.argocd.secret.yaml

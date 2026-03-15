@@ -1,6 +1,5 @@
 apiVersion: v1
 data:
-  application.instanceLabelKey: argocd.argoproj.io/instance
   oidc.config: |
     name: "SSO"
     issuer: "https://sso.microspray.io"
@@ -10,61 +9,6 @@ data:
     requestedScopes: ["openid", "profile", "email", "groups"]
     # Optional set of OIDC claims to request on the ID token.
     requestedIDTokenClaims: {"groups": {"essential": true}}
-  repositories: |
-    - type: git
-      url: https://github.com/myorg/repo1.git
-      name: micros-infra
-    - type: git
-      url: https://github.com/myorg/repo2.git
-      name: micros-deploy
-  repository.credentials: |
-    - url: https://github.com/myorg
-      name: micros
-      passwordSecret:
-        key: password
-        name: github-token
-      usernameSecret:
-        key: username
-        name: github-token
-  resource.customizations.health.argoproj.io_Application: |
-    hs = {}
-    hs.status = "Progressing"
-    hs.message = ""
-    if obj.status ~= nil then
-      if obj.status.health ~= nil then
-        hs.status = obj.status.health.status
-        if obj.status.health.message ~= nil then
-          hs.message = obj.status.health.message
-        end
-      end
-    end
-    return hs
-  resource.customizations.health.cert-manager.io_Certificate: |
-    hs = {}
-    if obj.status ~= nil then
-      if obj.status.conditions ~= nil then
-        for i, condition in ipairs(obj.status.conditions) do
-          if condition.type == "Ready" and condition.status == "False" then
-            hs.status = "Degraded"
-            hs.message = condition.message
-            return hs
-          end
-          if condition.type == "Ready" and condition.status == "True" then
-            hs.status = "Healthy"
-            hs.message = condition.message
-            return hs
-          end
-        end
-      end
-    end
-
-    hs.status = "Progressing"
-    hs.message = "Waiting for certificate"
-    return hs
-  resource.customizations.health.networking.k8s.io_Ingress: |
-    hs = {}
-    hs.status = "Healthy"
-    return hs
   resource.customizations.ignoreResourceUpdates.ConfigMap: |
     jqPathExpressions:
       # Ignore the cluster-autoscaler status
@@ -103,9 +47,6 @@ data:
       - /metadata
       - /endpoints
       - /ports
-  resource.customizations.useOpenLibs.argoproj.io_Application: "true"
-  resource.customizations.useOpenLibs.cert-manager.io_Certificate: "true"
-  resource.customizations.useOpenLibs.networking.k8s.io_Ingress: "true"
   resource.exclusions: |
     ### Network resources created by the Kubernetes control plane and excluded to reduce the number of watched events and UI clutter
     - apiGroups:
