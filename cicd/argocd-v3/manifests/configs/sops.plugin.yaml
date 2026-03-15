@@ -4,8 +4,16 @@ metadata:
   name: sops-kustomize
 spec:
   version: v1.0
-  generate:
+  init:
     command: ["sh", "-c"]
-    # Instructs kustomize to execute with alpha plugins enabled (needed for ksops/sops integration)
     args:
-      - "kustomize build --enable-alpha-plugins --enable-helm"
+      - |
+        echo "Decrypting SOPS files..."        
+        find . -type f -name "*.yaml" -exec sh -c 'grep -q "sops:" "$1" && sops -d -i "$1" || true' _ {} \;
+  generate:
+    command:
+      - "kustomize"
+    args:
+      - "build"
+      - "--enable-helm"
+      - "."
