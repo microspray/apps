@@ -2,12 +2,12 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.4
+    controller-gen.kubebuilder.io/version: v0.20.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: elastic-operator
     app.kubernetes.io/name: eck-operator-crds
-    app.kubernetes.io/version: 2.15.0
+    app.kubernetes.io/version: 3.3.1
   name: stackconfigpolicies.stackconfigpolicy.k8s.elastic.co
 spec:
   group: stackconfigpolicy.k8s.elastic.co
@@ -33,6 +33,9 @@ spec:
     - jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
+    - jsonPath: .spec.weight
+      name: Weight
+      type: integer
     name: v1alpha1
     schema:
       openAPIV3Schema:
@@ -292,6 +295,13 @@ spec:
                   - secretName
                   type: object
                 type: array
+              weight:
+                default: 0
+                description: |-
+                  Weight determines the priority of this policy when multiple policies target the same resource.
+                  Higher weight values take precedence. Defaults to 0.
+                format: int32
+                type: integer
             type: object
           status:
             properties:
@@ -380,6 +390,7 @@ spec:
                   type: object
                 description: |-
                   ResourcesStatuses holds the status for each resource to be configured.
+
                   Deprecated: Details is used to store the status of resources from ECK 2.11
                 type: object
             type: object

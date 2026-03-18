@@ -2,13 +2,12 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   labels:
-    app.kubernetes.io/version: 2.15.0
+    app.kubernetes.io/version: 3.3.1
     control-plane: elastic-operator
   name: elastic-webhook.k8s.elastic.co
 webhooks:
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -30,7 +29,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -52,7 +50,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -74,7 +71,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -96,7 +92,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -118,7 +113,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -140,7 +134,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -162,7 +155,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -184,7 +176,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -206,7 +197,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -228,7 +218,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -250,7 +239,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -272,7 +260,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -294,7 +281,6 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: elastic-webhook-server
@@ -313,4 +299,47 @@ webhooks:
     - UPDATE
     resources:
     - logstashes
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: elastic-webhook-server
+      namespace: elastic-system
+      path: /validate-autoops-k8s-elastic-co-v1alpha1-autoopsagentpolicies
+  failurePolicy: Ignore
+  matchPolicy: Exact
+  name: elastic-autoops-validation-v1alpha1.k8s.elastic.co
+  rules:
+  - apiGroups:
+    - autoops.k8s.elastic.co
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - autoopsagentpolicies
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: elastic-webhook-server
+      namespace: elastic-system
+      path: /validate-epr-k8s-elastic-co-v1alpha1-elasticpackageregistry
+  failurePolicy: Ignore
+  matchPolicy: Exact
+  name: elastic-epr-validation-v1alpha1.k8s.elastic.co
+  rules:
+  - apiGroups:
+    - packageregistry.k8s.elastic.co
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - packageregistries
   sideEffects: None

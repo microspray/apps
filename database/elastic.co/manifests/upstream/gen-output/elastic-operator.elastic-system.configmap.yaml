@@ -3,6 +3,7 @@ data:
   eck.yaml: |-
     log-verbosity: 0
     metrics-port: 0
+    metrics-secure: false
     container-registry: docker.elastic.co
     max-concurrent-reconciles: 3
     ca-cert-validity: 8760h
@@ -27,7 +28,7 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    app.kubernetes.io/version: 2.15.0
+    app.kubernetes.io/version: 3.3.1
     control-plane: elastic-operator
   name: elastic-operator
   namespace: elastic-system

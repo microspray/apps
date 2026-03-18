@@ -2,12 +2,12 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.4
+    controller-gen.kubebuilder.io/version: v0.20.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: elastic-operator
     app.kubernetes.io/name: eck-operator-crds
-    app.kubernetes.io/version: 2.15.0
+    app.kubernetes.io/version: 3.3.1
   name: agents.agent.k8s.elastic.co
 spec:
   group: agent.k8s.elastic.co
@@ -117,7 +117,7 @@ spec:
                               pod is available (Ready for at least minReadySeconds) the old DaemonSet pod
                               on that node is marked deleted. If the old pod becomes unavailable for any
                               reason (Ready transitions to false, is evicted, or is drained) an updated
-                              pod is immediatedly created on that node without considering surge limits.
+                              pod is immediately created on that node without considering surge limits.
                               Allowing surge implies the possibility that the resources consumed by the
                               daemonset on any given node can double if the readiness check fails, and
                               so resource intensive daemonsets should take into account that they may
@@ -231,7 +231,8 @@ spec:
                     secretName:
                       description: |-
                         SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                        Elastic resource not managed by the operator. The referenced secret must contain the following:
+                        Elastic resource not managed by the operator.
+                        The referenced secret must contain the following:
                         - `url`: the URL to reach the Elastic resource
                         - `username`: the username of the user to be authenticated to the Elastic resource
                         - `password`: the password of the user to be authenticated to the Elastic resource
@@ -255,6 +256,7 @@ spec:
                 description: |-
                   FleetServerRef is a reference to Fleet Server that this Agent should connect to to obtain it's configuration.
                   Don't set unless `mode` is set to `fleet`.
+                  References to Fleet servers running outside the Kubernetes cluster via the `secretName` attribute are not supported.
                 properties:
                   name:
                     description: Name of an existing Kubernetes object corresponding
@@ -267,7 +269,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -628,13 +631,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -679,7 +681,7 @@ spec:
                         properties:
                           disabled:
                             description: Disabled indicates that the provisioning
-                              of the self-signed certifcate should be disabled.
+                              of the self-signed certificate should be disabled.
                             type: boolean
                           subjectAltNames:
                             description: SubjectAlternativeNames is a list of SANs
@@ -719,7 +721,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -736,8 +739,10 @@ spec:
                 type: object
               mode:
                 description: |-
-                  Mode specifies the source of configuration for the Agent. The configuration can be specified locally through
-                  `config` or `configRef` (`standalone` mode), or come from Fleet during runtime (`fleet` mode).
+                  Mode specifies the runtime mode for the Agent. The configuration can be specified locally through
+                  `config` or `configRef` (`standalone` mode), or come from Fleet during runtime (`fleet` mode). Starting with
+                  version 8.13.0 Fleet-managed agents support advanced configuration via a local configuration file.
+                  See https://www.elastic.co/docs/reference/fleet/advanced-kubernetes-managed-by-fleet
                   Defaults to `standalone` mode.
                 enum:
                 - standalone
@@ -967,7 +972,7 @@ spec:
                             resources:
                               description: |-
                                 resources represents the minimum resources the volume should have.
-                                If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+                                Users are allowed to specify resource requirements
                                 that are lower than previous value but must still be higher than capacity recorded in the
                                 status field of the claim.
                                 More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
@@ -1054,15 +1059,13 @@ spec:
                                 volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
                                 If specified, the CSI driver will create or update the volume with the attributes defined
                                 in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-                                it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-                                will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-                                If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-                                will be set by the persistentvolume controller if it exists.
+                                it can be changed after the claim is created. An empty string or nil value indicates that no
+                                VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+                                this field can be reset to its previous value (including nil) to cancel the modification.
                                 If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
                                 set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                                 exists.
                                 More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-                                (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
                               type: string
                             volumeMode:
                               description: |-
