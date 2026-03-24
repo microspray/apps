@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/session-cookie-expires: "3600"
+    nginx.ingress.kubernetes.io/session-cookie-hash: sha1
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "3600"
+    nginx.ingress.kubernetes.io/session-cookie-name: rustfs
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    app.kubernetes.io/instance: rustfs
+    app.kubernetes.io/name: rustfs
+  name: rustfs
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: rustfs.micros.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: rustfs-svc
+            port:
+              name: console
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - rustfs.micros.com
+    secretName: rustfs-tls

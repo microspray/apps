@@ -1,0 +1,206 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/instance: rustfs
+    app.kubernetes.io/name: rustfs
+  name: rustfs
+  namespace: rustfs
+spec:
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  podManagementPolicy: Parallel
+  replicas: 5
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: rustfs
+      app.kubernetes.io/name: rustfs
+  serviceName: rustfs-headless
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: rustfs
+        app.kubernetes.io/name: rustfs
+    spec:
+      # 1. Bypass CNI Overlay for raw 10Gbps wire speed
+      hostNetwork: false
+      dnsPolicy: Default
+      affinity:
+        nodeAffinity: {}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - rustfs
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - command:
+        - /usr/bin/rustfs
+        envFrom:
+        - secretRef:
+            name: rustfs-root-creds
+        env:
+        - name: RUSTFS_ADDRESS
+          value: ":9000"
+        - name: RUSTFS_CONSOLE_ADDRESS
+          value: ":9001"
+        - name: RUSTFS_CONSOLE_ENABLE
+          value: "true"
+        - name: RUSTFS_OBS_ENVIRONMENT
+          value: "development"
+        - name: RUSTFS_OBS_LOG_DIRECTORY
+          value: "/logs"
+        - name: RUSTFS_OBS_LOGGER_LEVEL
+          value: "warning"
+        - name: RUSTFS_REGION
+          value: "eu-central-1"
+        - name: RUSTFS_VOLUMES
+          value: "http://rustfs-{0...4}.rustfs-headless.rustfs.svc.cluster.local:9000/data/rustfs{0...1}"
+        - name: RUSTFS_STORAGE_CLASS_STANDARD
+          value: "EC:4"
+        - name: RUSTFS_OBJECT_CACHE_ENABLE
+          value: "true"
+        image: rustfs/rustfs:1.0.0-alpha.83
+        imagePullPolicy: IfNotPresent
+        name: rustfs
+        ports:
+        - containerPort: 9000
+          name: endpoint
+          protocol: TCP
+        - containerPort: 9001
+          name: console
+          protocol: TCP
+        # 4. Probes to instantly drop stalling nodes from DNS
+        livenessProbe:
+          tcpSocket:
+            port: 9000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          tcpSocket:
+            port: 9000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 2
+          successThreshold: 1
+          failureThreshold: 2
+        resources:
+          # 2. Matching Requests to Limits enables Guaranteed QoS class (CPU Pinning)
+          limits:
+            cpu: "8"
+            memory: 64Gi
+          requests:
+            cpu: "8"
+            memory: 64Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /logs
+          name: logs
+          subPath: logs
+        - mountPath: /data/rustfs0
+          name: data-rustfs-0
+        - mountPath: /data/rustfs1
+          name: data-rustfs-1
+      enableServiceLinks: false
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - |
+          mkdir -p /data/rustfs0
+          mkdir -p /data/rustfs1
+          mkdir -p /mnt/rustfs/logs
+          chmod 755 /mnt/rustfs/logs
+        image: busybox:latest
+        imagePullPolicy: IfNotPresent
+        name: init-step
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data/rustfs0
+          name: data-rustfs-0
+        - mountPath: /data/rustfs1
+          name: data-rustfs-1
+        - mountPath: /mnt/rustfs
+          name: logs
+      nodeSelector:
+        node-role.kubernetes.io/minio: "true"
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 10001
+        # 3. Prevent recursive chown on boot to drastically speed up pod startup
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 10001
+        runAsUser: 10001
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: group
+        operator: Equal
+        value: specialized
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+      partition: 0
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: logs
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 256Mi
+      storageClassName: local-retain
+      volumeMode: Filesystem
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: data-rustfs-0
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1024Gi 
+      storageClassName: local-retain-data-1
+      volumeMode: Filesystem
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: data-rustfs-1
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1024Gi 
+      storageClassName: local-retain-data-2
+      volumeMode: Filesystem
