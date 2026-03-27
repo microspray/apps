@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: aws-pod-id
+  
+resources:
+- manifests/deploy.yaml
+- manifests/hook.yaml
+- manifests/rbac.yaml
+- manifests/svc.yaml
