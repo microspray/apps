@@ -41,3 +41,7 @@ template:
 	-f values.yaml --namespace $(NAMESPACE) > manifests/upstream/$(NAME).aio.yaml
 	@sed -i".bu" "s/$(RELEASENAME)-//g" manifests/upstream/$(NAME).aio.yaml
 	@rm -rf manifests/upstream/*.bu
+
+	helm template eg oci://docker.io/envoyproxy/gateway-crds-helm --set crds.gatewayAPI.enabled=true \
+	--set crds.gatewayAPI.channel=standard \
+	--set crds.envoyGateway.enabled=true > manifests/upstream/$(NAME)-crd.aio.yaml
