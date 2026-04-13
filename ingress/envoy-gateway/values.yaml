@@ -1,7 +1,3 @@
-# batteries-values.yaml
-# Helm values for deploying a "batteries included" Envoy Gateway
-# helm upgrade -i eg envoy-gateway/envoy-gateway -n envoy-gateway-system -f batteries-values.yaml
-
 deployment:
   envoyGateway:
     imagePullPolicy: IfNotPresent
@@ -11,7 +7,7 @@ deployment:
       requests:
         cpu: 300m
         memory: 256Mi
-  # Expose internal ports for metrics and pprof/admin
+
   ports:
     - name: metrics
       port: 19001
@@ -21,20 +17,12 @@ deployment:
       prometheus.io/scrape: 'true'
       prometheus.io/port: '19001'
 
-# -----------------------------------------------------------------------------
-# Control Plane ServiceMonitor (For your kube-prometheus stack)
-# -----------------------------------------------------------------------------
 metrics:
   prometheus:
     serviceMonitor:
       enabled: true
-      # Set this to the namespace where your prometheus looks for ServiceMonitors, 
-      # or leave it as envoy-gateway-system if Prometheus watches all namespaces.
       namespace: "envoy-gateway-system"
 
-# -----------------------------------------------------------------------------
-# EnvoyGateway API Configuration (The core "Batteries Included" engine)
-# -----------------------------------------------------------------------------
 config:
   envoyGateway:
     gateway:
@@ -42,7 +30,6 @@ config:
     provider:
       type: Kubernetes
     
-    # Enable Admin Interface for Deep Debugging (pprof, config dumps)
     admin:
       address:
         host: "0.0.0.0"
@@ -66,11 +53,6 @@ config:
       enableEnvoyPatchPolicy: true # Enables raw xDS Envoy config patching (for edge-cases)
       disableLua: false            # Ensures Lua scripting is available on the gateway
 
-    # -------------------------------------------------------------------------
-    # Global EnvoyProxy Defaults
-    # This acts as the baseline configuration for all data-plane proxies 
-    # created by Envoy Gateway, giving you rich logs and metrics out of the box.
-    # -------------------------------------------------------------------------
     envoyProxy:
       telemetry:
         metrics:
@@ -83,6 +65,5 @@ config:
                 type: Text
                 text: '[%START_TIME%] "%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%" %RESPONSE_CODE% %RESPONSE_FLAGS% %BYTES_RECEIVED% %BYTES_SENT% %DURATION% %RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% "%REQ(X-FORWARDED-FOR)%" "%REQ(USER-AGENT)%" "%REQ(X-REQUEST-ID)%" "%REQ(:AUTHORITY)%" "%UPSTREAM_HOST%"\n'
 
-# Make sure topology injector is enabled so Envoy Gateway can track node proximity
 topologyInjector:
   enabled: true

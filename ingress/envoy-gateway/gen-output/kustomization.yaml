@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- envoy-gateway-config.envoy-gateway-system.configmap.yaml
+- envoy-gateway-gateway-helm-certgen.envoy-gateway-system.job.yaml
+- envoy-gateway-gateway-helm-certgen.envoy-gateway-system.role.yaml
+- envoy-gateway-gateway-helm-certgen.envoy-gateway-system.rolebinding.yaml
+- envoy-gateway-gateway-helm-certgen.envoy-gateway-system.serviceaccount.yaml
+- envoy-gateway-gateway-helm-certgen:envoy-gateway-system..clusterrole.yaml
+- envoy-gateway-gateway-helm-certgen:envoy-gateway-system..clusterrolebinding.yaml
+- envoy-gateway-gateway-helm-envoy-gateway-role..clusterrole.yaml
+- envoy-gateway-gateway-helm-envoy-gateway-rolebinding..clusterrolebinding.yaml
+- envoy-gateway-gateway-helm-infra-manager.envoy-gateway-system.role.yaml
+- envoy-gateway-gateway-helm-infra-manager.envoy-gateway-system.rolebinding.yaml
+- envoy-gateway-gateway-helm-leader-election-role.envoy-gateway-system.role.yaml
+- envoy-gateway-gateway-helm-leader-election-rolebinding.envoy-gateway-system.rolebinding.yaml
+- envoy-gateway-topology-injector.envoy-gateway-system..mutatingwebhookconfiguration.yaml
+- envoy-gateway.envoy-gateway-system.deployment.yaml
+- envoy-gateway.envoy-gateway-system.service.yaml
+- envoy-gateway.envoy-gateway-system.serviceaccount.yaml

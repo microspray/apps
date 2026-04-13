@@ -1,9 +1,9 @@
-RELEASENAMgggggE="myrelease"
+RELEASENAME="myrelease"
 REPONAME=envoy-gateway
 REPOURL=oci://docker.io/envoyproxy/gateway-helm
 
 NAME=envoy-gateway
-NAMESPACE=envoy-gateway-system
+NAMESPACE="envoy-gateway-system"
 
 CHART=$(REPOURL)
 
