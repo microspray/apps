@@ -3,7 +3,7 @@ REPONAME=envoy-gateway
 REPOURL=oci://docker.io/envoyproxy/gateway-helm
 
 NAME=envoy-gateway
-NAMESPACE=envoy-gateway
+NAMESPACE=envoy-gateway-system
 
 CHART=$(REPOURL)
 
