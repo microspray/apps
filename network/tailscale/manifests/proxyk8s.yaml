@@ -1,0 +1,28 @@
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyGroup
+metadata:
+  name: hz-a1
+spec:
+  type: kube-apiserver
+  replicas: 3
+  tags: ["tag:k8s"]
+  kubeAPIServer:
+    mode: noauth
+---
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: cp-proxy-class
+spec:
+  statefulSet:
+    pod:
+      nodeSelector:
+        # Forces the API Server proxy to live on the master nodes
+        node-role.kubernetes.io/control-plane: "true"
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule

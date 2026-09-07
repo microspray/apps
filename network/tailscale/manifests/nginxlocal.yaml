@@ -1,0 +1,20 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumLocalRedirectPolicy
+metadata:
+  name: force-local-nginx
+  namespace: ingress-nginx
+spec:
+  redirectFrontend:
+    serviceMatcher:
+      serviceName: ingress-nginx-controller
+      namespace: ingress-nginx
+  redirectBackend:
+    localEndpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: ingress-nginx
+        app.kubernetes.io/component: controller
+    toPorts:
+      - port: "80"
+        protocol: TCP
+      - port: "443"
+        protocol: TCP

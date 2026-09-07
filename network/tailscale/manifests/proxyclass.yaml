@@ -1,0 +1,35 @@
+---
+# -------------------------------------------------------------------
+# 1. THE TAILSCALE PROXY CLASS
+# Forces Tailscale proxy pods to run on the Worker nodes alongside Nginx.
+# -------------------------------------------------------------------
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: lb-proxy-class
+spec:
+  statefulSet:
+    replicas: 5
+    pod:
+      nodeSelector:
+        # Adjust this label if your worker nodes use a different label
+        node-role.kubernetes.io/loadbalancer: "nginx"          
+      labels:
+        # We add a custom label so we can target it in the affinity rule
+        routing.conny.cloud/component: tailscale-worker-proxy
+      affinity:
+        podAntiAffinity:
+          # This strict rule says: "Never put two of these pods on the same hostname"
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                routing.conny.cloud/component: tailscale-worker-proxy
+            topologyKey: kubernetes.io/hostname
+---        
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: default-ha-proxy-class
+spec:
+  statefulSet:
+    replicas: 3

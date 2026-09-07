@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- connectors.tailscale.com..customresourcedefinition.yaml
+- dnsconfigs.tailscale.com..customresourcedefinition.yaml
+- operator.tailscale.deployment.yaml
+- operator.tailscale.role.yaml
+- operator.tailscale.rolebinding.yaml
+- operator.tailscale.serviceaccount.yaml
+- proxies.tailscale.role.yaml
+- proxies.tailscale.rolebinding.yaml
+- proxies.tailscale.serviceaccount.yaml
+- proxyclasses.tailscale.com..customresourcedefinition.yaml
+- proxygroups.tailscale.com..customresourcedefinition.yaml
+- recorders.tailscale.com..customresourcedefinition.yaml
+- tailscale-operator..clusterrole.yaml
+- tailscale-operator..clusterrolebinding.yaml
+- tailscale..ingressclass.yaml

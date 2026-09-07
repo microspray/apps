@@ -1,0 +1,54 @@
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyGroup
+metadata:
+  name: nginx-proxy-group
+spec:
+  type: ingress
+  replicas: 5  # <-- CHANGE THIS TO YOUR EXACT WORKER NODE COUNT
+  proxyClass: lb-proxy-class
+  tags:
+    - "tag:k8s-operator"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-dns-lb
+  namespace: kube-system
+  annotations:
+    # We can safely piggyback on the same high-bandwidth ProxyGroup to save IPs!
+    tailscale.com/proxy-group: nginx-proxy-group
+    tailscale.com/hostname: k8s-coredns
+spec:
+  type: LoadBalancer
+  loadBalancerClass: tailscale
+  ports:
+    - name: dns
+      port: 53
+      protocol: UDP
+      targetPort: 53
+    - name: dns-tcp
+      port: 53
+      protocol: TCP
+      targetPort: 53
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx-lb
+  namespace: ingress-nginx
+  annotations:
+    # Binds to the HA ProxyGroup defined above
+    tailscale.com/proxy-group: nginx-proxy-group
+    # Forces a clean, readable name in your Tailscale Dashboard
+    tailscale.com/hostname: k8s-lb-nginx
+spec:
+  # The magic that tells K8s to hand this off to Tailscale instead of Hetzner
+  type: LoadBalancer
+  loadBalancerClass: tailscale
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
+      port: 443
+      targetPort: 443
